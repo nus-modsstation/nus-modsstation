@@ -1,12 +1,16 @@
 # NUS ModsStation
 
+## Prerequisites
+
+1. Node.js
+
 ## Getting started
 
-In the project directory, run:
+Open the Terminal and navigate to the project directory, run:
 
 ### `npm install`
 
-Installs the neccessary npm packages before running `npm start`
+Installs the neccessary packages before running `npm start`
 
 ### `npm start`
 
