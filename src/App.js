@@ -8,7 +8,9 @@ import { VirtualGroupPage } from './pages/virtual-group/VirtualGroupPage';
 import { QAThreadPage } from './pages/qa-thread/QAThreadPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { LoginPage } from './pages/login/LoginPage';
+import { RegisterPage } from './pages/register/RegisterPage';
 
+import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { theme } from './styles/material.styles';
 import './App.css';
@@ -16,6 +18,7 @@ import './App.css';
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Router>
         <div className="App">
           <AppToolbar />
@@ -34,6 +37,9 @@ const App = () => {
             </Route>
             <Route path="/login">
               <LoginPage />
+            </Route>
+            <Route path="/register">
+              <RegisterPage />
             </Route>
           </Switch>
           <BottomNavbar />
