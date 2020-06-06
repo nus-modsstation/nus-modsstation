@@ -32,8 +32,8 @@ const BottomNav = ({ location }) => {
     >
       <BottomNavigationAction
         component={NavLink}
-        to="/"
-        value="/"
+        to="/study-group"
+        value="/study-group"
         label="Study Group"
         icon={<LocalLibraryIcon />}
       />

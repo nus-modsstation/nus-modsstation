@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink, withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AppToolbar = () => {
+const Appbar = () => {
   const classes = useStyles();
 
   return (
@@ -37,9 +38,13 @@ export const AppToolbar = () => {
           <Typography variant="h6" className={classes.title}>
             NUS ModsStation
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button component={NavLink} to="/login" color="inherit">
+            Login
+          </Button>
         </Toolbar>
       </AppBar>
     </div>
   );
 };
+
+export const AppToolbar = withRouter(Appbar);
