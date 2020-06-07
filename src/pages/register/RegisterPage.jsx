@@ -5,7 +5,7 @@ import { LoginForm } from '../../components/Login/LoginForm';
 export const RegisterPage = () => {
   return (
     <div>
-      <LoginForm />
+      <LoginForm key="register" />
     </div>
   );
 };

@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { useLocation, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { DevTool } from 'react-hook-form-devtools';
+import { createStructuredSelector } from 'reselect';
 
-import { registerUser, login } from '../../services/userAuth';
+import { selectAuthError } from '../../redux/user/user.selector';
+import {
+  loginStart,
+  registerStart,
+  clearAuthError,
+} from '../../redux/user/user.action';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -33,26 +39,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const LoginForm = () => {
+const LoginFormComponent = ({
+  loginStart,
+  registerStart,
+  authError,
+  clearAuthError,
+}) => {
   const classes = useStyles();
   const location = useLocation();
   const isLogin = location.pathname === '/login';
 
-  const { register, handleSubmit, control, errors } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
+
+  useEffect(() => {
+    clearAuthError();
+    reset();
+  }, [location, clearAuthError, reset]);
+
   const onSubmit = async (data) => {
     if (isLogin) {
-      await login(data);
+      await loginStart(data);
     } else {
-      await registerUser(data);
+      await registerStart(data);
     }
   };
 
   return (
     <Container component="main" maxWidth="xs">
-      <DevTool control={control} />
       <div className={classes.paper}>
         <Typography component="h1" variant="h4">
           {isLogin ? 'Login' : 'Register'}
@@ -122,6 +138,7 @@ export const LoginForm = () => {
           {errors.password && (
             <ErrorMessage errorMessage={errors.password.message} />
           )}
+          {authError && <ErrorMessage errorMessage={authError.message} />}
           <Button
             type="submit"
             fullWidth
@@ -151,3 +168,18 @@ export const LoginForm = () => {
     </Container>
   );
 };
+
+const mapStateToProps = createStructuredSelector({
+  authError: selectAuthError,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  loginStart: (userCredentials) => dispatch(loginStart(userCredentials)),
+  registerStart: (userCredentials) => dispatch(registerStart(userCredentials)),
+  clearAuthError: () => dispatch(clearAuthError()),
+});
+
+export const LoginForm = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginFormComponent);
