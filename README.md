@@ -2,11 +2,22 @@
 
 ## Prerequisites
 
-1. Node.js
+1. [`node` and `npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+2. [`git`](https://git-scm.com/downloads)
 
 ## Getting started
 
-Open the Terminal and navigate to the project directory, run:
+Open the Terminal.
+
+To clone the repository to your local machine, run:
+
+### `git clone https://github.com/nus-modsstation/nus-modsstation.git` 
+
+To navigate to the project directory, run:
+
+### `cd nus-modsstation`
+
+Then, run:
 
 ### `npm install`
 
