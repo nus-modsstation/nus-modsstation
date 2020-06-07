@@ -23,7 +23,6 @@ const AppComponent = ({ checkUserSession, currentUser }) => {
   useEffect(() => {
     checkUserSession();
   }, [checkUserSession]);
-  console.log(currentUser);
 
   return (
     <ThemeProvider theme={theme}>
