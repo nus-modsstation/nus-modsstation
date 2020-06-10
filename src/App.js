@@ -13,6 +13,7 @@ import { VirtualGroupPage } from './pages/virtual-group/VirtualGroupPage';
 import { QAThreadPage } from './pages/qa-thread/QAThreadPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { LoginPage } from './pages/login/LoginPage';
+import { TemplatePage } from './pages/template/TemplatePage';
 
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -38,6 +39,7 @@ const AppComponent = ({ checkUserSession, currentUser }) => {
           <Route path="/virtual-group" component={VirtualGroupPage}></Route>
           <Route path="/qa-thread" component={QAThreadPage}></Route>
           <Route path="/dashboard" component={DashboardPage}></Route>
+          <Route path="/template" component={TemplatePage}></Route>
           <Route
             path="/login"
             render={() =>
