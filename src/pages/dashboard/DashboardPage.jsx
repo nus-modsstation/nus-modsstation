@@ -41,7 +41,7 @@ export const DashboardPage = () => {
         mb={2}
       >
         <Typography display="inline" variant="h5">
-          Dashboard1
+          Dashboard
         </Typography>
         <Hidden mdUp>
           <IconButton
