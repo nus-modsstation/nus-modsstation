@@ -13,7 +13,7 @@ export const theme = responsiveFontSizes(
       },
       secondary: {
         light: '#92e9dc',
-        main: '#03dac5',
+        main: '#009688',
         // dark: will be calculated from palette.secondary.main,
       },
       // Used by `getContrastText()` to maximize the contrast between

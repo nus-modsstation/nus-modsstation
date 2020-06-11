@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
@@ -11,14 +10,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Typography } from '@material-ui/core';
 import { materialStyles } from '../../styles/material.styles';
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(2),
-  },
-}));
-
 export const TemplatePage = () => {
-  const classes = useStyles();
   const materialClasses = materialStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -65,12 +57,12 @@ export const TemplatePage = () => {
           <MenuItem onClick={handleClose}>Collections</MenuItem>
         </Menu>
       </Box>
-      <div className={classes.root}>
+      <Box>
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
-            <Paper className={classes.paper}>Search bar</Paper>
+            <Paper className={materialClasses.paper}>Search bar</Paper>
             <Box height={16.0} />
-            <Paper className={classes.paper}>
+            <Paper className={materialClasses.paper}>
               <Typography variant="h6">
                 Section title (use h6 variant)
               </Typography>
@@ -88,7 +80,7 @@ export const TemplatePage = () => {
               </Typography>
             </Paper>
             <Box height={16.0} />
-            <Paper className={classes.paper}>
+            <Paper className={materialClasses.paper}>
               <Typography variant="h6">
                 Section title (use h6 variant)
               </Typography>
@@ -106,7 +98,7 @@ export const TemplatePage = () => {
               </Typography>
             </Paper>
             <Box height={16.0} />
-            <Paper className={classes.paper}>
+            <Paper className={materialClasses.paper}>
               <Typography variant="h6">
                 Section title (use h6 variant)
               </Typography>
@@ -126,7 +118,7 @@ export const TemplatePage = () => {
           </Grid>
           <Hidden smDown>
             <Grid item md={4}>
-              <Paper className={classes.paper}>
+              <Paper className={materialClasses.paper}>
                 <Typography variant="h6">
                   Side panel title (use h6 variant)
                 </Typography>
@@ -146,7 +138,7 @@ export const TemplatePage = () => {
             </Grid>
           </Hidden>
         </Grid>
-      </div>
+      </Box>
     </Box>
   );
 };
