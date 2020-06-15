@@ -18,15 +18,9 @@ const useStyles = makeStyles({
 
 const BottomNav = ({ location }) => {
   const classes = useStyles();
-  const [value, setValue] = React.useState(location.pathname);
-
   return (
     <BottomNavigation
-      value={value}
-      onChange={(event, newValue) => {
-        console.log(location.pathname);
-        setValue(newValue);
-      }}
+      value={location.pathname}
       showLabels
       className={classes.root}
     >
