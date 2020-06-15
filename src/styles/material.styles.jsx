@@ -36,4 +36,18 @@ export const materialStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
+  pageMargin: {
+    margin: '10px 50px',
+  },
+  searchBar: {
+    margin: '10px 10px 24px 10px',
+    borderBottomStyle: 'solid',
+    borderWidth: 1.5,
+    borderColor: '#009688',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  fix: {
+    flex: 1,
+  },
 }));
