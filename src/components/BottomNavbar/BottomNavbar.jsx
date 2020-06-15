@@ -6,6 +6,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import ContactMailIcon from '@material-ui/icons/ContactMail';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const useStyles = makeStyles({
   root: {
@@ -31,8 +32,8 @@ const BottomNav = ({ location }) => {
     >
       <BottomNavigationAction
         component={NavLink}
-        to="/"
-        value="/"
+        to="/study-group"
+        value="/study-group"
         label="Study Group"
         icon={<LocalLibraryIcon />}
       />
@@ -47,8 +48,15 @@ const BottomNav = ({ location }) => {
         component={NavLink}
         to="/qa-thread"
         value="/qa-thread"
-        label="Q & A Thread"
+        label="Q&A Thread"
         icon={<QuestionAnswerIcon />}
+      />
+      <BottomNavigationAction
+        component={NavLink}
+        to="/dashboard"
+        value="/dashboard"
+        label="Dashboard"
+        icon={<DashboardIcon />}
       />
     </BottomNavigation>
   );
