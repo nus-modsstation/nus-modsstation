@@ -14,6 +14,7 @@ import { QAThreadPage } from './pages/qa-thread/QAThreadPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { LoginPage } from './pages/login/LoginPage';
 import { TemplatePage } from './pages/template/TemplatePage';
+import { VirtualGroupPageModule } from './pages/virtual-group/VirtualGroupPageModule';
 
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -49,6 +50,9 @@ const AppComponent = ({ checkUserSession, currentUser }) => {
               currentUser ? <Redirect to="/study-group" /> : <LoginPage />
             }
           />
+          <Route path="/virtual-group-module">
+            <VirtualGroupPageModule />
+          </Route>
         </Switch>
         <BottomNavbar />
       </div>
