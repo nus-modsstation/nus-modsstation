@@ -13,7 +13,7 @@ export const theme = responsiveFontSizes(
       },
       secondary: {
         light: '#92e9dc',
-        main: '#03dac5',
+        main: '#009688',
         // dark: will be calculated from palette.secondary.main,
       },
       // Used by `getContrastText()` to maximize the contrast between
@@ -30,7 +30,10 @@ export const theme = responsiveFontSizes(
 export const materialStyles = makeStyles((theme) => ({
   root: {
     textAlign: 'left',
-    padding: theme.spacing(3),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
     marginBottom: 50.0,
   },
   paper: {

@@ -32,11 +32,8 @@ const AppComponent = ({ checkUserSession, currentUser }) => {
       <div className="App">
         <AppToolbar currentUser={currentUser} />
         <Switch>
-          <Route
-            exact
-            path={['/', '/study-group']}
-            component={StudyGroupPage}
-          ></Route>
+          <Route exact path="/" render={() => <Redirect to="/study-group" />} />
+          <Route path="/study-group" component={StudyGroupPage}></Route>
           <Route path="/virtual-group" component={VirtualGroupPage}></Route>
           <Route path="/qa-thread" component={QAThreadPage}></Route>
           <Route path="/dashboard" component={DashboardPage}></Route>
