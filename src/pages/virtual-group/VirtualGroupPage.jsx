@@ -1,58 +1,58 @@
-import React, { Component } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   createMuiTheme,
   responsiveFontSizes,
   ThemeProvider,
-} from "@material-ui/core/styles";
-import { materialStyles } from "../../styles/material.styles";
-import { Grid } from "@material-ui/core";
-import { Hidden } from "@material-ui/core";
-import { Typography } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import { InputBase } from "@material-ui/core";
-import { Button, IconButton } from "@material-ui/core";
-import { Search } from "@material-ui/icons";
-import { Popper } from "@material-ui/core";
-import { ClickAwayListener } from "@material-ui/core";
+} from '@material-ui/core/styles';
+import { materialStyles } from '../../styles/material.styles';
+import { Grid } from '@material-ui/core';
+import { Hidden } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import { InputBase } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
+import { Search } from '@material-ui/icons';
+import { Popper } from '@material-ui/core';
+import { ClickAwayListener } from '@material-ui/core';
 
-import { YourGroupsSmall } from "../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall";
-import { VirtualGroupModule } from "../../components/VirtualGroupModule/VirtualGroupModule";
-import { YourGroupCard } from "../../components/YourVirtualGroupCard/YourVirtualGroupCard";
+import { YourGroupsSmall } from '../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall';
+import { VirtualGroupModule } from '../../components/VirtualGroupModule/VirtualGroupModule';
+import { YourGroupCard } from '../../components/YourVirtualGroupCard/YourVirtualGroupCard';
 
 let muiTheme = createMuiTheme();
 muiTheme = responsiveFontSizes(muiTheme);
 
 const recruitingGroupStyles = makeStyles({
   header: {
-    margin: "10px 0px",
+    margin: '10px 0px',
     paddingRight: 0,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   list: {
-    overflow: "auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     height: 492,
-    "&::-webkit-scrollbar": {
-      display: "none",
+    '&::-webkit-scrollbar': {
+      display: 'none',
     },
   },
 });
 
 const yourGroupStyles = makeStyles({
   list: {
-    overflow: "auto",
-    alignItems: "flex-start",
-    flexDirection: "row",
+    overflow: 'auto',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
     height: 492,
-    "&::-webkit-scrollbar": {
-      display: "none",
+    '&::-webkit-scrollbar': {
+      display: 'none',
     },
   },
   header: {
-    margin: "34px 20px 10px 20px",
+    margin: '34px 20px 10px 20px',
   },
 });
 

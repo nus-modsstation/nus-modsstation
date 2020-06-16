@@ -32,6 +32,9 @@ export class StudyGroup {
   }) {
     this.id = id;
     this.ownerId = ownerId;
+    if (users.length === 0) {
+      users.push(ownerId);
+    }
     this.users = users;
     this.userRequests = userRequests;
     this.moderators = moderators;

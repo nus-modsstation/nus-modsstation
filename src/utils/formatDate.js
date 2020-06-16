@@ -10,5 +10,7 @@ export const formatTime = (startTime, endTime) => {
 };
 
 export const formatDateTime = (dateTime) => {
-  return dateTime.format('MMM D, hh:mm A');
+  return dateTime.format('MMM Do hh:mm A');
 };
+
+export const dateTimeFormat = 'MMM Do hh:mm A';

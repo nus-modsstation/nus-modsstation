@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import { Button } from "@material-ui/core";
-import { Box } from "@material-ui/core";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 
 const componentStyles = makeStyles({
   item: {
-    display: "flex",
-    justifyContent: "flex-start",
-    flexDirection: "row",
-    borderBottom: "1px solid rgba(0, 0, 0, 0.35)",
+    display: 'flex',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.35)',
     paddingBottom: 5,
   },
   groupPicture: {},
   itemContent: {
-    borderBottom: "1px solid rgba(0, 0, 0, 0.35)",
+    borderBottom: '1px solid rgba(0, 0, 0, 0.35)',
     marginLeft: 5,
     paddingBottom: 5,
   },
@@ -40,7 +40,12 @@ export const VirtualGroupCardModule = () => {
         <Typography align="left" variant="overline">
           4 members
         </Typography>
-        <Typography component={Button} size="small" align="center" variant="button">
+        <Typography
+          component={Button}
+          size="small"
+          align="center"
+          variant="button"
+        >
           Join
         </Typography>
       </Box>
