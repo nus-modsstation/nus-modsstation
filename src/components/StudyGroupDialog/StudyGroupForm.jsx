@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { DevTool } from 'react-hook-form-devtools';
+
+import { modules } from '../../models/Module';
 
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -15,6 +17,7 @@ import { DateTimePicker } from '@material-ui/pickers';
 import { dateTimeFormat } from '../../utils/formatDate';
 import { Button } from '@material-ui/core';
 import { ErrorMessage } from '../shared/ErrorMessage';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -30,21 +33,55 @@ const useStyles = makeStyles((theme) => ({
 
 export const StudyGroupForm = () => {
   const classes = useStyles();
-  const [startTime, handleStartTimeChange] = useState(new moment());
-  const [endTime, handleEndTimeChange] = useState(new moment().add(1, 'hours'));
+  const [startTime, setStartTime] = useState(new moment());
+  const [endTime, setEndTime] = useState(new moment().add(1, 'hours'));
   const [capacity, setCapacity] = React.useState(4);
   const maxDate = moment().add(5, 'days');
-  const { register, handleSubmit, errors, control, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    setError,
+    clearError,
+    control,
+    setValue,
+  } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
       capacity: 4,
+      startTime: startTime,
+      endTime: endTime,
     },
   });
+
+  const now = moment();
 
   const handleCapacityChange = (event) => {
     setCapacity(event.target.value);
     setValue('capacity', event.target.value);
+  };
+
+  const handleStartTimeChange = (event) => {
+    clearError('startTime');
+    setStartTime(event);
+    setValue('startTime', event);
+    if (startTime.isBefore(now)) {
+      setError('startTime', 'invalid', 'Start time is already passed');
+    } else if (startTime.isAfter(endTime)) {
+      setError('startTime', 'invalid', 'Start time is after the end time');
+    }
+  };
+
+  const handleEndTimeChange = (event) => {
+    clearError('endTime');
+    setEndTime(event);
+    setValue('endTime', event);
+    if (endTime.isBefore(now)) {
+      setError('endTime', 'invalid', 'End time is already passed');
+    } else if (endTime.isBefore(startTime)) {
+      setError('endTime', 'invalid', 'End time is before the start time');
+    }
   };
 
   const onSubmit = (data) => {
@@ -52,7 +89,9 @@ export const StudyGroupForm = () => {
   };
 
   useEffect(() => {
-    register({ name: 'capacity' }); // custom register react-select
+    register({ name: 'capacity' }); // custom register react select
+    register({ name: 'startTime' });
+    register({ name: 'endTime' });
   }, [register]);
 
   return (
@@ -107,17 +146,30 @@ export const StudyGroupForm = () => {
             )}
           </Grid>
           <Grid xs={6} item>
-            <TextField
-              className={classes.form}
-              variant="outlined"
-              margin="normal"
+            <Controller
+              as={
+                <Autocomplete
+                  className={classes.form}
+                  options={modules}
+                  getOptionLabel={(option) => option.id}
+                  renderOption={(option) => <span>{option.id}</span>}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Module"
+                      className={classes.form}
+                      variant="outlined"
+                      fullWidth
+                      required
+                      error={!!errors.module}
+                    />
+                  )}
+                />
+              }
+              onChange={([, data]) => data.id}
               name="module"
-              label="Module"
-              id="module"
-              fullWidth
-              required
-              error={!!errors.module}
-              inputRef={register({ required: 'Module is required' })}
+              control={control}
+              rules={{ required: 'Module is required' }}
             />
             {errors.module && (
               <ErrorMessage errorMessage={errors.module.message} />
@@ -157,10 +209,11 @@ export const StudyGroupForm = () => {
               value={startTime}
               onChange={handleStartTimeChange}
               disablePast
+              maxDate={maxDate}
               required
               name="startTime"
               error={!!errors.startTime}
-              inputRef={register({ required: 'Start time is required' })}
+              //inputRef={register({ required: 'Start time is required' })}
             />
             {errors.startTime && (
               <ErrorMessage errorMessage={errors.startTime.message} />
@@ -175,10 +228,11 @@ export const StudyGroupForm = () => {
               value={endTime}
               onChange={handleEndTimeChange}
               maxDate={maxDate}
+              disablePast
               required
               name="endTime"
               error={!!errors.endTime}
-              inputRef={register({ required: 'End time is required' })}
+              //inputRef={register({ required: 'End time is required' })}
             />
             {errors.endTime && (
               <ErrorMessage errorMessage={errors.endTime.message} />
