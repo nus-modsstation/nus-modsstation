@@ -14,7 +14,6 @@ const componentStyles = makeStyles({
   },
   groupPicture: {},
   itemContent: {
-    borderBottom: "1px solid rgba(0, 0, 0, 0.35)",
     marginLeft: 5,
     paddingBottom: 5,
   },
