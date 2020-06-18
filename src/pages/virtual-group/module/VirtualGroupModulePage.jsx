@@ -1,6 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { materialStyles } from "../../styles/material.styles";
 import {
   createMuiTheme,
   responsiveFontSizes,
@@ -16,9 +15,10 @@ import { Search } from "@material-ui/icons";
 import { Popper } from "@material-ui/core";
 import { ClickAwayListener } from "@material-ui/core";
 
-import { YourGroupsSmall } from "../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall";
-import { VirtualGroupCardModule } from "../../components/VirtualGroupCardModule/VirtualGroupCardModule";
-import { YourGroupCard } from "../../components/YourVirtualGroupCard/YourVirtualGroupCard";
+import { materialStyles } from "../../../styles/material.styles";
+import { YourGroupsSmall } from "../../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall";
+import { VirtualGroupCardModule } from "../../../components/VirtualGroupCardModule/VirtualGroupCardModule";
+import { YourGroupCard } from "../../../components/YourVirtualGroupCard/YourVirtualGroupCard";
 
 let muiTheme = createMuiTheme();
 muiTheme = responsiveFontSizes(muiTheme);
@@ -56,7 +56,7 @@ const yourGroupStyles = makeStyles({
   },
 });
 
-export const VirtualGroupPageModule = () => {
+export const VirtualGroupModulePage = () => {
   const styles = materialStyles();
   const recruitingGroups = recruitingGroupStyles();
   const yourGroups = yourGroupStyles();

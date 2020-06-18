@@ -93,11 +93,6 @@ export const VirtualGroupPage = () => {
               className={recruitingGroups.header}
               justify="space-between"
             >
-              <Grid item xs={12}>
-                <Typography variant="h6" align="left">
-                  RECRUITING GROUPS
-                </Typography>
-              </Grid>
               <Hidden mdUp>
                 <Grid item xs={12} justify="flex-end">
                   <ClickAwayListener onClickAway={handleClickAway}>
