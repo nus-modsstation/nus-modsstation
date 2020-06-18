@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { theme } from "../../styles/material.styles";
 import { NavLink } from "react-router-dom";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import { Button, IconButton } from "@material-ui/core";
-import { VirtualGroupCard } from "../../components/VirtualGroupCard/VirtualGroupCard";
 import { Box } from "@material-ui/core";
 import { ExpandMore, ExpandLess } from "@material-ui/icons";
 import { Collapse } from "@material-ui/core";
+
+import { theme } from "../../styles/material.styles";
+
+import { VirtualGroupCard } from "../../components/VirtualGroupCard/VirtualGroupCard";
 
 const componentStyles = makeStyles({
   item: {
@@ -40,13 +42,14 @@ const componentStyles = makeStyles({
     },
     "&::-webkit-scrollbar-thumb:hover": {
       borderRadius: 8,
-      background: '#421cf8',
+      background: "#421cf8",
     },
   },
 });
 
 export const VirtualGroupModule = () => {
   const component = componentStyles();
+
   const [open, setOpen] = React.useState(true);
   const handleClick = () => {
     setOpen(!open);
@@ -67,11 +70,13 @@ export const VirtualGroupModule = () => {
           <Button component={NavLink} to="/virtual-group-module">
             <Typography variant="body1">MOD1001</Typography>
           </Button>
-      </div>
         </div>
+      </div>
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={component.itemContent}>
+            <VirtualGroupCard />
+            <VirtualGroupCard />
             <VirtualGroupCard />
             <VirtualGroupCard />
             <VirtualGroupCard />
