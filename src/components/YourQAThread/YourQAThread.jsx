@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { makeStyles, theme } from "@material-ui/core/styles";
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import { materialStyles } from "../../styles/material.styles";
 import { Typography } from "@material-ui/core";
 import { Button } from "@material-ui/core";
@@ -18,7 +18,6 @@ const componentStyles = makeStyles({
 
 export const YourQAThread = () => {
   const materialClasses = materialStyles();
-  const componentClasses = componentStyles();
   
   return (
     <Box component={Paper} className={materialClasses.paper} mb="5px" height={0.45} width={1}>
