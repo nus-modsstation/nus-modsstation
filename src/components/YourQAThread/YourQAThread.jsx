@@ -17,7 +17,6 @@ const componentStyles = makeStyles({
 });
 
 export const YourQAThread = () => {
-  const materialClasses = materialStyles();
   
   return (
     <Box component={Paper} className={materialClasses.paper} mb="5px" height={0.45} width={1}>
