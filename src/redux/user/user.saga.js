@@ -18,8 +18,10 @@ import {
 export function* storeUserToReducer(user) {
   yield put(
     loginSuccess({
+      id: user.uid,
       email: user.email,
       username: user.displayName,
+      isVerified: user.emailVerified,
     })
   );
 }

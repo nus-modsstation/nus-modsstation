@@ -45,7 +45,7 @@ export const StudyGroupCard = ({ studyGroup }) => {
             }}
             color="secondary"
             variant="outlined"
-            label={studyGroup.location.name}
+            label={studyGroup.location}
           />
           <Box mt={2} />
           <Chip

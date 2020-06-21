@@ -20,9 +20,12 @@ import { VirtualGroupPageModule } from './pages/virtual-group/VirtualGroupPageMo
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { theme } from './styles/material.styles';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+// pick a date util library
+import MomentUtils from '@date-io/moment';
 import './App.css';
 
-const AppComponent = ({ checkUserSession, currentUser }) => {
+const App = ({ checkUserSession, currentUser }) => {
   useEffect(() => {
     checkUserSession();
   }, [checkUserSession]);
@@ -30,36 +33,45 @@ const AppComponent = ({ checkUserSession, currentUser }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div className="App">
-        <AppToolbar currentUser={currentUser} />
-        <Switch>
-          <Route exact path="/" render={() => <Redirect to="/study-group" />} />
-          <Route path="/study-group" component={StudyGroupPage}></Route>
-          <Route path="/virtual-group" component={VirtualGroupPage}></Route>
-          <Route path="/qa-thread" component={QAThreadPage}></Route>
-          <Route path="/dashboard" component={DashboardPage}></Route>
-          <Route path="/template" component={TemplatePage}></Route>
-          <Route
-            path="/login"
-            render={() =>
-              currentUser ? <Redirect to="/study-group" /> : <LoginPage />
-            }
-          />
-          <Route
-            path="/register"
-            render={() =>
-              currentUser ? <Redirect to="/study-group" /> : <LoginPage />
-            }
-          />
-          <Route path="/virtual-group-module">
-            <VirtualGroupPageModule />
-          </Route>
-          <Route path="/qa-thread-module">
-            <QAThreadModulePage />
-          </Route>
-        </Switch>
-        <BottomNavbar />
-      </div>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <div className="App">
+          <AppToolbar currentUser={currentUser} />
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => <Redirect to="/study-group" />}
+            />
+            <Route
+              path="/study-group"
+              render={() => <StudyGroupPage />}
+            ></Route>
+            <Route path="/virtual-group" component={VirtualGroupPage}></Route>
+            <Route path="/qa-thread" component={QAThreadPage}></Route>
+            <Route path="/dashboard" component={DashboardPage}></Route>
+            <Route path="/template" component={TemplatePage}></Route>
+            <Route
+              path="/login"
+              render={() =>
+                currentUser ? <Redirect to="/study-group" /> : <LoginPage />
+              }
+            />
+            <Route
+              path="/register"
+              render={() =>
+                currentUser ? <Redirect to="/study-group" /> : <LoginPage />
+              }
+            />
+            <Route path="/virtual-group-module">
+              <VirtualGroupPageModule />
+            </Route>
+            <Route path="/qa-thread-module">
+              <QAThreadModulePage />
+            </Route>
+          </Switch>
+          <BottomNavbar />
+        </div>
+      </MuiPickersUtilsProvider>
     </ThemeProvider>
   );
 };
@@ -72,4 +84,4 @@ const mapDispatchToProps = (dispatch) => ({
   checkUserSession: () => dispatch(checkUserSession()),
 });
 
-export const App = connect(mapStateToProps, mapDispatchToProps)(AppComponent);
+export const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);

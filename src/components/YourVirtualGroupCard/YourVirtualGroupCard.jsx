@@ -24,31 +24,33 @@ const componentStyles = makeStyles({
     width: 50,
     alignSelf: 'flex-start',
     marginTop: 32,
-  }, 
+  },
 });
 
 export const YourGroupCard = () => {
-    const component = componentStyles();
-    return (
-      <div>
-	<ListItem component={Card} height={1/3} className={component.card}>
-	  <div>
-	    <CardContent className={component.cardContent}>
-	      <Typography variant="button">MOD1001</Typography>
-	      <Typography variant="h6" noWrap>
-	        Group Name 00000000000000000000000000000000001
-	      </Typography>
-	      <Typography component="p" variant="caption">
-	        This is your group description. Feel free to include anything interesting about
-	        your group here.
-	      </Typography>
-	    </CardContent>
-	    <CardActions>
-	      <Button size="small"><Typography variant="button">View</Typography></Button>
-	    </CardActions>
-	  </div>
-	  <CardMedia component="img" className={component.groupPicture} />
-	</ListItem>
-      </div>
-    );
-}
+  const component = componentStyles();
+  return (
+    <div>
+      <ListItem component={Card} height={1 / 3} className={component.card}>
+        <div>
+          <CardContent className={component.cardContent}>
+            <Typography variant="button">MOD1001</Typography>
+            <Typography variant="h6" noWrap>
+              Group Name 00000000000000000000000000000000001
+            </Typography>
+            <Typography component="p" variant="caption">
+              This is your group description. Feel free to include anything
+              interesting about your group here.
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="small">
+              <Typography variant="button">View</Typography>
+            </Button>
+          </CardActions>
+        </div>
+        <CardMedia component="img" className={component.groupPicture} />
+      </ListItem>
+    </div>
+  );
+};

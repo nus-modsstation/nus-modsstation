@@ -19,19 +19,24 @@ const Group = () => {
   return (
     <div>
       <ListItem button>
-	<Grid container direction="row" justify="space-between" alignItems="center">
-	  <Grid item xs={8} wrap="nowrap">
-	    <Typography variant="body1" noWrap>
-	      Group Name 000000000000000000000000000000000000001
-	    </Typography>
-	  </Grid>
-	  <Grid item xs={3}>
-	    <Typography variant="button">MOD1001</Typography>
-	  </Grid>
-	</Grid>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+        >
+          <Grid item xs={8} wrap="nowrap">
+            <Typography variant="body1" noWrap>
+              Group Name 000000000000000000000000000000000000001
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography variant="button">MOD1001</Typography>
+          </Grid>
+        </Grid>
       </ListItem>
     </div>
-  )
+  );
 };
 
 export const YourGroupsSmall = () => {
@@ -45,5 +50,3 @@ export const YourGroupsSmall = () => {
     </div>
   );
 };
-	
-

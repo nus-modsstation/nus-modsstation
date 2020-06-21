@@ -1,7 +1,7 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import { Card, CardMedia } from "@material-ui/core";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { Card, CardMedia } from '@material-ui/core';
 
 const componentStyles = makeStyles({
   card: {
@@ -12,10 +12,10 @@ const componentStyles = makeStyles({
   },
   cardContent: {
     margin: 8,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   groupPicture: {
-    width: "inherit",
+    width: 'inherit',
     height: 88,
   },
 });

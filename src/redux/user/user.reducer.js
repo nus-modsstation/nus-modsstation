@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   authError: null,
 };
 
-const userReducer = (state = INITIAL_STATE, action) => {
+export const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case userActionType.LOGIN_START:
     case userActionType.LOGOUT_START:
@@ -47,5 +47,3 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return state;
   }
 };
-
-export default userReducer;
