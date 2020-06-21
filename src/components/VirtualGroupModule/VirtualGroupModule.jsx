@@ -1,13 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
-import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import { Button, IconButton } from "@material-ui/core";
 import { Box } from "@material-ui/core";
 import { ExpandMore, ExpandLess } from "@material-ui/icons";
 import { Collapse } from "@material-ui/core";
-
-import { theme } from "../../styles/material.styles";
 
 import { VirtualGroupCard } from "../../components/VirtualGroupCard/VirtualGroupCard";
 

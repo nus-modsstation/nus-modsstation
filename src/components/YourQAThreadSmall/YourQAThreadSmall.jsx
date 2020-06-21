@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import { List, ListItem } from "@material-ui/core";

@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { materialStyles } from '../../styles/material.styles';
 import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { ListItem } from '@material-ui/core';
@@ -30,7 +29,6 @@ const componentStyles = makeStyles({
 
 export const YourGroupCard = () => {
     const component = componentStyles();
-    const styles = materialStyles();
     return (
       <div>
 	<ListItem component={Card} height={1/3} className={component.card}>
