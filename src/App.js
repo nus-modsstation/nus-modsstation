@@ -11,6 +11,7 @@ import { BottomNavbar } from './components/BottomNavbar/BottomNavbar';
 import { StudyGroupPage } from './pages/study-group/StudyGroupPage';
 import { VirtualGroupPage } from './pages/virtual-group/VirtualGroupPage';
 import { QAThreadPage } from './pages/qa-thread/QAThreadPage';
+import { QAThreadModulePage } from './pages/qa-thread/module/QAThreadModulePage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { LoginPage } from './pages/login/LoginPage';
 import { TemplatePage } from './pages/template/TemplatePage';
@@ -63,6 +64,9 @@ const App = ({ checkUserSession, currentUser }) => {
             />
             <Route path="/virtual-group-module">
               <VirtualGroupPageModule />
+            </Route>
+            <Route path="/qa-thread-module">
+              <QAThreadModulePage />
             </Route>
           </Switch>
           <BottomNavbar />

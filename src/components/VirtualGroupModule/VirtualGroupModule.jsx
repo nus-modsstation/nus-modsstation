@@ -3,10 +3,11 @@ import { NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Button, IconButton } from '@material-ui/core';
-import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 import { Box } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { Collapse } from '@material-ui/core';
+
+import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 
 const componentStyles = makeStyles({
   item: {
@@ -46,6 +47,7 @@ const componentStyles = makeStyles({
 
 export const VirtualGroupModule = () => {
   const component = componentStyles();
+
   const [open, setOpen] = React.useState(true);
   const handleClick = () => {
     setOpen(!open);
@@ -71,6 +73,8 @@ export const VirtualGroupModule = () => {
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={component.itemContent}>
+            <VirtualGroupCard />
+            <VirtualGroupCard />
             <VirtualGroupCard />
             <VirtualGroupCard />
             <VirtualGroupCard />
