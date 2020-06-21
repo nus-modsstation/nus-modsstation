@@ -29,6 +29,7 @@ export class StudyGroup {
     moduleCode,
     title,
     description,
+    attendances = {},
   }) {
     this.id = id;
     this.ownerId = ownerId;
@@ -46,16 +47,47 @@ export class StudyGroup {
     this.moduleCode = moduleCode;
     this.title = title;
     this.description = description;
+    this.attendances = attendances;
+    if (this.attendances.length === 0) {
+      attendances = {
+        ownerId: false,
+      };
+    }
+  }
+
+  static fromJson(data) {
+    return {
+      ...data,
+      startTime: moment(data.startTime),
+      endTime: moment(data.endTime),
+    };
+  }
+
+  static toJson({ data, currentUserId }) {
+    // set moduleCode and delete module field
+    data.moduleCode = data.module.id;
+    delete data.module;
+    return {
+      ...data,
+      startTime: data.startTime.toDate(),
+      endTime: data.endTime.toDate(),
+      ownerId: currentUserId,
+      users: [currentUserId],
+      userRequests: [],
+      moderators: [currentUserId],
+      isPublic: true,
+      attendances: {
+        [currentUserId]: false,
+      },
+    };
   }
 }
 
-const studyGroupData = [
+export const studyGroupData = [
   {
     id: '0',
     ownerId: '0',
-    location: {
-      name: 'COM1',
-    },
+    location: 'COM1',
     startTime: moment().subtract(60, 'minutes'),
     endTime: moment().add(60, 'minutes'),
     moduleCode: 'CS2040S',
@@ -65,9 +97,7 @@ const studyGroupData = [
   {
     id: '1',
     ownerId: '1',
-    location: {
-      name: 'Central library',
-    },
+    location: 'Central library',
     startTime: moment().subtract(50, 'minutes'),
     endTime: moment().add(50, 'minutes'),
     moduleCode: 'CS2030S',
@@ -77,9 +107,7 @@ const studyGroupData = [
   {
     id: '2',
     ownerId: '2',
-    location: {
-      name: 'COM1',
-    },
+    location: 'COM1',
     startTime: moment().subtract(40, 'minutes'),
     endTime: moment().add(40, 'minutes'),
     moduleCode: 'CS2106',
@@ -89,9 +117,7 @@ const studyGroupData = [
   {
     id: '3',
     ownerId: '3',
-    location: {
-      name: 'COM2',
-    },
+    location: 'COM2',
     startTime: moment().subtract(55, 'minutes'),
     endTime: moment().add(55, 'minutes'),
     moduleCode: 'CS2040S',
@@ -101,9 +127,7 @@ const studyGroupData = [
   {
     id: '4',
     ownerId: '4',
-    location: {
-      name: 'COM1',
-    },
+    location: 'COM1',
     startTime: moment().subtract(65, 'minutes'),
     endTime: moment().add(65, 'minutes'),
     moduleCode: 'CS2106',
@@ -113,9 +137,7 @@ const studyGroupData = [
   {
     id: '5',
     ownerId: '5',
-    location: {
-      name: 'I3',
-    },
+    location: 'I3',
     startTime: moment().subtract(35, 'minutes'),
     endTime: moment().add(35, 'minutes'),
     moduleCode: 'CS2030',
@@ -125,9 +147,7 @@ const studyGroupData = [
   {
     id: '6',
     ownerId: '6',
-    location: {
-      name: 'COM2',
-    },
+    location: 'COM2',
     startTime: moment().subtract(65, 'minutes'),
     endTime: moment().add(65, 'minutes'),
     moduleCode: 'CS2040S',
@@ -137,9 +157,7 @@ const studyGroupData = [
   {
     id: '7',
     ownerId: '7',
-    location: {
-      name: 'Central library',
-    },
+    location: 'Central library',
     startTime: moment().add(60, 'minutes'),
     endTime: moment().add(120, 'minutes'),
     moduleCode: 'CS2040S',
@@ -149,9 +167,7 @@ const studyGroupData = [
   {
     id: '8',
     ownerId: '8',
-    location: {
-      name: 'AS1',
-    },
+    location: 'AS1',
     startTime: moment().add(70, 'minutes'),
     endTime: moment().add(140, 'minutes'),
     moduleCode: 'CS2030',
@@ -161,9 +177,7 @@ const studyGroupData = [
   {
     id: '9',
     ownerId: '9',
-    location: {
-      name: 'HSSML',
-    },
+    location: 'HSSML',
     startTime: moment().add(30, 'minutes'),
     endTime: moment().add(90, 'minutes'),
     moduleCode: 'CS2106',
@@ -173,9 +187,7 @@ const studyGroupData = [
   {
     id: 10,
     ownerId: 10,
-    location: {
-      name: 'I3',
-    },
+    location: 'I3',
     startTime: moment().add(45, 'minutes'),
     endTime: moment().add(115, 'minutes'),
     moduleCode: 'CS2106',
@@ -185,9 +197,7 @@ const studyGroupData = [
   {
     id: '11',
     ownerId: '11',
-    location: {
-      name: 'COM2',
-    },
+    location: 'COM2',
     startTime: moment().add(200, 'minutes'),
     endTime: moment().add(300, 'minutes'),
     moduleCode: 'CS2106',

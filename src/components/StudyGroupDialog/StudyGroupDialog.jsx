@@ -1,4 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { selectCurrentUser } from '../../redux/user/user.selector';
+import { selectCreateSuccess } from '../../redux/studyGroup/studyGroup.selector.js';
+
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,6 +17,7 @@ import { StudyGroupForm } from './StudyGroupForm';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
+import { CustomSnackbar } from '../../components/shared/CustomSnackbar';
 
 const useStyles = makeStyles((theme) => ({
   dialogTitleText: {
@@ -28,9 +35,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const StudyGroupDialog = () => {
+const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -41,6 +49,15 @@ export const StudyGroupDialog = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (createSuccess) {
+      // close the dialog after study group is created successfully
+      // show success CustomSnackbar
+      setOpenSnackbar(true);
+      setOpen(false);
+    }
+  }, [createSuccess]);
 
   return (
     <div>
@@ -66,17 +83,43 @@ export const StudyGroupDialog = () => {
           </IconButton>
         </Box>
         <DialogContent>
-          <DialogContentText>
-            In light of the phase two of re-opening, the group capacity will be
-            limited to&nbsp;
-            <u>
-              <strong>5</strong>
-            </u>
-            &nbsp;people.
-          </DialogContentText>
-          <StudyGroupForm />
+          {/* Add this after setting up email verification && currentUser.isVerified */}
+          {currentUser ? (
+            <div style={{ height: '100%', overflow: 'hidden' }}>
+              <DialogContentText>
+                In light of the phase two of re-opening, the group capacity will
+                be limited to&nbsp;
+                <u>
+                  <strong>5</strong>
+                </u>
+                &nbsp;people.
+              </DialogContentText>
+              <StudyGroupForm currentUser={currentUser} />
+            </div>
+          ) : (
+            <DialogContentText>
+              {currentUser
+                ? 'Please verify your email.'
+                : 'Please log in to your account.'}
+            </DialogContentText>
+          )}
         </DialogContent>
       </Dialog>
+      {openSnackbar && (
+        <CustomSnackbar
+          variant="success"
+          message="The study group is created successfully"
+        />
+      )}
     </div>
   );
 };
+
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  createSuccess: selectCreateSuccess,
+});
+
+export const StudyGroupDialog = connect(mapStateToProps)(
+  StudyGroupDialogComponent
+);

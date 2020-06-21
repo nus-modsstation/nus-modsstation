@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import { useForm, Controller } from 'react-hook-form';
-import { DevTool } from 'react-hook-form-devtools';
+import { createStructuredSelector } from 'reselect';
 
+import { StudyGroup } from '../../models/StudyGroup';
 import { modules } from '../../models/Module';
+import {
+  createGroupStart,
+  clearGroupError,
+  clearCreateSuccess,
+} from '../../redux/studyGroup/studyGroup.action';
+import {
+  selectGroupError,
+  selectCreateSuccess,
+} from '../../redux/studyGroup/studyGroup.selector';
 
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -31,7 +42,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const StudyGroupForm = () => {
+const StudyGroupFormComponent = ({
+  createGroupStart,
+  groupError,
+  clearGroupError,
+  currentUser,
+  createSuccess,
+  clearCreateSuccess,
+}) => {
   const classes = useStyles();
   const [startTime, setStartTime] = useState(new moment());
   const [endTime, setEndTime] = useState(new moment().add(1, 'hours'));
@@ -49,6 +67,7 @@ export const StudyGroupForm = () => {
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
+      module: modules.find((module) => module.id === 'CS2030'),
       capacity: 4,
       startTime: startTime,
       endTime: endTime,
@@ -84,8 +103,14 @@ export const StudyGroupForm = () => {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    // convert to json format to save in database
+    let studyGroup = StudyGroup.toJson({
+      data: data,
+      currentUserId: currentUser.id,
+    });
+    console.log(studyGroup);
+    await createGroupStart(studyGroup);
   };
 
   useEffect(() => {
@@ -93,6 +118,19 @@ export const StudyGroupForm = () => {
     register({ name: 'startTime' });
     register({ name: 'endTime' });
   }, [register]);
+
+  useEffect(
+    () => () => {
+      if (groupError) {
+        clearGroupError();
+      }
+      console.log('createSuccess from form: ', createSuccess);
+      if (createSuccess) {
+        clearCreateSuccess();
+      }
+    },
+    [groupError, clearGroupError, createSuccess, clearCreateSuccess]
+  );
 
   return (
     <Box mt={2}>
@@ -103,17 +141,18 @@ export const StudyGroupForm = () => {
               className={classes.form}
               variant="outlined"
               margin="normal"
-              name="groupTitle"
+              name="title"
               label="Group Title"
-              id="groupTitle"
+              id="title"
               autoFocus
               required
               fullWidth
-              error={!!errors.groupTitle}
+              autoComplete="off"
+              error={!!errors.title}
               inputRef={register({ required: 'Group title is required' })}
             />
-            {errors.groupTitle && (
-              <ErrorMessage errorMessage={errors.groupTitle.message} />
+            {errors.title && (
+              <ErrorMessage errorMessage={errors.title.message} />
             )}
           </Grid>
           <Grid xs={12} item>
@@ -121,9 +160,10 @@ export const StudyGroupForm = () => {
               className={classes.form}
               variant="outlined"
               margin="normal"
-              name="groupDescription"
+              name="description"
               label="Group Description"
-              id="groupDescription"
+              id="description"
+              autoComplete="off"
               fullWidth
               inputRef={register}
             />
@@ -138,6 +178,7 @@ export const StudyGroupForm = () => {
               id="location"
               fullWidth
               required
+              autoComplete="off"
               error={!!errors.location}
               inputRef={register({ required: 'Meetup location is required' })}
             />
@@ -152,7 +193,13 @@ export const StudyGroupForm = () => {
                   className={classes.form}
                   options={modules}
                   getOptionLabel={(option) => option.id}
-                  renderOption={(option) => <span>{option.id}</span>}
+                  renderOption={(option) => (
+                    <React.Fragment>
+                      <span>
+                        {option.id}: {option.name}
+                      </span>
+                    </React.Fragment>
+                  )}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -161,12 +208,16 @@ export const StudyGroupForm = () => {
                       variant="outlined"
                       fullWidth
                       required
+                      inputProps={{
+                        ...params.inputProps,
+                        autoComplete: 'disabled', // disable autocomplete and autofill
+                      }}
                       error={!!errors.module}
                     />
                   )}
                 />
               }
-              onChange={([, data]) => data.id}
+              onChange={([, data]) => data}
               name="module"
               control={control}
               rules={{ required: 'Module is required' }}
@@ -239,12 +290,15 @@ export const StudyGroupForm = () => {
             )}
           </Grid>
           <Grid xs={12} item>
+            <Box>
+              {groupError && <ErrorMessage errorMessage={groupError.message} />}
+            </Box>
             <Box display="flex" justifyContent="flex-end">
               <Button
                 type="submit"
                 variant="contained"
                 disabled={
-                  !!errors.groupTitle ||
+                  !!errors.title ||
                   !!errors.location ||
                   !!errors.module ||
                   !!errors.capacity ||
@@ -258,7 +312,22 @@ export const StudyGroupForm = () => {
           </Grid>
         </Grid>
       </form>
-      <DevTool control={control} />
     </Box>
   );
 };
+
+const mapStateToProps = createStructuredSelector({
+  groupError: selectGroupError,
+  createSuccess: selectCreateSuccess,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  createGroupStart: (studyGroup) => dispatch(createGroupStart(studyGroup)),
+  clearGroupError: () => dispatch(clearGroupError()),
+  clearCreateSuccess: () => dispatch(clearCreateSuccess()),
+});
+
+export const StudyGroupForm = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StudyGroupFormComponent);
