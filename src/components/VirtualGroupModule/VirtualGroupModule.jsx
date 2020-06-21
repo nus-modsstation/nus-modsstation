@@ -7,8 +7,6 @@ import { Box } from "@material-ui/core";
 import { ExpandMore, ExpandLess } from "@material-ui/icons";
 import { Collapse } from "@material-ui/core";
 
-import { theme } from "../../styles/material.styles";
-
 import { VirtualGroupCard } from "../../components/VirtualGroupCard/VirtualGroupCard";
 
 const componentStyles = makeStyles({
@@ -29,8 +27,7 @@ const componentStyles = makeStyles({
     alignItems: "center",
   },
   itemContent: {
-    margin: "10px 0px",
-    paddingBottom: 15,
+    marginTop: "10px",
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",

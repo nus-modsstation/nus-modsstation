@@ -1,20 +1,20 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { materialStyles } from "../../styles/material.styles";
 import { Grid } from "@material-ui/core";
 import { Hidden } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 import { Box } from "@material-ui/core";
-import { InputBase } from "@material-ui/core";
-import { Button, IconButton } from "@material-ui/core";
-import { Search } from "@material-ui/icons";
+import { Button } from "@material-ui/core";
 import { Popper } from "@material-ui/core";
 import { ClickAwayListener } from "@material-ui/core";
 
+import { Searchbar } from "../../../components/Searchbar/Searchbar";
 import { materialStyles } from "../../../styles/material.styles";
 import { YourGroupsSmall } from "../../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall";
-import { VirtualGroupCardModule } from "../../../components/VirtualGroupCardModule/VirtualGroupCardModule";
+import { VirtualGroupCard } from "../../../components/VirtualGroupCard/VirtualGroupCard";
 import { YourGroupCard } from "../../../components/YourVirtualGroupCard/YourVirtualGroupCard";
+import { StudyGroup } from "../../../models/StudyGroup";
+import { VirtualGroupDialog } from "../../../components/VirtualGroupDialog/VirtualGroupDialog";
 
 const recruitingGroupStyles = makeStyles({
   header: {
@@ -23,11 +23,12 @@ const recruitingGroupStyles = makeStyles({
     flexDirection: "row",
   },
   list: {
-    overflow: "scroll",
+    overflow: "auto",
+    marginTop: 20,
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "flex-start",
-    height: 492,
+    flexWrap: "wrap",
     "&::-webkit-scrollbar": {
       display: "none",
     },
@@ -36,16 +37,13 @@ const recruitingGroupStyles = makeStyles({
 
 const yourGroupStyles = makeStyles({
   list: {
+    height: 432,
     overflow: "auto",
     alignItems: "flex-start",
-    flexDirection: "row",
-    height: 492,
+    flexDirection: "column",
     "&::-webkit-scrollbar": {
       display: "none",
     },
-  },
-  header: {
-    margin: "34px 20px 10px 20px",
   },
 });
 
@@ -69,7 +67,7 @@ export const VirtualGroupModulePage = () => {
   return (
     <Box className={styles.root}>
       <Grid container spacing={4} justify="space-between">
-        <Grid item md={8} xs={12}>
+        <Grid item md={9} xs={12}>
           <Hidden mdUp>
             <Popper
               open={open}
@@ -80,57 +78,60 @@ export const VirtualGroupModulePage = () => {
               <YourGroupsSmall />
             </Popper>
           </Hidden>
+          <Typography variant="h4" align="center">
+            MOD1001
+          </Typography>
+          <Hidden mdUp>
+            <Box width={1} my="4px">
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <Button
+                  onClick={handleClick}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                >
+                  <Typography variant="button">Your groups</Typography>
+                </Button>
+              </ClickAwayListener>
+            </Box>
+          </Hidden>
           <Grid
             container
-            className={recruitingGroups.header}
+            spacing={1}
+            alignItems="center"
             justify="space-between"
           >
-            <Grid item xs={12}>
-              <Typography variant="h6" align="left">
-                RECRUITING GROUPS
-              </Typography>
+            <Grid item xs={10} md={11}>
+              <Searchbar searchOptions={StudyGroup.searchOptions} />
             </Grid>
-            <Hidden mdUp>
-              <Grid item xs={12} justify="flex-end">
-                <ClickAwayListener onClickAway={handleClickAway}>
-                  <Button
-                    onClick={handleClick}
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                  >
-                    <Typography variant="button">Your groups</Typography>
-                  </Button>
-                </ClickAwayListener>
-              </Grid>
-            </Hidden>
+            <Grid item xs={2} md={1}>
+              <VirtualGroupDialog modulePage module={{ id: "MOD1001", name: "Test Module" }} />
+            </Grid>
           </Grid>
-          <Box component="form" className={styles.searchBar}>
-            <InputBase
-              className={styles.fix}
-              placeholder="Search module or group"
-            />
-            <IconButton size="small" disableRipple>
-              <Search />
-            </IconButton>
-          </Box>
-          <Box className={recruitingGroups.list} disablePadding>
-            <VirtualGroupCardModule />
-            <VirtualGroupCardModule />
-            <VirtualGroupCardModule />
-            <VirtualGroupCardModule />
-            <VirtualGroupCardModule />
-            <VirtualGroupCardModule />
+          <Box className={recruitingGroups.list} width={1}>
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
+            <VirtualGroupCard modulePage />
           </Box>
         </Grid>
         <Hidden smDown>
           <Grid item md={3}>
-            <Box className={yourGroups.header}>
+            <Box my="8px">
               <Typography variant="h6" align="center">
                 Your groups
               </Typography>
             </Box>
-            <Box className={yourGroups.list}>
+            <Box width={1} className={yourGroups.list}>
+              <YourGroupCard />
+              <YourGroupCard />
+              <YourGroupCard />
               <YourGroupCard />
               <YourGroupCard />
               <YourGroupCard />

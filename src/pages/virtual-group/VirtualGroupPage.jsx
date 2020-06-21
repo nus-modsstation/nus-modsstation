@@ -5,15 +5,18 @@ import { Grid } from "@material-ui/core";
 import { Hidden } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 import { Box } from "@material-ui/core";
-import { InputBase } from "@material-ui/core";
-import { Button, IconButton } from "@material-ui/core";
-import { Search } from "@material-ui/icons";
+import { Button } from "@material-ui/core";
 import { Popper } from "@material-ui/core";
 import { ClickAwayListener } from "@material-ui/core";
 
+import { Searchbar } from "../../components/Searchbar/Searchbar";
 import { YourGroupsSmall } from "../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall";
 import { VirtualGroupModule } from "../../components/VirtualGroupModule/VirtualGroupModule";
 import { YourGroupCard } from "../../components/YourVirtualGroupCard/YourVirtualGroupCard";
+import { VirtualGroupDialog } from "../../components/VirtualGroupDialog/VirtualGroupDialog";
+
+// temporary imports
+import { StudyGroup } from "../../models/StudyGroup";
 
 const recruitingGroupStyles = makeStyles({
   header: {
@@ -24,7 +27,7 @@ const recruitingGroupStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    height: 488,
+    marginTop: 20,
     "&::-webkit-scrollbar": {
       display: "none",
     },
@@ -33,16 +36,13 @@ const recruitingGroupStyles = makeStyles({
 
 const yourGroupStyles = makeStyles({
   list: {
+    height: 432,
     overflow: "auto",
     alignItems: "flex-start",
     flexDirection: "column",
-    height: 400,
     "&::-webkit-scrollbar": {
       display: "none",
     },
-  },
-  header: {
-    margin: "34px 20px 10px 20px",
   },
 });
 
@@ -66,62 +66,59 @@ export const VirtualGroupPage = () => {
   return (
     <Box className={styles.root}>
       <Grid container spacing={4} justify="space-between">
-        <Grid item md={8} xs={12}>
+        <Grid item md={9} xs={12}>
           <Hidden mdUp>
-            <Popper open={open} anchorEl={anchorEl} placement="bottom">
+            <Popper
+              open={open}
+              anchorEl={anchorEl}
+              display
+              placement="bottom-end"
+            >
               <YourGroupsSmall />
             </Popper>
           </Hidden>
-          <Grid
-            container
-            className={recruitingGroups.header}
-            justify="space-between"
-          >
-            <Grid item xs={12}>
-              <Typography variant="h6" align="left">
-                RECRUITING GROUPS
-              </Typography>
-            </Grid>
-            <Hidden mdUp>
-              <Popper
-                open={open}
-                anchorEl={anchorEl}
-                display
-                placement="bottom"
-              >
-                <YourGroupsSmall />
-              </Popper>
-            </Hidden>
-            <Grid
-              container
-              className={recruitingGroups.header}
-              justify="space-between"
-            >
-              <Hidden mdUp>
-                <Grid item xs={12} justify="flex-end">
-                  <ClickAwayListener onClickAway={handleClickAway}>
-                    <Button
-                      onClick={handleClick}
-                      variant="outlined"
-                      fullWidth
-                      size="small"
-                    >
-                      <Typography variant="button">Your groups</Typography>
-                    </Button>
-                  </ClickAwayListener>
-                </Grid>
-              </Hidden>
-            </Grid>
-            <Box component="form" className={styles.searchBar}>
-              <InputBase
-                className={styles.fix}
-                placeholder="Search module or group"
-              />
-              <IconButton size="small" disableRipple>
-                <Search />
-              </IconButton>
+          <Hidden mdUp>
+            <Box my="4px">
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <Button
+                  onClick={handleClick}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                >
+                  <Typography variant="button">Your groups</Typography>
+                </Button>
+              </ClickAwayListener>
             </Box>
-            <Box className={yourGroups.list}>
+          </Hidden>
+          <Grid container spacing={1} alignItems="center" justify="space-between">
+            <Grid item xs={10} md={11}>
+              <Searchbar searchOptions={StudyGroup.searchOptions} />
+            </Grid>
+            <Grid item xs={2} md={1}>
+              <VirtualGroupDialog />
+            </Grid>
+          </Grid>
+          <Box className={recruitingGroups.list} width={1}>
+            <VirtualGroupModule />
+            <VirtualGroupModule />
+            <VirtualGroupModule />
+            <VirtualGroupModule />
+            <VirtualGroupModule />
+            <VirtualGroupModule />
+          </Box>
+        </Grid>
+        <Hidden smDown>
+          <Grid item md={3}>
+            <Box my="8px">
+              <Typography variant="h6" align="center">
+                Your groups
+              </Typography>
+            </Box>
+            <Box width={1} className={yourGroups.list}>
+              <YourGroupCard />
+              <YourGroupCard />
+              <YourGroupCard />
               <YourGroupCard />
               <YourGroupCard />
               <YourGroupCard />
