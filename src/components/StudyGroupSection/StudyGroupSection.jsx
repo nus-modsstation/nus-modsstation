@@ -41,18 +41,20 @@ export const StudyGroupSection = ({ sectionTitle, sectionData }) => {
       <Typography variant="h6">{capSentence(sectionTitle)}</Typography>
       <Box mt={2} />
       <Box className={classes.root}>
-        <GridList
-          className={classes.gridList}
-          cellHeight="auto"
-          cols={colWidth}
-          spacing={16}
-        >
-          {sectionData.map((studyGroup) => (
-            <GridListTile key={studyGroup.id}>
-              <StudyGroupCard studyGroup={studyGroup} />
-            </GridListTile>
-          ))}
-        </GridList>
+        {sectionData && (
+          <GridList
+            className={classes.gridList}
+            cellHeight="auto"
+            cols={colWidth}
+            spacing={16}
+          >
+            {sectionData.map((studyGroup, index) => (
+              <GridListTile key={index}>
+                <StudyGroupCard key={index} studyGroup={studyGroup} />
+              </GridListTile>
+            ))}
+          </GridList>
+        )}
       </Box>
     </Box>
   );

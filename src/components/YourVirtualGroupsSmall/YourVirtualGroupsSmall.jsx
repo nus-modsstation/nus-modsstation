@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { List, ListItem } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
-import { Button } from '@material-ui/core';
 
 const componentStyles = makeStyles({
   root: {
@@ -17,23 +16,27 @@ const componentStyles = makeStyles({
 });
 
 const Group = () => {
-  const component = componentStyles();
   return (
     <div>
       <ListItem button>
-	<Grid container direction="row" justify="space-between" alignItems="center">
-	  <Grid item xs={8} wrap="nowrap">
-	    <Typography variant="body1" noWrap>
-	      Group Name 000000000000000000000000000000000000001
-	    </Typography>
-	  </Grid>
-	  <Grid item xs={3}>
-	    <Typography variant="button">MOD1001</Typography>
-	  </Grid>
-	</Grid>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+        >
+          <Grid item xs={8} wrap="nowrap">
+            <Typography variant="body1" noWrap>
+              Group Name 000000000000000000000000000000000000001
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography variant="button">MOD1001</Typography>
+          </Grid>
+        </Grid>
       </ListItem>
     </div>
-  )
+  );
 };
 
 export const YourGroupsSmall = () => {
@@ -47,5 +50,3 @@ export const YourGroupsSmall = () => {
     </div>
   );
 };
-	
-

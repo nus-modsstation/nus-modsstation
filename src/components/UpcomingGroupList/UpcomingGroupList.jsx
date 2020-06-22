@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { upcomingGroupData } from '../../models/StudyGroup';
 import { formatDateTime } from '../../utils/formatDate';
 
 import List from '@material-ui/core/List';
@@ -11,28 +10,28 @@ import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
 
-export const UpcomingGroupList = () => {
+export const UpcomingGroupList = ({ data }) => {
   return (
     <List>
-      {upcomingGroupData.map((group, index) => (
+      {data.map((group, index) => (
         <Box key={index}>
           <ListItem>
             <Grid container alignItems="center" spacing={1}>
               <Grid xs={12} item>
                 <Typography variant="body1" color="textPrimary">
-                  {formatDateTime(group.time)}
+                  {formatDateTime(group.startTime)}
                 </Typography>
               </Grid>
-              <Grid item>
+              <Grid xs={12} item>
                 <Typography variant="body2" color="textPrimary">
-                  {group.groupTitle}
+                  {group.title}
                 </Typography>
               </Grid>
               <Grid item>
                 <Chip
                   color="primary"
                   variant="outlined"
-                  label={group.module}
+                  label={group.moduleCode}
                   size="small"
                 />
               </Grid>

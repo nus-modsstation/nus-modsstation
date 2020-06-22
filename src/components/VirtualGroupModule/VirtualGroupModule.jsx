@@ -1,45 +1,55 @@
-import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
-import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import { Button, IconButton } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import { ExpandMore, ExpandLess } from "@material-ui/icons";
-import { Collapse } from "@material-ui/core";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import { ExpandMore, ExpandLess } from '@material-ui/icons';
+import { Collapse } from '@material-ui/core';
 
-import { VirtualGroupCard } from "../../components/VirtualGroupCard/VirtualGroupCard";
+import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 
 const componentStyles = makeStyles({
   item: {
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
     marginBottom: 10,
   },
   itemHeader: {
-    display: "flex",
+    display: 'flex',
     flex: 1,
-    width: "100%",
-    justifyContent: "space-between",
+    width: '100%',
+    justifyContent: 'space-between',
   },
   itemHeaderLeft: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   itemContent: {
+<<<<<<< HEAD
     marginTop: "10px",
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
     "&::-webkit-scrollbar": {
       height: "6px",
+=======
+    margin: '10px 0px',
+    paddingBottom: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    '&::-webkit-scrollbar': {
+      height: '6px',
+>>>>>>> master
     },
-    "&::-webkit-scrollbar-track": {
-      background: "transparent",
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
     },
-    "&::-webkit-scrollbar-thumb:hover": {
+    '&::-webkit-scrollbar-thumb:hover': {
       borderRadius: 8,
-      background: "#421cf8",
+      background: '#421cf8',
     },
   },
 });

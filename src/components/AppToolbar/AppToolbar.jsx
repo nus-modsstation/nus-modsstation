@@ -44,7 +44,6 @@ const Appbar = ({ currentUser, logoutStart, history }) => {
   const handleLogout = () => {
     logoutStart();
     handleClose();
-    history.push('/login');
   };
 
   const navigateToHomePage = () => {
