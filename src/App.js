@@ -15,7 +15,7 @@ import { QAThreadModulePage } from './pages/qa-thread/module/QAThreadModulePage'
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { LoginPage } from './pages/login/LoginPage';
 import { TemplatePage } from './pages/template/TemplatePage';
-import { VirtualGroupPageModule } from './pages/virtual-group/VirtualGroupPageModule';
+import { VirtualGroupModulePage } from './pages/virtual-group/module/VirtualGroupModulePage';
 
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -63,7 +63,7 @@ const App = ({ checkUserSession, currentUser }) => {
               }
             />
             <Route path="/virtual-group-module">
-              <VirtualGroupPageModule />
+              <VirtualGroupModulePage />     
             </Route>
             <Route path="/qa-thread-module">
               <QAThreadModulePage />
