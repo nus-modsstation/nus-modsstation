@@ -23,7 +23,6 @@ const recruitingGroupStyles = makeStyles({
     margin: '10px 0px',
   },
   list: {
-<<<<<<< HEAD
     overflow: "auto",
     display: "flex",
     flexDirection: "column",
@@ -31,22 +30,12 @@ const recruitingGroupStyles = makeStyles({
     marginTop: 20,
     "&::-webkit-scrollbar": {
       display: "none",
-=======
-    overflow: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    height: 488,
-    '&::-webkit-scrollbar': {
-      display: 'none',
->>>>>>> master
     },
   },
 });
 
 const yourGroupStyles = makeStyles({
   list: {
-<<<<<<< HEAD
     height: 432,
     overflow: "auto",
     alignItems: "flex-start",
@@ -55,19 +44,6 @@ const yourGroupStyles = makeStyles({
       display: "none",
     },
   },
-=======
-    overflow: 'auto',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-    height: 400,
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
-  },
-  header: {
-    margin: '34px 20px 10px 20px',
-  },
->>>>>>> master
 });
 
 export const VirtualGroupPage = () => {
