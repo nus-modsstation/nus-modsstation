@@ -63,7 +63,7 @@ const App = ({ checkUserSession, currentUser }) => {
               }
             />
             <Route path="/virtual-group-module">
-              <VirtualGroupPageModule />
+              <VirtualGroupModulePage />     
             </Route>
             <Route path="/qa-thread-module">
               <QAThreadModulePage />
