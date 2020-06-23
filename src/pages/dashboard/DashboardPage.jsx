@@ -1,8 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import { Dashboard } from '../../models/Dashboard';
+import { StudyGroup } from '../../models/StudyGroup';
+import { selectCurrentUser } from '../../redux/user/user.selector';
 
-import { materialStyles, theme } from '../../styles/material.styles';
+import { materialStyles } from '../../styles/material.styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
@@ -16,8 +20,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import { Searchbar } from '../../components/Searchbar/Searchbar';
+import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialog';
 
-export const DashboardPage = () => {
+const DashboardPageComponent = ({ currentUser }) => {
   const materialClasses = materialStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -34,77 +40,97 @@ export const DashboardPage = () => {
 
   return (
     <Box className={materialClasses.root}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Typography display="inline" variant="h5">
-          Dashboard
-        </Typography>
-        <Hidden mdUp>
-          <IconButton
-            aria-controls="simple-menu"
-            aria-haspopup="true"
-            onClick={handleClick}
-          >
-            <MoreVertIcon />
-          </IconButton>
-        </Hidden>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          {options.map((option) => {
-            return (
-              <MenuItem key={option.title} onClick={option.clickCallback}>
-                <ListItemIcon>{option.icon}</ListItemIcon>
-                <ListItemText primary={option.title} />
-              </MenuItem>
-            );
-          })}
-        </Menu>
-      </Box>
-      <Box>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Paper className={materialClasses.paper}>Search bar</Paper>
-            <Box height={theme.spacing(2)} />
-            <Paper className={materialClasses.paper}>
-              Upcoming study groups
-            </Paper>
-            <Box height={theme.spacing(2)} />
-            <Paper className={materialClasses.paper}>Virtual groups</Paper>
-            <Box height={theme.spacing(2)} />
-            <Paper className={materialClasses.paper}>Q&A Threads</Paper>
-          </Grid>
-          <Hidden smDown>
-            <Grid item md={4}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid xs={10} sm={11} md={12} item>
+              <Searchbar searchOptions={StudyGroup.searchOptions} />
+            </Grid>
+            <Grid xs={2} sm={1} item>
+              <Hidden mdUp>
+                <IconButton
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+              </Hidden>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {options.map((option) => {
+                  return (
+                    <MenuItem key={option.title} onClick={option.clickCallback}>
+                      <ListItemIcon>{option.icon}</ListItemIcon>
+                      <ListItemText primary={option.title} />
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+            </Grid>
+            <Grid xs={12} item>
               <Paper className={materialClasses.paper}>
-                <Typography variant="h6">Options</Typography>
-                <List component="nav" aria-label="main mailbox folders">
-                  {options.map((option) => {
-                    return (
-                      <ListItem
-                        key={option.title}
-                        onClick={option.clickCallback}
-                        button
-                      >
-                        <ListItemIcon>{option.icon}</ListItemIcon>
-                        <ListItemText primary={option.title} />
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="h6">My modules</Typography>
+                  <AddModuleDialog />
+                </Box>
+                <Box>
+                  <List>
+                    {currentUser.modules.map((module) => (
+                      <ListItem key={module}>
+                        <ListItemText primary={module} />
                       </ListItem>
-                    );
-                  })}
-                </List>
+                    ))}
+                  </List>
+                </Box>
               </Paper>
             </Grid>
-          </Hidden>
+            <Grid xs={12} item>
+              <Paper className={materialClasses.paper}>
+                Upcoming study groups
+              </Paper>
+            </Grid>
+            <Grid xs={12} item>
+              <Paper className={materialClasses.paper}>Virtual groups</Paper>
+            </Grid>
+            <Grid xs={12} item>
+              <Paper className={materialClasses.paper}>Q&A Threads</Paper>
+            </Grid>
+          </Grid>
         </Grid>
-      </Box>
+        <Hidden smDown>
+          <Grid item md={4}>
+            <Paper className={materialClasses.paper}>
+              <Typography variant="h6">Options</Typography>
+              <List component="nav" aria-label="main mailbox folders">
+                {options.map((option) => {
+                  return (
+                    <ListItem
+                      key={option.title}
+                      onClick={option.clickCallback}
+                      button
+                    >
+                      <ListItemIcon>{option.icon}</ListItemIcon>
+                      <ListItemText primary={option.title} />
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </Paper>
+          </Grid>
+        </Hidden>
+      </Grid>
     </Box>
   );
 };
+
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
+export const DashboardPage = connect(mapStateToProps)(DashboardPageComponent);

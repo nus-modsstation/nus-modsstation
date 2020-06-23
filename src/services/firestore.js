@@ -86,14 +86,14 @@ export const listenDocumentsWhereContains = async ({
     });
 };
 
-export const addDocument = async ({ collection, data, setId }) => {
+export const addDocument = async ({ collection, data, setId, docId }) => {
   if (setId) {
     let ref = firestore.collection(collection).doc();
     // set document's id
     data.id = ref.id;
     await ref.set(data);
   } else {
-    await firestore.collection(collection).addDocument(data);
+    await firestore.collection(collection).doc(docId).addDocument(data);
   }
 };
 

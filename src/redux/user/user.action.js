@@ -49,3 +49,22 @@ export const checkUserSession = () => ({
 export const clearAuthError = () => ({
   type: userActionType.CLEAR_AUTH_ERROR,
 });
+
+export const updateUserStart = (data) => ({
+  type: userActionType.UPDATE_USER_START,
+  payload: data,
+});
+
+export const updateUserSuccess = (data) => ({
+  type: userActionType.UPDATE_USER_SUCCESS,
+  payload: data,
+});
+
+export const updateUserError = (error) => ({
+  type: userActionType.UPDATE_USER_ERROR,
+  payload: error,
+});
+
+export const clearUpdateSuccess = () => ({
+  type: userActionType.CLEAR_UPDATE_SUCCESS,
+});

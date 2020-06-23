@@ -1,5 +1,6 @@
 import { takeLatest, put, all, call } from 'redux-saga/effects';
 
+import { User } from '../../models/User';
 import { userActionType } from './user.type';
 import {
   loginSuccess,
@@ -7,6 +8,8 @@ import {
   logoutSuccess,
   logoutError,
   registerError,
+  updateUserSuccess,
+  updateUserError,
 } from './user.action';
 import {
   login,
@@ -14,16 +17,27 @@ import {
   register,
   getCurrentUser,
 } from '../../services/userAuth';
+import { addDocument, updateDocument } from '../../services/firestore';
+
+const collectionName = 'users';
 
 export function* storeUserToReducer(user) {
-  yield put(
-    loginSuccess({
-      id: user.uid,
-      email: user.email,
-      username: user.displayName,
-      isVerified: user.emailVerified,
-    })
-  );
+  const currentUser = User.toJson(user);
+  yield put(loginSuccess(currentUser));
+}
+
+export function* storeUserToFirestore(user) {
+  try {
+    yield addDocument({
+      collection: collectionName,
+      data: User.toJson(user),
+      setId: false,
+      docId: user.uid,
+    });
+    yield storeUserToReducer(user);
+  } catch (error) {
+    yield put(registerError(error));
+  }
 }
 
 export function* loginGenerator({ payload }) {
@@ -47,7 +61,7 @@ export function* logoutGenerator() {
 export function* registerGenerator({ payload }) {
   try {
     const { user } = yield register(payload);
-    yield storeUserToReducer(user);
+    yield storeUserToFirestore(user);
   } catch (error) {
     yield put(registerError(error));
   }
@@ -55,11 +69,27 @@ export function* registerGenerator({ payload }) {
 
 export function* isUserAuthenticated() {
   try {
+    console.log('isUserAuthenticated');
     const user = yield getCurrentUser();
+    console.log('user: ', user);
     if (!user) return;
     yield storeUserToReducer(user);
   } catch (error) {
     yield put(loginError(error));
+  }
+}
+
+export function* updateUserGenerator({ payload }) {
+  try {
+    yield updateDocument({
+      collection: collectionName,
+      docId: payload.id,
+      data: payload.data,
+    });
+    console.log('payload.data: ', payload.data);
+    yield put(updateUserSuccess(payload.data));
+  } catch (error) {
+    yield put(updateUserError(error));
   }
 }
 
@@ -79,6 +109,15 @@ export function* onCheckUserSession() {
   yield takeLatest(userActionType.CHECK_USER_SESSION, isUserAuthenticated);
 }
 
+export function* onUpdateUser() {
+  yield takeLatest(userActionType.UPDATE_USER_START, updateUserGenerator);
+}
+
 export function* userSaga() {
-  yield all([call(onLoginStart), call(onLogoutStart), call(onRegisterStart)]);
+  yield all([
+    call(onLoginStart),
+    call(onLogoutStart),
+    call(onRegisterStart),
+    call(onUpdateUser),
+  ]);
 }

@@ -11,3 +11,8 @@ export const selectAuthError = createSelector(
   [selectUser],
   (user) => user.authError
 );
+
+export const selectUpdateSuccess = createSelector(
+  [selectUser],
+  (user) => user.updateSuccess
+);
