@@ -70,7 +70,7 @@ const AddModuleFormComponent = ({
         clearUpdateError();
       }
     },
-    [updateSuccess, clearUpdateSuccess]
+    [updateSuccess, clearUpdateSuccess, updateError, clearUpdateError]
   );
 
   return (
