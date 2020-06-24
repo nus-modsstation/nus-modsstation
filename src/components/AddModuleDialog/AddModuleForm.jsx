@@ -7,8 +7,12 @@ import { modules, Module } from '../../models/Module';
 import {
   updateUserStart,
   clearUpdateSuccess,
+  clearUpdateError,
 } from '../../redux/user/user.action';
-import { selectUpdateSuccess } from '../../redux/user/user.selector';
+import {
+  selectUpdateSuccess,
+  selectUpdateError,
+} from '../../redux/user/user.selector';
 
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -28,7 +32,9 @@ const useStyles = makeStyles((theme) => ({
 
 const AddModuleFormComponent = ({
   updateSuccess,
+  updateError,
   clearUpdateSuccess,
+  clearUpdateError,
   currentUser,
   updateUserStart,
 }) => {
@@ -59,6 +65,9 @@ const AddModuleFormComponent = ({
     () => () => {
       if (updateSuccess) {
         clearUpdateSuccess();
+      }
+      if (updateError) {
+        clearUpdateError();
       }
     },
     [updateSuccess, clearUpdateSuccess]
@@ -108,6 +117,13 @@ const AddModuleFormComponent = ({
             )}
           </Grid>
           <Grid xs={12} item>
+            <Box>
+              {updateError && (
+                <ErrorMessage
+                  errorMessage={updateError.message ?? updateError.name}
+                />
+              )}
+            </Box>
             <Box display="flex" justifyContent="flex-end">
               <Button
                 type="submit"
@@ -127,11 +143,13 @@ const AddModuleFormComponent = ({
 
 const mapStateToProps = createStructuredSelector({
   updateSuccess: selectUpdateSuccess,
+  updateError: selectUpdateError,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   updateUserStart: (userData) => dispatch(updateUserStart(userData)),
   clearUpdateSuccess: () => dispatch(clearUpdateSuccess()),
+  clearUpdateError: () => dispatch(clearUpdateError()),
 });
 
 export const AddModuleForm = connect(

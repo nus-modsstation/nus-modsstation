@@ -19,7 +19,7 @@ export class User {
 
   static toJson(user) {
     return {
-      id: user.uid,
+      id: user.uid != null ? user.uid : user.id,
       email: user.email,
       username: user.displayName,
       isVerified: user.emailVerified,

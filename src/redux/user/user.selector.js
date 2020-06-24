@@ -16,3 +16,8 @@ export const selectUpdateSuccess = createSelector(
   [selectUser],
   (user) => user.updateSuccess
 );
+
+export const selectUpdateError = createSelector(
+  [selectUser],
+  (user) => user.updateError
+);

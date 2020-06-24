@@ -68,3 +68,7 @@ export const updateUserError = (error) => ({
 export const clearUpdateSuccess = () => ({
   type: userActionType.CLEAR_UPDATE_SUCCESS,
 });
+
+export const clearUpdateError = () => ({
+  type: userActionType.CLEAR_UPDATE_ERROR,
+});

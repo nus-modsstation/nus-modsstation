@@ -17,24 +17,28 @@ import {
   register,
   getCurrentUser,
 } from '../../services/userAuth';
-import { addDocument, updateDocument } from '../../services/firestore';
+import {
+  addDocument,
+  updateDocument,
+  readDocument,
+} from '../../services/firestore';
 
 const collectionName = 'users';
 
-export function* storeUserToReducer(user) {
-  const currentUser = User.toJson(user);
-  yield put(loginSuccess(currentUser));
+export function* storeUserToReducer(userData) {
+  yield put(loginSuccess(userData));
 }
 
 export function* storeUserToFirestore(user) {
   try {
+    const userData = User.toJson(user);
     yield addDocument({
       collection: collectionName,
-      data: User.toJson(user),
+      data: userData,
       setId: false,
       docId: user.uid,
     });
-    yield storeUserToReducer(user);
+    yield storeUserToReducer(userData);
   } catch (error) {
     yield put(registerError(error));
   }
@@ -43,7 +47,12 @@ export function* storeUserToFirestore(user) {
 export function* loginGenerator({ payload }) {
   try {
     const { user } = yield login(payload);
-    yield storeUserToReducer(user);
+    // fetch user from Firestore and store it in reducer
+    const userData = yield readDocument({
+      collection: collectionName,
+      docId: user.uid,
+    });
+    yield storeUserToReducer(userData);
   } catch (error) {
     yield put(loginError(error));
   }
@@ -69,9 +78,7 @@ export function* registerGenerator({ payload }) {
 
 export function* isUserAuthenticated() {
   try {
-    console.log('isUserAuthenticated');
     const user = yield getCurrentUser();
-    console.log('user: ', user);
     if (!user) return;
     yield storeUserToReducer(user);
   } catch (error) {
@@ -86,7 +93,6 @@ export function* updateUserGenerator({ payload }) {
       docId: payload.id,
       data: payload.data,
     });
-    console.log('payload.data: ', payload.data);
     yield put(updateUserSuccess(payload.data));
   } catch (error) {
     yield put(updateUserError(error));
