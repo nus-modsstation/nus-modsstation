@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 const AddModuleFormComponent = ({
   updateSuccess,
   clearUpdateSuccess,
-  groupError,
   currentUser,
   updateUserStart,
 }) => {
@@ -38,23 +37,20 @@ const AddModuleFormComponent = ({
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
-      modules: currentUser.modules.map((moduleCode) => {
-        console.log(moduleCode);
-        const mod = Module.getModuleById(moduleCode);
-        console.log('mod: ', mod);
-        return mod;
-      }),
+      modules: currentUser.modules.map((moduleCode) =>
+        Module.getModuleById(moduleCode)
+      ),
     },
   });
 
   const onSubmit = async (data) => {
     // extract module code
-    const modulesData = {
+    const moduleCodes = {
       modules: data.modules.map((module) => module.id),
     };
     const userData = {
       id: currentUser.id,
-      data: modulesData,
+      data: moduleCodes,
     };
     updateUserStart(userData);
   };
@@ -111,11 +107,7 @@ const AddModuleFormComponent = ({
               <ErrorMessage errorMessage={errors.modules.message} />
             )}
           </Grid>
-
           <Grid xs={12} item>
-            <Box>
-              {groupError && <ErrorMessage errorMessage={groupError.message} />}
-            </Box>
             <Box display="flex" justifyContent="flex-end">
               <Button
                 type="submit"
@@ -123,7 +115,7 @@ const AddModuleFormComponent = ({
                 variant="contained"
                 disabled={!!errors.modules}
               >
-                Add
+                Update
               </Button>
             </Box>
           </Grid>

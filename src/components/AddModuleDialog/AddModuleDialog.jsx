@@ -50,7 +50,7 @@ const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
 
   useEffect(() => {
     if (updateSuccess) {
-      // close the dialog after study group is created successfully
+      // close the dialog after user's modules are updated successfully
       // show success CustomSnackbar
       setOpenSnackbar(true);
       setOpen(false);
@@ -81,7 +81,7 @@ const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
           </IconButton>
         </Box>
         <DialogContent>
-          {/* Add this after setting up email verification && currentUser.isVerified */}
+          {/* Add "&& currentUser.isVerified" below after setting up email verification  */}
           {currentUser ? (
             <div style={{ height: '100%', overflow: 'hidden' }}>
               <AddModuleForm currentUser={currentUser} />
