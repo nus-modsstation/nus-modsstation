@@ -27,13 +27,12 @@ const componentStyles = makeStyles({
     alignItems: 'center',
   },
   itemContent: {
-    margin: '10px 0px',
-    paddingBottom: 15,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    '&::-webkit-scrollbar': {
-      height: '6px',
+    marginTop: "10px",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    "&::-webkit-scrollbar": {
+      height: "6px",
     },
     '&::-webkit-scrollbar-track': {
       background: 'transparent',

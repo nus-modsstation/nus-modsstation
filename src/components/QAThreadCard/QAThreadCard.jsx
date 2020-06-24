@@ -44,7 +44,7 @@ const ThreadPortraitCard = () => {
         </Box>
         <Box overflow="hidden">
           <Typography component="p" variant="caption">
-            Current question
+            Current question Current question Current question Current question
           </Typography>
         </Box>
       </Box>
