@@ -81,11 +81,12 @@ const DashboardPageComponent = ({ currentUser }) => {
                 </Box>
                 <Box>
                   <List>
-                    {currentUser.modules.map((module) => (
-                      <ListItem key={module}>
-                        <ListItemText primary={module} />
-                      </ListItem>
-                    ))}
+                    {currentUser &&
+                      currentUser.modules.map((module) => (
+                        <ListItem key={module}>
+                          <ListItemText primary={module} />
+                        </ListItem>
+                      ))}
                   </List>
                 </Box>
               </Paper>
