@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoginFormComponent = ({
+export const LoginFormComponent = ({
   loginStart,
   registerStart,
   authError,

@@ -124,7 +124,6 @@ const StudyGroupFormComponent = ({
       if (groupError) {
         clearGroupError();
       }
-      console.log('createSuccess from form: ', createSuccess);
       if (createSuccess) {
         clearCreateSuccess();
       }

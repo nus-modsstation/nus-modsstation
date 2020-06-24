@@ -11,9 +11,7 @@ export class StudyGroup {
     { type: 'module', option: 'CS2030', color: 'primary' },
     { type: 'module', option: 'CS2040S', color: 'primary' },
     { type: 'module', option: 'CS2100', color: 'primary' },
-    { type: 'module', option: 'CS2101', color: 'primary' },
-    { type: 'module', option: 'CS2102', color: 'primary' },
-    { type: 'module', option: 'CS2103', color: 'primary' },
+    { type: 'module', option: 'CS2106', color: 'primary' },
   ];
   constructor({
     id,
