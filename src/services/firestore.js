@@ -93,7 +93,7 @@ export const addDocument = async ({ collection, data, setId, docId }) => {
     data.id = ref.id;
     await ref.set(data);
   } else {
-    await firestore.collection(collection).doc(docId).addDocument(data);
+    await firestore.collection(collection).doc(docId).set(data);
   }
 };
 

@@ -108,8 +108,6 @@ const AddModuleFormComponent = ({
               control={control}
               rules={{
                 required: 'Module is required',
-                validate: (value) =>
-                  value.length > 0 || 'Select at least one module',
               }}
             />
             {errors.modules && (

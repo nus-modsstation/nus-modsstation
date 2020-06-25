@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { createStructuredSelector } from 'reselect';
 
 import { StudyGroup } from '../../models/StudyGroup';
-import { modules } from '../../models/Module';
+import { Module } from '../../models/Module';
 import {
   createGroupStart,
   clearGroupError,
@@ -51,56 +51,64 @@ const StudyGroupFormComponent = ({
   clearCreateSuccess,
 }) => {
   const classes = useStyles();
-  const [startTime, setStartTime] = useState(new moment());
-  const [endTime, setEndTime] = useState(new moment().add(1, 'hours'));
-  const [capacity, setCapacity] = React.useState(4);
+  const [capacity, setCapacity] = useState(4);
+  const now = moment();
   const maxDate = moment().add(5, 'days');
   const {
     register,
     handleSubmit,
     errors,
-    setError,
-    clearError,
     control,
     setValue,
+    setError,
+    watch,
   } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
-      module: modules.find((module) => module.id === 'CS2030'),
+      module: null,
       capacity: 4,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: moment(),
+      endTime: moment().add(1, 'hours'),
     },
   });
 
-  const now = moment();
+  const modules = currentUser.modules.map((moduleCode) =>
+    Module.getModuleById(moduleCode)
+  );
 
   const handleCapacityChange = (event) => {
     setCapacity(event.target.value);
     setValue('capacity', event.target.value);
   };
 
+  const watchStart = watch('startTime');
+  const watchEnd = watch('endTime');
+
   const handleStartTimeChange = (event) => {
-    clearError('startTime');
-    setStartTime(event);
-    setValue('startTime', event);
-    if (startTime.isBefore(now)) {
-      setError('startTime', 'invalid', 'Start time is already passed');
-    } else if (startTime.isAfter(endTime)) {
-      setError('startTime', 'invalid', 'Start time is after the end time');
+    const startTime = event[0];
+    if (startTime.endOf('minute').isBefore(now)) {
+      setError('startTime', 'beforeNow', 'Start time is already passed');
+    } else if (
+      startTime.isAfter(watchEnd) ||
+      startTime.endOf('minute').isSame(watchEnd.endOf('minute'))
+    ) {
+      setError('startTime', 'startAfterEnd', 'Start time must before end time');
     }
+    return startTime;
   };
 
   const handleEndTimeChange = (event) => {
-    clearError('endTime');
-    setEndTime(event);
-    setValue('endTime', event);
-    if (endTime.isBefore(now)) {
-      setError('endTime', 'invalid', 'End time is already passed');
-    } else if (endTime.isBefore(startTime)) {
-      setError('endTime', 'invalid', 'End time is before the start time');
+    const endTime = event[0];
+    if (endTime.endOf('minute').isBefore(now)) {
+      setError('endTime', 'beforeNow', 'End time is already passed');
+    } else if (
+      endTime.isBefore(watchStart) ||
+      watchStart.endOf('minute').isSame(endTime.endOf('minute'))
+    ) {
+      setError('endTime', 'endBeforeStart', 'End time must after start time');
     }
+    return endTime;
   };
 
   const onSubmit = async (data) => {
@@ -109,14 +117,11 @@ const StudyGroupFormComponent = ({
       data: data,
       currentUserId: currentUser.id,
     });
-    console.log(studyGroup);
     await createGroupStart(studyGroup);
   };
 
   useEffect(() => {
     register({ name: 'capacity' }); // custom register react select
-    register({ name: 'startTime' });
-    register({ name: 'endTime' });
   }, [register]);
 
   useEffect(
@@ -251,38 +256,46 @@ const StudyGroupFormComponent = ({
             )}
           </Grid>
           <Grid xs={12} sm={6} item>
-            <DateTimePicker
-              format={dateTimeFormat}
-              className={classes.form}
-              label="From"
-              inputVariant="outlined"
-              value={startTime}
-              onChange={handleStartTimeChange}
-              disablePast
-              maxDate={maxDate}
-              required
+            <Controller
               name="startTime"
-              error={!!errors.startTime}
-              //inputRef={register({ required: 'Start time is required' })}
+              control={control}
+              onChange={handleStartTimeChange}
+              as={
+                <DateTimePicker
+                  autoOk
+                  format={dateTimeFormat}
+                  className={classes.form}
+                  onChange={() => {}}
+                  label="From"
+                  inputVariant="outlined"
+                  disablePast
+                  maxDate={maxDate}
+                  required
+                />
+              }
             />
             {errors.startTime && (
               <ErrorMessage errorMessage={errors.startTime.message} />
             )}
           </Grid>
           <Grid xs={12} sm={6} item>
-            <DateTimePicker
-              format={dateTimeFormat}
-              className={classes.form}
-              label="Until"
-              inputVariant="outlined"
-              value={endTime}
-              onChange={handleEndTimeChange}
-              maxDate={maxDate}
-              disablePast
-              required
+            <Controller
               name="endTime"
-              error={!!errors.endTime}
-              //inputRef={register({ required: 'End time is required' })}
+              control={control}
+              onChange={handleEndTimeChange}
+              as={
+                <DateTimePicker
+                  autoOk
+                  format={dateTimeFormat}
+                  className={classes.form}
+                  onChange={() => {}}
+                  label="Until"
+                  inputVariant="outlined"
+                  disablePast
+                  maxDate={maxDate}
+                  required
+                />
+              }
             />
             {errors.endTime && (
               <ErrorMessage errorMessage={errors.endTime.message} />
