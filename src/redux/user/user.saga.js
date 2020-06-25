@@ -36,7 +36,7 @@ export function* storeUserToFirestore(user) {
       collection: collectionName,
       data: userData,
       setId: false,
-      docId: user.uid,
+      docId: userData.id,
     });
     yield storeUserToReducer(userData);
   } catch (error) {

@@ -68,6 +68,7 @@ const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
         open={open}
         onClose={handleClose}
         fullScreen={fullScreen}
+        fullWidth
         aria-labelledby="form-dialog-title"
         disableBackdropClick
       >

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { modules } from '../../models/Module';
 import { StudyGroup } from '../../models/StudyGroup';
 import {
   selectMyGroups,
@@ -24,6 +23,7 @@ import { Searchbar } from '../../components/Searchbar/Searchbar';
 import { UpcomingGroupList } from '../../components/UpcomingGroupList/UpcomingGroupList';
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 import { StudyGroupDialog } from '../../components/StudyGroupDialog/StudyGroupDialog';
+import { InfoAlert } from '../../components/shared/InfoAlert';
 
 const StudyGroupPageComponent = ({
   myGroups,
@@ -38,11 +38,11 @@ const StudyGroupPageComponent = ({
     // fetch my, live and module-specific study groups
     // call this when variables change by providing the varaibles in the second argument
     // this behaves like componentDidMount
-    modules.forEach((module) => {
-      readGroupsByModule(module.id);
-    });
     if (currentUser && currentUser.id != null) {
       readMyGroups(currentUser.id);
+      currentUser.modules.forEach((moduleCode) =>
+        readGroupsByModule(moduleCode)
+      );
     }
   }, [currentUser, readGroupsByModule, readMyGroups]);
 
@@ -65,7 +65,29 @@ const StudyGroupPageComponent = ({
                 </Grid>
               </Grid>
             </Grid>
-            {myGroups.length > 0 && (
+            {currentUser == null && (
+              <Grid xs={12} item>
+                <Box mt={3} />
+                <InfoAlert
+                  alertTitle="You are not logged in"
+                  alertText="Please log in to your account on "
+                  route="/login"
+                  pageName="Login page"
+                />
+              </Grid>
+            )}
+            {currentUser && currentUser.modules.length === 0 && (
+              <Grid xs={12} item>
+                <Box mt={3} />
+                <InfoAlert
+                  alertTitle="You don't have any modules"
+                  alertText="Please add your modules on "
+                  route="/dashboard"
+                  pageName="Dashboard page"
+                />
+              </Grid>
+            )}
+            {currentUser && myGroups.length > 0 && (
               <Grid xs={12} item>
                 <StudyGroupSection
                   sectionTitle="My groups"
@@ -73,14 +95,15 @@ const StudyGroupPageComponent = ({
                 />
               </Grid>
             )}
-            {modules.map((module, index) => (
-              <Grid xs={12} key={index} item>
-                <StudyGroupSection
-                  sectionTitle={module.id}
-                  sectionData={studyGroupsByModule(module.id)}
-                />
-              </Grid>
-            ))}
+            {currentUser &&
+              currentUser.modules.map((moduleCode) => (
+                <Grid xs={12} key={moduleCode} item>
+                  <StudyGroupSection
+                    sectionTitle={moduleCode}
+                    sectionData={studyGroupsByModule(moduleCode)}
+                  />
+                </Grid>
+              ))}
           </Grid>
         </Grid>
         <Hidden smDown>

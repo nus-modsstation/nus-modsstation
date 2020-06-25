@@ -13,6 +13,11 @@ export const studyGroupReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: null,
+        myGroups: [...state.myGroups, action.payload],
+        [action.payload.moduleCode]: [
+          ...state[action.payload.moduleCode],
+          action.payload,
+        ],
         createSuccess: true,
       };
 

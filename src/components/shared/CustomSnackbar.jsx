@@ -21,7 +21,7 @@ export const CustomSnackbar = ({ variant, message }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
-  const handleClose = (event, reason) => {
+  const handleClose = (_, reason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -31,7 +31,7 @@ export const CustomSnackbar = ({ variant, message }) => {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={variant}>
           {message}
         </Alert>

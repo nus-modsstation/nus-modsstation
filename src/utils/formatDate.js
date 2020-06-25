@@ -8,7 +8,7 @@ export const formatTime = (startTime, endTime) => {
   if (startTime.isBefore(now) && endTime.isAfter(now)) {
     return 'Until ' + endTime.format('hh:mm A');
   } else {
-    return 'At ' + endTime.format('hh:mm A');
+    return 'At ' + startTime.format('hh:mm A');
   }
 };
 
