@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { useForm, Controller } from 'react-hook-form';
-import { DevTool } from 'react-hook-form-devtools';
 import { createStructuredSelector } from 'reselect';
 
 import { StudyGroup } from '../../models/StudyGroup';
@@ -325,7 +324,6 @@ const StudyGroupFormComponent = ({
           </Grid>
         </Grid>
       </form>
-      <DevTool control={control} />
     </Box>
   );
 };
