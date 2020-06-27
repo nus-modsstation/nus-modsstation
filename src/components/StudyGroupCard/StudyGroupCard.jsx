@@ -176,6 +176,7 @@ export const StudyGroupCardComponent = ({
     return () => {
       isMounted = false;
     };
+    //eslint-disable-next-line
   }, [studyGroup]);
 
   return (
