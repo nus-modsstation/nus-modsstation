@@ -10,17 +10,18 @@ import { userActionType } from './user/user.type';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['user'],
+  //blacklist: ['user'],
 };
 
-const userPersistConfig = {
-  key: 'user',
-  storage,
-  blacklist: ['authError'],
-};
+// const userPersistConfig = {
+//   key: 'user',
+//   storage,
+//   blacklist: ['authError'],
+// };
 
 const appReducer = combineReducers({
-  user: persistReducer(userPersistConfig, userReducer),
+  //user: persistReducer(userPersistConfig, userReducer),
+  user: userReducer,
   studyGroup: studyGroupReducer,
   virtualGroup: virtualGroupReducer,
 });

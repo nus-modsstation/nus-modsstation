@@ -33,6 +33,8 @@ export function* createGroupGenerator({ payload }) {
       data: payload,
       setId: true,
     });
+    console.log('payload: ', payload);
+    // fetch module groups and my groups after create Success
     yield put(createGroupSuccess(payload));
   } catch (error) {
     yield put(createGroupError(error));

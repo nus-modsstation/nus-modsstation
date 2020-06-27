@@ -4,6 +4,8 @@ const INITIAL_STATE = {
   currentUser: null,
   isFetching: false,
   authError: null,
+  updateSuccess: false,
+  updateError: false,
 };
 
 export const userReducer = (state = INITIAL_STATE, action) => {
@@ -42,6 +44,28 @@ export const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         authError: null,
+      };
+    case userActionType.UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        updateSuccess: true,
+        updateError: false,
+        currentUser: { ...state.currentUser, ...action.payload },
+      };
+    case userActionType.CLEAR_UPDATE_SUCCESS:
+      return {
+        ...state,
+        updateSuccess: false,
+      };
+    case userActionType.UPDATE_USER_ERROR:
+      return {
+        ...state,
+        updateError: action.payload,
+      };
+    case userActionType.CLEAR_UPDATE_ERROR:
+      return {
+        ...state,
+        updateError: false,
       };
     default:
       return state;

@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
-import { selectCurrentUser } from '../../redux/user/user.selector';
-import { selectCreateSuccess } from '../../redux/studyGroup/studyGroup.selector.js';
+import {
+  selectCurrentUser,
+  selectUpdateSuccess,
+} from '../../redux/user/user.selector';
 
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
@@ -11,13 +13,11 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
-import { StudyGroupForm } from './StudyGroupForm';
+import { AddModuleForm } from './AddModuleForm';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
-import { CustomSnackbar } from '../../components/shared/CustomSnackbar';
+import { CustomSnackbar } from '../shared/CustomSnackbar';
 
 const useStyles = makeStyles((theme) => ({
   dialogTitleText: {
@@ -35,12 +35,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
+const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -51,51 +49,42 @@ const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
   };
 
   useEffect(() => {
-    if (createSuccess) {
-      // close the dialog after study group is created successfully
+    if (updateSuccess) {
+      // close the dialog after user's modules are updated successfully
       // show success CustomSnackbar
       setOpenSnackbar(true);
       setOpen(false);
     }
-  }, [createSuccess]);
+  }, [updateSuccess]);
 
   return (
     <div>
-      <Button size="small" variant="contained" onClick={handleClickOpen}>
-        Create
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        Add
       </Button>
       <Dialog
         open={open}
         onClose={handleClose}
-        fullScreen={fullScreen}
-        fullWidth
         aria-labelledby="form-dialog-title"
         disableBackdropClick
+        fullWidth
       >
         <Box className={classes.dialogTitleSection}>
           <DialogTitle
             className={classes.dialogTitleText}
             id="form-dialog-title"
           >
-            Create Study Group
+            Add modules
           </DialogTitle>
           <IconButton onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
         </Box>
         <DialogContent>
-          {/* Add this after setting up email verification && currentUser.isVerified */}
+          {/* Add "&& currentUser.isVerified" below after setting up email verification  */}
           {currentUser ? (
             <div style={{ height: '100%', overflow: 'hidden' }}>
-              <DialogContentText>
-                In light of the phase two of re-opening, the group capacity will
-                be limited to&nbsp;
-                <u>
-                  <strong>5</strong>
-                </u>
-                &nbsp;people.
-              </DialogContentText>
-              <StudyGroupForm currentUser={currentUser} />
+              <AddModuleForm currentUser={currentUser} />
             </div>
           ) : (
             <DialogContentText>
@@ -109,7 +98,7 @@ const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
       {openSnackbar && (
         <CustomSnackbar
           variant="success"
-          message="The study group is created successfully"
+          message="My modules are updated successfully"
         />
       )}
     </div>
@@ -118,9 +107,9 @@ const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  createSuccess: selectCreateSuccess,
+  updateSuccess: selectUpdateSuccess,
 });
 
-export const StudyGroupDialog = connect(mapStateToProps)(
-  StudyGroupDialogComponent
+export const AddModuleDialog = connect(mapStateToProps)(
+  AddModuleDialogComponent
 );

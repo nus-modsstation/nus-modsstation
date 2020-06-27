@@ -3,6 +3,10 @@ export class Module {
     this.id = id;
     this.name = name;
   }
+
+  static getModuleById(id) {
+    return modules.find((module) => module.id === id);
+  }
 }
 
 export const modules = [
