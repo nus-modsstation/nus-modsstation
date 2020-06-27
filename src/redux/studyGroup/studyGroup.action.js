@@ -96,3 +96,43 @@ export const removeUserRequestError = (errorMessage) => ({
   type: studyGroupActionType.REMOVE_USER_REQUEST_ERROR,
   payload: errorMessage,
 });
+
+export const leaveGroupStart = (studyGroup) => ({
+  type: studyGroupActionType.LEAVE_GROUP_START,
+  payload: studyGroup,
+});
+
+export const removeMyGroupById = (groupId) => ({
+  type: studyGroupActionType.REMOVE_MY_GROUP_BY_ID,
+  payload: groupId,
+});
+
+export const removeModuleGroupById = (groupId) => ({
+  type: studyGroupActionType.REMOVE_MODULE_GROUP_BY_ID,
+  payload: groupId,
+});
+
+export const leaveGroupError = (errorMessage) => ({
+  type: studyGroupActionType.LEAVE_GROUP_ERROR,
+  payload: errorMessage,
+});
+
+export const updateStudyGroupPropPush = (studyGroup) => ({
+  type: studyGroupActionType.UPDATE_STUDY_GROUP_PROP_PUSH,
+  payload: studyGroup,
+});
+
+export const updateStudyGroupPropRemove = (studyGroup) => ({
+  type: studyGroupActionType.UPDATE_STUDY_GROUP_PROP_REMOVE,
+  payload: studyGroup,
+});
+
+export const deleteGroupStart = (studyGroup) => ({
+  type: studyGroupActionType.DELETE_GROUP_START,
+  payload: studyGroup,
+});
+
+export const deleteGroupError = (errorMessage) => ({
+  type: studyGroupActionType.DELETE_GROUP_ERROR,
+  payload: errorMessage,
+});

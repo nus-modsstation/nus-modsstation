@@ -92,6 +92,7 @@ const StudyGroupPageComponent = ({
                 <StudyGroupSection
                   sectionTitle="My groups"
                   sectionData={myGroups}
+                  hideJoin
                 />
               </Grid>
             )}
@@ -101,6 +102,7 @@ const StudyGroupPageComponent = ({
                   <StudyGroupSection
                     sectionTitle={moduleCode}
                     sectionData={studyGroupsByModule(moduleCode)}
+                    hideJoin={false}
                   />
                 </Grid>
               ))}

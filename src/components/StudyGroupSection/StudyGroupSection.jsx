@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const StudyGroupSection = ({ sectionTitle, sectionData }) => {
+export const StudyGroupSection = ({ sectionTitle, sectionData, hideJoin }) => {
   const classes = useStyles();
 
   const theme = useTheme();
@@ -50,7 +50,11 @@ export const StudyGroupSection = ({ sectionTitle, sectionData }) => {
           >
             {sectionData.map((studyGroup, index) => (
               <GridListTile key={index}>
-                <StudyGroupCard key={index} studyGroup={studyGroup} />
+                <StudyGroupCard
+                  key={index}
+                  studyGroup={studyGroup}
+                  hideJoin={hideJoin}
+                />
               </GridListTile>
             ))}
           </GridList>

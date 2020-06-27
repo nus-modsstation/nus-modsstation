@@ -9,12 +9,15 @@ import {
   sendJoinGroupStart,
   removeUserRequestStart,
   acceptUserRequestStart,
+  leaveGroupStart,
+  deleteGroupStart,
 } from '../../redux/studyGroup/studyGroup.action';
 import { formatTime, formatDateTime } from '../../utils/formatDate';
 
 import Paper from '@material-ui/core/Paper';
 import { Typography, Box, Button } from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
+import Grid from '@material-ui/core/Grid';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import TodayIcon from '@material-ui/icons/Today';
@@ -30,6 +33,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 
 export const StudyGroupCardComponent = ({
   currentUser,
@@ -37,6 +42,9 @@ export const StudyGroupCardComponent = ({
   sendJoinGroupStart,
   removeUserRequestStart,
   acceptUserRequestStart,
+  hideJoin,
+  leaveGroupStart,
+  deleteGroupStart,
 }) => {
   const chipStyle = {
     width: '100%',
@@ -61,7 +69,8 @@ export const StudyGroupCardComponent = ({
   };
 
   const joinStudyGroup = (event) => {
-    event.preventDefault();
+    event.stopPropagation();
+    sendJoinRequest();
   };
 
   const isOwner = studyGroup.ownerId === currentUser.id;
@@ -70,6 +79,7 @@ export const StudyGroupCardComponent = ({
     studyGroup.userRequests.includes(currentUser.id)
   );
   const [userMap, setUserMap] = useState({});
+  const [requestMap, setRequestMap] = useState({});
 
   const sendJoinRequest = async () => {
     const updateGroupData = {
@@ -105,31 +115,68 @@ export const StudyGroupCardComponent = ({
     studyGroup.users.push(userId);
   };
 
+  const leaveGroup = () => {
+    const studyGroupData = {
+      id: studyGroup.id,
+      moduleCode: studyGroup.moduleCode,
+      data: currentUser.id,
+    };
+    leaveGroupStart(studyGroupData);
+    const idx = studyGroup.users.indexOf(currentUser.id);
+    if (idx !== -1) {
+      studyGroup.users.splice(idx, 1);
+    }
+    setOpen(false);
+  };
+
+  const deleteGroup = () => {
+    const studyGroupData = {
+      id: studyGroup.id,
+      moduleCode: studyGroup.moduleCode,
+    };
+    deleteGroupStart(studyGroupData);
+    setOpen(false);
+  };
+
   useEffect(() => {
     // this behaves like componentDidMount
     // show member requests if the user is the group's owner
     // read username by userId
-    if (studyGroup.ownerId === currentUser.id) {
-      const idToName = {};
-      studyGroup.users.forEach(async (userId) => {
-        const user = await readDocument({
-          collection: 'users',
-          docId: userId,
-        });
-        idToName[userId] = user.username;
-        setUserMap(idToName);
+    // display group members for users
+    let isMounted = true;
+    studyGroup.users.forEach(async (userId) => {
+      const user = await readDocument({
+        collection: 'users',
+        docId: userId,
       });
+      const data = {
+        ...userMap,
+        [userId]: user.username,
+      };
+      if (isMounted) {
+        setUserMap(data);
+      }
+    });
+    // diplay group users' request for group's owner
+    if (studyGroup.ownerId === currentUser.id) {
       studyGroup.userRequests.forEach(async (userId) => {
         const user = await readDocument({
           collection: 'users',
           docId: userId,
         });
-        idToName[userId] = user.username;
-        setUserMap(idToName);
+        const data = {
+          ...requestMap,
+          [userId]: user.username,
+        };
+        if (isMounted) {
+          setRequestMap(data);
+        }
       });
-      setUserMap(idToName);
     }
-  }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, [studyGroup]);
 
   return (
     <Box className={classes.clickableCursor}>
@@ -171,14 +218,18 @@ export const StudyGroupCardComponent = ({
             label={formatTime(studyGroup.startTime, studyGroup.endTime)}
           />
           <Box mt={1} />
-          <Button
-            disabled={isJoined || isRequestSent}
-            size="large"
-            onClick={joinStudyGroup}
-            fullWidth
-          >
-            {`${isJoined ? 'Joined' : isRequestSent ? 'Pending' : 'Join'}`}
-          </Button>
+          {hideJoin ? (
+            <Box m={3} />
+          ) : (
+            <Button
+              disabled={isJoined || isRequestSent}
+              size="large"
+              onClick={joinStudyGroup}
+              fullWidth
+            >
+              {`${isJoined ? 'Joined' : isRequestSent ? 'Pending' : 'Join'}`}
+            </Button>
+          )}
         </Box>
       </Paper>
       <Dialog
@@ -201,68 +252,154 @@ export const StudyGroupCardComponent = ({
           </IconButton>
         </Box>
         <DialogContent>
-          {isOwner && <Button variant="outlined">Edit</Button>}
-          <Typography>
-            {studyGroup.description === ''
-              ? 'no description'
-              : studyGroup.description}
-          </Typography>
-          <Typography>{studyGroup.moduleCode}</Typography>
-          <Typography>{`${formatDateTime(
-            studyGroup.startTime
-          )} - ${formatDateTime(studyGroup.endTime)}`}</Typography>
-          <Typography>{studyGroup.location}</Typography>
-          <Box>
-            <Typography>{`member: ${studyGroup.users.length}`}</Typography>
-            <List dense>
-              {studyGroup.users.map((userId) => {
-                return (
-                  <ListItem key={userId}>
-                    <ListItemText id={userId} primary={userMap[userId]} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </Box>
-          {!isOwner && !isJoined && (
-            <Button
-              disabled={isJoined || isRequestSent}
-              onClick={sendJoinRequest}
-              variant="contained"
-              color="primary"
-            >
-              {`${isJoined ? 'Joined' : isRequestSent ? 'Pending' : 'Join'}`}
-            </Button>
-          )}
-          {isOwner && studyGroup.userRequests.length !== 0 && (
-            <Box>
-              <Typography>Requests</Typography>
-              <List dense>
-                {studyGroup.userRequests.map((userId) => {
-                  return (
-                    <ListItem key={userId}>
-                      <ListItemText id={userId} primary={userMap[userId]} />
-                      <ListItemSecondaryAction>
-                        <Button
-                          color="secondary"
-                          size="small"
-                          onClick={() => acceptUserRequest(userId)}
-                        >
-                          Accept
-                        </Button>
-                        <Button
-                          size="small"
-                          onClick={() => removeUserRequest(userId)}
-                        >
-                          Reject
-                        </Button>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </Box>
-          )}
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Chip
+                icon={<ImportContactsIcon />}
+                onClick={() => {
+                  console.log('clicked');
+                }}
+                color="primary"
+                variant="outlined"
+                label={studyGroup.moduleCode}
+              />
+              <Box display="inline" m={1} />
+              <Chip
+                icon={<LocationOnIcon />}
+                onClick={() => {
+                  console.log('clicked');
+                }}
+                color="secondary"
+                variant="outlined"
+                label={studyGroup.location}
+              />
+              <Box display="inline" m={1} />
+              <Chip
+                icon={<TodayIcon />}
+                onClick={() => {
+                  console.log('clicked');
+                }}
+                variant="outlined"
+                label={`${formatDateTime(
+                  studyGroup.startTime
+                )} - ${formatDateTime(studyGroup.endTime)}`}
+              />
+            </Grid>
+            <Grid item xs={12} md={9}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography variant="h6">About the group</Typography>
+                  <Box pt={1} overflow="auto">
+                    <Typography variant="body1">
+                      {studyGroup.description
+                        ? studyGroup.description
+                        : "The whereabouts of the group's description remains a mystery to this day."}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h6">Members</Typography>
+                  <List dense>
+                    {studyGroup.users.map((userId) => {
+                      return (
+                        <ListItem key={userId}>
+                          <Typography variant="body1">
+                            {userMap[userId]}
+                          </Typography>
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </Grid>
+                {isOwner && studyGroup.userRequests.length !== 0 && (
+                  <Grid item xs={12}>
+                    <Typography variant="h6">Requests</Typography>
+                    <List dense>
+                      {studyGroup.userRequests.map((userId) => (
+                        <ListItem key={userId}>
+                          {requestMap[userId] && (
+                            <ListItemText
+                              id={userId}
+                              primary={requestMap[userId]}
+                            />
+                          )}
+                          <ListItemSecondaryAction>
+                            <IconButton
+                              color="secondary"
+                              onClick={() => acceptUserRequest(userId)}
+                            >
+                              <CheckCircleRoundedIcon />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => removeUserRequest(userId)}
+                            >
+                              <CancelRoundedIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Grid>
+                )}
+              </Grid>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Grid container justify="center" spacing={2}>
+                <Box m={1} />
+                {!isOwner && !isJoined && (
+                  <Grid item xs={12}>
+                    <Button
+                      disabled={isJoined || isRequestSent}
+                      onClick={sendJoinRequest}
+                      variant="contained"
+                      color="primary"
+                    >
+                      {`${
+                        isJoined ? 'Joined' : isRequestSent ? 'Pending' : 'Join'
+                      }`}
+                    </Button>
+                  </Grid>
+                )}
+                {isJoined && (
+                  <Grid item xs={12}>
+                    <Button size="small" variant="outlined">
+                      Chat room
+                    </Button>
+                  </Grid>
+                )}
+                {isJoined && !isOwner && (
+                  <Grid item xs={12}>
+                    <Button
+                      onClick={leaveGroup}
+                      size="small"
+                      variant="outlined"
+                    >
+                      Leave
+                    </Button>
+                  </Grid>
+                )}
+                {isOwner && (
+                  <Grid item xs={12}>
+                    <Button size="small" variant="outlined">
+                      Edit
+                    </Button>
+                  </Grid>
+                )}
+                {isOwner && (
+                  <Grid item xs={12}>
+                    <Button
+                      onClick={deleteGroup}
+                      size="small"
+                      variant="outlined"
+                    >
+                      Delete
+                    </Button>
+                  </Grid>
+                )}
+              </Grid>
+            </Grid>
+            <Box m={1} />
+          </Grid>
         </DialogContent>
       </Dialog>
     </Box>
@@ -281,6 +418,10 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(removeUserRequestStart(studyGroupData)),
   acceptUserRequestStart: (studyGroupData) =>
     dispatch(acceptUserRequestStart(studyGroupData)),
+  leaveGroupStart: (studyGroupData) =>
+    dispatch(leaveGroupStart(studyGroupData)),
+  deleteGroupStart: (studyGroupData) =>
+    dispatch(deleteGroupStart(studyGroupData)),
 });
 
 export const StudyGroupCard = connect(
