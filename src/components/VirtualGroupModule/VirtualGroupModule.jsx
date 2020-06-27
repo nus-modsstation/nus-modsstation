@@ -27,12 +27,12 @@ const componentStyles = makeStyles({
     alignItems: 'center',
   },
   itemContent: {
-    marginTop: "10px",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    "&::-webkit-scrollbar": {
-      height: "6px",
+    marginTop: '10px',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    '&::-webkit-scrollbar': {
+      height: '6px',
     },
     '&::-webkit-scrollbar-track': {
       background: 'transparent',
@@ -44,7 +44,7 @@ const componentStyles = makeStyles({
   },
 });
 
-export const VirtualGroupModule = () => {
+export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
   const component = componentStyles();
 
   const [open, setOpen] = React.useState(true);
@@ -65,21 +65,21 @@ export const VirtualGroupModule = () => {
             {open ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
           <Button component={NavLink} to="/virtual-group-module">
-            <Typography variant="body1">MOD1001</Typography>
+            <Typography variant="body1">{moduleCode}</Typography>
           </Button>
         </div>
       </div>
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={component.itemContent}>
-            <VirtualGroupCard />
-            <VirtualGroupCard />
-            <VirtualGroupCard />
-            <VirtualGroupCard />
-            <VirtualGroupCard />
-            <VirtualGroupCard />
-            <VirtualGroupCard />
-            <VirtualGroupCard />
+            {groups &&
+              groups.map((group, index) => (
+                <VirtualGroupCard
+                  currentUser={currentUser}
+                  key={index}
+                  groupData={group}
+                />
+              ))}
           </Box>
         </Collapse>
       </Box>
