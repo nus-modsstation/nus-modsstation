@@ -7,9 +7,20 @@ import TextField from '@material-ui/core/TextField';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-export const Searchbar = ({ searchOptions }) => {
+export const Searchbar = ({ searchOptions, searchCallback }) => {
   const theme = useTheme();
   const matchXs = useMediaQuery(theme.breakpoints.up('xs'));
+
+  const handleSelect = (event, value, reason) => {
+    // modules or locations are selected
+    // pass back the search data
+    // to perform search on Firestore
+    const searchData = {
+      reason: reason,
+      value: value,
+    };
+    searchCallback(searchData);
+  };
 
   return (
     <Box>
@@ -20,6 +31,7 @@ export const Searchbar = ({ searchOptions }) => {
         options={searchOptions.sort((a, b) => b.type.localeCompare(a.type))}
         groupBy={(option) => option.type}
         getOptionLabel={(option) => option.option}
+        onChange={handleSelect}
         filterSelectedOptions
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (

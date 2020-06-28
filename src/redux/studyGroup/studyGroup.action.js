@@ -27,11 +27,6 @@ export const clearCreateSuccess = () => ({
   type: studyGroupActionType.CLEAR_CREATE_SUCCESS,
 });
 
-export const searchGroup = (searchQuery) => ({
-  type: studyGroupActionType.SEARCH_GROUP,
-  payload: searchQuery,
-});
-
 export const updateStudyGroupReducer = (data) => ({
   type: studyGroupActionType.UPDATE_STUDY_GROUP_REDUCER,
   payload: data,
@@ -77,11 +72,6 @@ export const acceptUserRequestSuccess = (studyGroup) => ({
   payload: studyGroup,
 });
 
-export const acceptUserRequestError = (errorMessage) => ({
-  type: studyGroupActionType.ACCEPT_USER_REQUEST_ERROR,
-  payload: errorMessage,
-});
-
 export const removeUserRequestStart = (studyGroup) => ({
   type: studyGroupActionType.REMOVE_USER_REQUEST_START,
   payload: studyGroup,
@@ -90,11 +80,6 @@ export const removeUserRequestStart = (studyGroup) => ({
 export const removeUserRequestSuccess = (studyGroup) => ({
   type: studyGroupActionType.REMOVE_USER_REQUEST_SUCCESS,
   payload: studyGroup,
-});
-
-export const removeUserRequestError = (errorMessage) => ({
-  type: studyGroupActionType.REMOVE_USER_REQUEST_ERROR,
-  payload: errorMessage,
 });
 
 export const leaveGroupStart = (studyGroup) => ({
@@ -112,11 +97,6 @@ export const removeModuleGroupById = (groupId) => ({
   payload: groupId,
 });
 
-export const leaveGroupError = (errorMessage) => ({
-  type: studyGroupActionType.LEAVE_GROUP_ERROR,
-  payload: errorMessage,
-});
-
 export const updateStudyGroupPropPush = (studyGroup) => ({
   type: studyGroupActionType.UPDATE_STUDY_GROUP_PROP_PUSH,
   payload: studyGroup,
@@ -132,7 +112,12 @@ export const deleteGroupStart = (studyGroup) => ({
   payload: studyGroup,
 });
 
-export const deleteGroupError = (errorMessage) => ({
-  type: studyGroupActionType.DELETE_GROUP_ERROR,
-  payload: errorMessage,
+export const searchGroupStart = (searchQuery) => ({
+  type: studyGroupActionType.SEARCH_GROUP_START,
+  payload: searchQuery,
+});
+
+export const filterSearchResults = (searchQuery) => ({
+  type: studyGroupActionType.FILTER_SEARCH_RESULTS,
+  payload: searchQuery,
 });

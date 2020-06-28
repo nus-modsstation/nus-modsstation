@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
 import { Dashboard } from '../../models/Dashboard';
 import { StudyGroup } from '../../models/StudyGroup';
 import { selectCurrentUser } from '../../redux/user/user.selector';
+import { selectMyGroups } from '../../redux/studyGroup/studyGroup.selector';
+import { readMyGroups } from '../../redux/studyGroup/studyGroup.action';
 
 import { materialStyles } from '../../styles/material.styles';
 import Paper from '@material-ui/core/Paper';
@@ -22,8 +24,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Searchbar } from '../../components/Searchbar/Searchbar';
 import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialog';
+import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 
-const DashboardPageComponent = ({ currentUser }) => {
+const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
   const materialClasses = materialStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -37,6 +40,15 @@ const DashboardPageComponent = ({ currentUser }) => {
   };
 
   const options = Dashboard.options;
+
+  useEffect(() => {
+    // fetch my, live and module-specific study groups
+    // call this when variables change by providing the varaibles in the second argument
+    // this behaves like componentDidMount
+    if (currentUser && currentUser.id != null) {
+      readMyGroups(currentUser.id);
+    }
+  }, [currentUser, readMyGroups]);
 
   return (
     <Box className={materialClasses.root}>
@@ -93,7 +105,13 @@ const DashboardPageComponent = ({ currentUser }) => {
             </Grid>
             <Grid xs={12} item>
               <Paper className={materialClasses.paper}>
-                Upcoming study groups
+                {currentUser && myGroups.length > 0 && (
+                  <StudyGroupSection
+                    sectionTitle="My study groups"
+                    sectionData={myGroups}
+                    hideJoin
+                  />
+                )}
               </Paper>
             </Grid>
             <Grid xs={12} item>
@@ -131,7 +149,15 @@ const DashboardPageComponent = ({ currentUser }) => {
 };
 
 const mapStateToProps = createStructuredSelector({
+  myGroups: selectMyGroups,
   currentUser: selectCurrentUser,
 });
 
-export const DashboardPage = connect(mapStateToProps)(DashboardPageComponent);
+const mapDispatchToProps = (dispatch) => ({
+  readMyGroups: (userId) => dispatch(readMyGroups(userId)),
+});
+
+export const DashboardPage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DashboardPageComponent);

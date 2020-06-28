@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { StudyGroup } from '../../models/StudyGroup';
 import {
   selectMyGroups,
   selectStudyGroupsByModule,
+  selectSearchResults,
 } from '../../redux/studyGroup/studyGroup.selector';
 import {
   readMyGroups,
   readGroupsByModule,
+  searchGroupStart,
+  filterSearchResults,
 } from '../../redux/studyGroup/studyGroup.action';
 import { selectCurrentUser } from '../../redux/user/user.selector';
 
@@ -31,6 +34,9 @@ const StudyGroupPageComponent = ({
   readMyGroups,
   readGroupsByModule,
   studyGroupsByModule,
+  searchResults,
+  searchGroupStart,
+  filterSearchResults,
 }) => {
   const materialClasses = materialStyles();
 
@@ -46,6 +52,39 @@ const StudyGroupPageComponent = ({
     }
   }, [currentUser, readGroupsByModule, readMyGroups]);
 
+  const [searchQueries, setSearchQueries] = useState([]);
+
+  const searchCallback = (searchData) => {
+    setSearchQueries(searchData.value);
+    // extract modules and locations
+    const moduleCodes = searchData.value
+      .filter((query) => query.type === 'module')
+      .map((result) => result.option);
+    const locations = searchData.value
+      .filter((query) => query.type === 'location')
+      .map((result) => result.option);
+    if (searchData.reason === 'select-option') {
+      // perform search on Firestore
+      // dispatch search action
+      const queryData = {
+        fieldName: 'moduleCode',
+        fieldValue: moduleCodes,
+      };
+      // const queryData = {
+      //   fieldNames: ['moduleCode', 'location'],
+      //   fieldValues: [moduleCodes, locations],
+      // };
+      searchGroupStart(queryData);
+    } else if (searchData.reason === 'remove-option') {
+      // filter search results when option is removed
+      const queryData = {
+        locations,
+        moduleCodes,
+      };
+      filterSearchResults(queryData);
+    }
+  };
+
   return (
     <Box className={materialClasses.root}>
       <Grid container>
@@ -54,7 +93,10 @@ const StudyGroupPageComponent = ({
             <Grid xs={12} item>
               <Grid container spacing={1} alignItems="center">
                 <Grid xs={9} sm={10} md={11} item>
-                  <Searchbar searchOptions={StudyGroup.searchOptions} />
+                  <Searchbar
+                    searchCallback={searchCallback}
+                    searchOptions={StudyGroup.searchOptions}
+                  />
                 </Grid>
                 <Grid xs={3} sm={2} md={1} item>
                   <Grid justify="center" container>
@@ -84,6 +126,16 @@ const StudyGroupPageComponent = ({
                   alertText="Please add your modules on "
                   route="/dashboard"
                   pageName="Dashboard page"
+                />
+              </Grid>
+            )}
+            {searchQueries.length > 0 && (
+              <Grid xs={12} item>
+                <StudyGroupSection
+                  sectionTitle={`Search results:${searchQueries.map(
+                    (query) => ' ' + query.option
+                  )}`}
+                  sectionData={searchResults}
                 />
               </Grid>
             )}
@@ -128,11 +180,14 @@ const mapStateToProps = (state) => ({
   currentUser: selectCurrentUser(state),
   studyGroupsByModule: (moduleCode) =>
     selectStudyGroupsByModule(moduleCode)(state),
+  searchResults: selectSearchResults(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   readMyGroups: (userId) => dispatch(readMyGroups(userId)),
   readGroupsByModule: (moduleCode) => dispatch(readGroupsByModule(moduleCode)),
+  searchGroupStart: (queryData) => dispatch(searchGroupStart(queryData)),
+  filterSearchResults: (queryData) => dispatch(filterSearchResults(queryData)),
 });
 
 export const StudyGroupPage = connect(

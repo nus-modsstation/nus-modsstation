@@ -50,6 +50,41 @@ export const readDocumentsWhereContains = async ({
   }
 };
 
+export const readDocumentsWhereIn = async ({
+  collection,
+  fieldName,
+  fieldValue,
+  fieldNames,
+  fieldValues,
+}) => {
+  const collectionRef = firestore.collection(collection);
+  let snapshot;
+  if (fieldName !== undefined) {
+    // handle single query
+    snapshot = await collectionRef.where(fieldName, 'in', fieldValue).get();
+  }
+  //else if (fieldNames !== undefined) {
+  // handle multiple queries
+  //   let queries = collectionRef;
+  //   for (let i = 0; i < fieldNames.length; i++) {
+  //     // cannot perform multiple in search query
+  //     if (fieldValues[i].length !== 0) {
+  //       queries = queries.where(fieldNames[i], 'in', fieldValues[i]);
+  //     }
+  //   }
+  //   snapshot = await queries.get();
+  // }
+  if (snapshot.docs.length > 0) {
+    const data = [];
+    for (const doc of snapshot.docs) {
+      data.push(doc.data());
+    }
+    return data;
+  } else {
+    return [];
+  }
+};
+
 export const listenDocument = async ({ collection, docId, callback }) => {
   return firestore
     .collection(collection)

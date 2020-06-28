@@ -10,6 +10,7 @@ const persistConfig = {
   key: 'root',
   storage,
   //blacklist: ['user'],
+  blacklist: ['studyGroup'],
 };
 
 // const userPersistConfig = {
@@ -18,10 +19,16 @@ const persistConfig = {
 //   blacklist: ['authError'],
 // };
 
+const studyGroupPersistConfig = {
+  key: 'studyGroup',
+  storage,
+  blacklist: ['searchResults'],
+};
+
 const appReducer = combineReducers({
   //user: persistReducer(userPersistConfig, userReducer),
   user: userReducer,
-  studyGroup: studyGroupReducer,
+  studyGroup: persistReducer(studyGroupPersistConfig, studyGroupReducer),
 });
 
 const initialState = appReducer({}, {});
