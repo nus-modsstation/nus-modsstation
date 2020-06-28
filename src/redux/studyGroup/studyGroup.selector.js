@@ -37,10 +37,15 @@ export const selectCreateSuccess = createSelector(
 
 export const selectSendRequestSuccess = createSelector(
   [selectStudyGroup],
-  (studyGroup) => studyGroup.SendRequestSuccess
+  (studyGroup) => studyGroup.sendRequestSuccess
 );
 
 export const selectSendRequestError = createSelector(
   [selectStudyGroup],
-  (studyGroup) => studyGroup.SendRequestError
+  (studyGroup) => studyGroup.sendRequestError
+);
+
+export const selectSearchResults = createSelector(
+  [selectStudyGroup],
+  (studyGroup) => studyGroup.searchResults
 );

@@ -8,20 +8,17 @@ import {
   updateStudyGroupReducer,
   sendJoinGroupError,
   removeUserRequestSuccess,
-  removeUserRequestError,
-  acceptUserRequestError,
   updateStudyGroupPropPush,
   updateStudyGroupPropRemove,
-  leaveGroupError,
   removeMyGroupById,
   removeModuleGroupById,
-  deleteGroupError,
 } from './studyGroup.action';
 import {
   addDocument,
   deleteDocument,
   readDocumentsWhereContains,
   readDocumentsWhereEqual,
+  readDocumentsWhereIn,
   updateDocumentArrayUnion,
   updateDocumentArrayRemove,
 } from '../../services/firestore';
@@ -73,7 +70,10 @@ export function* readMyGroupsGenarator({ payload }) {
     };
     yield put(updateStudyGroupReducer(data));
   } catch (error) {
-    console.log('readMyGroups error: ', error);
+    const data = {
+      readMyGroupsError: error,
+    };
+    yield put(updateStudyGroupReducer(data));
   }
 }
 
@@ -94,7 +94,10 @@ export function* readGroupsByModuleGenarator({ payload }) {
     };
     yield put(updateStudyGroupReducer(data));
   } catch (error) {
-    console.log('readGroupsByModule error: ', error);
+    const data = {
+      readGroupsByModuleError: error,
+    };
+    yield put(updateStudyGroupReducer(data));
   }
 }
 
@@ -139,7 +142,10 @@ export function* removeUserRequestGenerator({ payload }) {
     // update the study group with the removed user requests
     yield put(removeUserRequestSuccess(payload));
   } catch (error) {
-    yield put(removeUserRequestError(error));
+    const data = {
+      removeRequestError: error,
+    };
+    yield put(updateStudyGroupReducer(data));
   }
 }
 
@@ -163,7 +169,10 @@ export function* acceptUserRequestGenerator({ payload }) {
     payload.prop = 'users';
     yield put(updateStudyGroupPropPush(payload));
   } catch (error) {
-    yield put(acceptUserRequestError(error));
+    const data = {
+      acceptRequestError: error,
+    };
+    yield put(updateStudyGroupReducer(data));
   }
 }
 
@@ -188,7 +197,10 @@ export function* leaveGroupGenerator({ payload }) {
     // remove the group from my groups
     yield put(removeMyGroupById(payload.id));
   } catch (error) {
-    yield put(leaveGroupError(error));
+    const data = {
+      leaveGroupError: error,
+    };
+    yield put(updateStudyGroupReducer(data));
   }
 }
 
@@ -207,7 +219,10 @@ export function* deleteGroupGenerator({ payload }) {
     // remove the group from module groups
     yield put(removeModuleGroupById(payload));
   } catch (error) {
-    yield put(deleteGroupError(error));
+    const data = {
+      deleteGroupError: error,
+    };
+    yield put(updateStudyGroupReducer(data));
   }
 }
 
@@ -215,6 +230,35 @@ export function* onDeleteGroup() {
   yield takeEvery(
     studyGroupActionType.DELETE_GROUP_START,
     deleteGroupGenerator
+  );
+}
+
+export function* searchGroupGenarator({ payload }) {
+  try {
+    let studyGroups = yield readDocumentsWhereIn({
+      collection: collectionName,
+      fieldName: payload.fieldName,
+      fieldValue: payload.fieldValue,
+      fieldNames: payload.fieldNames,
+      fieldValues: payload.fieldValues,
+    });
+    studyGroups = convertGroupsTimestampToDate(studyGroups);
+    const data = {
+      searchResults: studyGroups,
+    };
+    yield put(updateStudyGroupReducer(data));
+  } catch (error) {
+    const data = {
+      searchGroupError: error,
+    };
+    yield put(updateStudyGroupReducer(data));
+  }
+}
+
+export function* onSearchGroup() {
+  yield takeLatest(
+    studyGroupActionType.SEARCH_GROUP_START,
+    searchGroupGenarator
   );
 }
 
@@ -228,5 +272,6 @@ export function* studyGroupSaga() {
     call(onAcceptUserRequest),
     call(onLeaveGroup),
     call(onDeleteGroup),
+    call(onSearchGroup),
   ]);
 }

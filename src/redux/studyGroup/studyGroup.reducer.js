@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   error: null,
   sendRequestError: null,
   sendRequestSuccess: false,
+  searchResults: [],
 };
 
 export const studyGroupReducer = (state = INITIAL_STATE, action) => {
@@ -122,6 +123,22 @@ export const studyGroupReducer = (state = INITIAL_STATE, action) => {
           ...state[action.payload.moduleCode].filter(
             (group) => group.id !== action.payload.id
           ),
+        ],
+      };
+    case studyGroupActionType.FILTER_SEARCH_RESULTS:
+      return {
+        ...state,
+        searchResults: [
+          ...state.searchResults.filter((result) => {
+            return (
+              (action.payload.moduleCodes.length === 0 ||
+                (action.payload.moduleCodes.length > 0 &&
+                  action.payload.moduleCodes.includes(result.moduleCode))) &&
+              (action.payload.locations.length === 0 ||
+                (action.payload.locations.length > 0 &&
+                  action.payload.locations.includes(result.location)))
+            );
+          }),
         ],
       };
     default:
