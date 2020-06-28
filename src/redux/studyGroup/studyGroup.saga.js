@@ -5,12 +5,25 @@ import { studyGroupActionType } from './studyGroup.type';
 import {
   createGroupSuccess,
   createGroupError,
-  updateStudyGroup,
+  updateStudyGroupReducer,
+  sendJoinGroupError,
+  removeUserRequestSuccess,
+  removeUserRequestError,
+  acceptUserRequestError,
+  updateStudyGroupPropPush,
+  updateStudyGroupPropRemove,
+  leaveGroupError,
+  removeMyGroupById,
+  removeModuleGroupById,
+  deleteGroupError,
 } from './studyGroup.action';
 import {
   addDocument,
+  deleteDocument,
   readDocumentsWhereContains,
   readDocumentsWhereEqual,
+  updateDocumentArrayUnion,
+  updateDocumentArrayRemove,
 } from '../../services/firestore';
 
 const collectionName = 'studyGroups';
@@ -33,7 +46,6 @@ export function* createGroupGenerator({ payload }) {
       data: payload,
       setId: true,
     });
-    console.log('payload: ', payload);
     // fetch module groups and my groups after create Success
     yield put(createGroupSuccess(payload));
   } catch (error) {
@@ -59,9 +71,9 @@ export function* readMyGroupsGenarator({ payload }) {
     const data = {
       myGroups: studyGroups,
     };
-    yield put(updateStudyGroup(data));
+    yield put(updateStudyGroupReducer(data));
   } catch (error) {
-    console.log(error);
+    console.log('readMyGroups error: ', error);
   }
 }
 
@@ -80,9 +92,9 @@ export function* readGroupsByModuleGenarator({ payload }) {
     const data = {
       [payload]: studyGroups,
     };
-    yield put(updateStudyGroup(data));
+    yield put(updateStudyGroupReducer(data));
   } catch (error) {
-    console.log(error);
+    console.log('readGroupsByModule error: ', error);
   }
 }
 
@@ -93,10 +105,128 @@ export function* onReadGroupsByModule() {
   );
 }
 
+export function* sendJoinGroupGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayUnion({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'userRequests',
+      data: payload.data,
+    });
+    // update the study group with the new user request
+    payload.prop = 'userRequests';
+    yield put(updateStudyGroupPropPush(payload));
+  } catch (error) {
+    yield put(sendJoinGroupError(error));
+  }
+}
+
+export function* onSendJoinGroup() {
+  yield takeEvery(
+    studyGroupActionType.SEND_JOIN_GROUP_START,
+    sendJoinGroupGenerator
+  );
+}
+
+export function* removeUserRequestGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'userRequests',
+      data: payload.data,
+    });
+    // update the study group with the removed user requests
+    yield put(removeUserRequestSuccess(payload));
+  } catch (error) {
+    yield put(removeUserRequestError(error));
+  }
+}
+
+export function* onRemoveUserRequest() {
+  yield takeEvery(
+    studyGroupActionType.REMOVE_USER_REQUEST_START,
+    removeUserRequestGenerator
+  );
+}
+
+export function* acceptUserRequestGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayUnion({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'users',
+      data: payload.data,
+    });
+    // update the study group with the new accepted user
+    // and updated user requests
+    payload.prop = 'users';
+    yield put(updateStudyGroupPropPush(payload));
+  } catch (error) {
+    yield put(acceptUserRequestError(error));
+  }
+}
+
+export function* onAcceptUserRequest() {
+  yield takeEvery(
+    studyGroupActionType.ACCEPT_USER_REQUEST_START,
+    acceptUserRequestGenerator
+  );
+}
+
+export function* leaveGroupGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'users',
+      data: payload.data,
+    });
+    // update the study group with the leave users
+    payload.prop = 'users';
+    yield put(updateStudyGroupPropRemove(payload));
+    // remove the group from my groups
+    yield put(removeMyGroupById(payload.id));
+  } catch (error) {
+    yield put(leaveGroupError(error));
+  }
+}
+
+export function* onLeaveGroup() {
+  yield takeEvery(studyGroupActionType.LEAVE_GROUP_START, leaveGroupGenerator);
+}
+
+export function* deleteGroupGenerator({ payload }) {
+  try {
+    yield deleteDocument({
+      collection: collectionName,
+      docId: payload.id,
+    });
+    // remove the group from my groups
+    yield put(removeMyGroupById(payload.id));
+    // remove the group from module groups
+    yield put(removeModuleGroupById(payload));
+  } catch (error) {
+    yield put(deleteGroupError(error));
+  }
+}
+
+export function* onDeleteGroup() {
+  yield takeEvery(
+    studyGroupActionType.DELETE_GROUP_START,
+    deleteGroupGenerator
+  );
+}
+
 export function* studyGroupSaga() {
   yield all([
     call(onCreateGroup),
     call(onReadMyGroups),
     call(onReadGroupsByModule),
+    call(onSendJoinGroup),
+    call(onRemoveUserRequest),
+    call(onAcceptUserRequest),
+    call(onLeaveGroup),
+    call(onDeleteGroup),
   ]);
 }
