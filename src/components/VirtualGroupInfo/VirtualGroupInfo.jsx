@@ -136,15 +136,14 @@ const VirtualGroupInfoComponent = ({
                         {user.username}
                       </Typography>
                       <ListItemSecondaryAction>
-                        <IconButton color="secondary">
-                          <CheckCircleRoundedIcon
-                            onClick={acceptUserRequest(user.id)}
-                          />
+                        <IconButton
+                          color="secondary"
+                          onClick={() => acceptUserRequest(user.id)}
+                        >
+                          <CheckCircleRoundedIcon />
                         </IconButton>
-                        <IconButton color="error">
-                          <CancelRoundedIcon
-                            onClick={removeUserRequest(user.id)}
-                          />
+                        <IconButton onClick={() => removeUserRequest(user.id)}>
+                          <CancelRoundedIcon />
                         </IconButton>
                       </ListItemSecondaryAction>
                     </ListItem>

@@ -5,7 +5,6 @@ import {
   createVirtualGroupSuccess,
   createVirtualGroupError,
   updateVirtualGroupReducer,
-  sendJoinRequestSuccess,
   sendJoinRequestError,
   removeUserRequestSuccess,
   removeUserRequestError,
