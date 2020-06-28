@@ -7,6 +7,8 @@ const INITIAL_STATE = {
   createSuccess: false,
   updateSuccess: false,
   updateError: false,
+  sendRequestError: null,
+  sendRequestSuccess: false,
 };
 
 export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
@@ -32,32 +34,70 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
         ...state,
         createSuccess: false,
       };
-    case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_START:
+    case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_REDUCER:
       return {
         ...state,
         ...action.payload,
       };
-    case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_SUCCESS:
+    case virtualGroupActionType.SEND_JOIN_REQUEST_SUCCESS:
       return {
         ...state,
-        updateSuccess: true,
-        updateError: false,
+        sendRequestSuccess: true,
+        sendRequestError: null,
+        // update the virtual group with the new user request
+        [action.payload.moduleCode]: state[action.payload.moduleCode].map(
+          (group) => {
+            if (group.id === action.payload.id) {
+              return {
+                ...group,
+                userRequests: [...group.userRequests, action.payload.data],
+              };
+            }
+            return group;
+          }
+        ),
       };
-    case virtualGroupActionType.CLEAR_UPDATE_SUCCESS: {
+    case virtualGroupActionType.SEND_JOIN_REQUEST_ERROR:
       return {
         ...state,
-        updateSuccess: true,
+        sendRequestError: action.payload,
+        sendRequestSuccess: false,
       };
-    }
-    case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_ERROR:
+    case virtualGroupActionType.REMOVE_USER_REQUEST_SUCCESS:
       return {
         ...state,
-        updateError: action.payload,
+        // update the study group with the removed user request
+        [action.payload.moduleCode]: state[action.payload.moduleCode].map(
+          (group) => {
+            if (group.id === action.payload.id) {
+              return {
+                ...group,
+                userRequests: [
+                  ...group.userRequests.filter(
+                    (userId) => userId !== action.payload.data
+                  ),
+                ],
+              };
+            }
+            return group;
+          }
+        ),
       };
-    case virtualGroupActionType.CLEAR_UPDATE_ERROR:
+    case virtualGroupActionType.ACCEPT_USER_REQUEST_SUCCESS:
       return {
         ...state,
-        updateError: false,
+        // update the study group with the new user request
+        [action.payload.moduleCode]: state[action.payload.moduleCode].map(
+          (group) => {
+            if (group.id === action.payload.id) {
+              return {
+                ...group,
+                [action.payload.prop]: [...group.prop, action.payload.data],
+              };
+            }
+            return group;
+          }
+        ),
       };
     default:
       return state;

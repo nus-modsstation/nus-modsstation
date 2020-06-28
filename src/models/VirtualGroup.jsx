@@ -45,6 +45,7 @@ export class VirtualGroup {
       ...data,
       ownerId: creatorId,
       users: [creatorId],
+      userRequests: [],
       isPublic: true,
     };
   }

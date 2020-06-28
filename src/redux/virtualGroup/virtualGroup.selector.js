@@ -34,3 +34,13 @@ export const selectUpdateError = createSelector(
   [selectVirtualGroup],
   (virtualGroup) => virtualGroup.updateError
 );
+
+export const selectSendRequestSuccess = createSelector(
+  [selectVirtualGroup],
+  (virtualGroup) => virtualGroup.SendRequestSuccess
+);
+
+export const selectSendRequestError = createSelector(
+  [selectVirtualGroup],
+  (virtualGroup) => virtualGroup.SendRequestError
+);

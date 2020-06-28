@@ -143,6 +143,7 @@ export const VirtualGroupModulePageComponent = ({
             {groups.map((virtualGroup, index) => (
               <VirtualGroupCard
                 modulePage
+                currentUser={currentUser}
                 key={index}
                 groupData={virtualGroup}
               />

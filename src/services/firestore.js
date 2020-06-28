@@ -1,3 +1,4 @@
+import * as firebase from 'firebase/app';
 import { firestore } from '../lib/firebase/firebase.config';
 
 export const readDocument = async ({ collection, docId }) => {
@@ -99,6 +100,30 @@ export const addDocument = async ({ collection, data, setId, docId }) => {
 
 export const updateDocument = async ({ collection, docId, data }) => {
   await firestore.collection(collection).doc(docId).update(data);
+};
+
+export const updateDocumentArrayUnion = async ({
+  collection,
+  docId,
+  field,
+  data,
+}) => {
+  const ref = firestore.collection(collection).doc(docId);
+  await ref.update({
+    [field]: firebase.firestore.FieldValue.arrayUnion(data),
+  });
+};
+
+export const updateDocumentArrayRemove = async ({
+  collection,
+  docId,
+  field,
+  data,
+}) => {
+  const ref = firestore.collection(collection).doc(docId);
+  await ref.update({
+    [field]: firebase.firestore.FieldValue.arrayRemove(data),
+  });
 };
 
 export const deleteDocument = async ({ collection, docId }) => {

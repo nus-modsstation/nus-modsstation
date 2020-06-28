@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { readDocument } from '../../services/firestore';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
@@ -10,6 +13,9 @@ import { useMediaQuery } from '@material-ui/core';
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+
+import { sendJoinRequestStart } from '../../redux/virtualGroup/virtualGroup.action';
+import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
 
 import { VirtualGroupInfo } from '../../components/VirtualGroupInfo/VirtualGroupInfo';
 
@@ -60,12 +66,23 @@ const componentStyles = makeStyles((theme) => ({
   },
 }));
 
-export const VirtualGroupCard = ({ currentUser, modulePage, groupData }) => {
+const VirtualGroupCardComponent = ({
+  currentUser,
+  modulePage,
+  groupData,
+  sendJoinRequestStart,
+}) => {
   const component = componentStyles();
   const theme = useTheme();
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
+  const isMember = groupData.users.includes(currentUser.id);
 
   const [open, setOpen] = React.useState(false);
+  const [requestSent, setRequestSent] = React.useState(
+    groupData.userRequests.includes(currentUser.id)
+  );
+  const [usernameMap, setUsernameMap] = React.useState({});
+  const [userRequestsMap, setUserRequestsMap] = React.useState({});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -74,6 +91,29 @@ export const VirtualGroupCard = ({ currentUser, modulePage, groupData }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const sendJoinRequest = async () => {
+    const updateGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: currentUser.id,
+    };
+    setRequestSent(true);
+    sendJoinRequestStart(updateGroupData);
+  };
+
+  useEffect(() => {
+    groupData.users.forEach(async (userId) => {
+      const user = await readDocument({ collection: 'users', docId: userId });
+      usernameMap[userId] = user.username;
+      setUsernameMap(usernameMap);
+    });
+    groupData.userRequests.forEach(async (userId) => {
+      const user = await readDocument({ collection: 'users', docId: userId });
+      userRequestsMap[userId] = user.username;
+      setUserRequestsMap(userRequestsMap);
+    });
+  });
 
   return (
     <Card
@@ -101,7 +141,12 @@ export const VirtualGroupCard = ({ currentUser, modulePage, groupData }) => {
           </IconButton>
         </Box>
         <DialogContent>
-          <VirtualGroupInfo currentUser={currentUser} groupData={groupData} />
+          <VirtualGroupInfo
+            currentUser={currentUser}
+            groupData={groupData}
+            members={usernameMap}
+            joinRequests={userRequestsMap}
+          />
         </DialogContent>
       </Dialog>
       <Box
@@ -145,8 +190,28 @@ export const VirtualGroupCard = ({ currentUser, modulePage, groupData }) => {
             </Typography>
           </Box>
         </Box>
-        <Button fullWidth>Join</Button>
+        <Button
+          disabled={isMember || requestSent}
+          onClick={sendJoinRequest}
+          fullWidth
+        >
+          {isMember ? 'Joined' : requestSent ? 'Pending' : 'Join'}
+        </Button>
       </Box>
     </Card>
   );
 };
+
+const mapStateToProps = createStructuredSelector({
+  sendRequestSuccess: selectSendRequestSuccess,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  sendJoinRequestStart: (groupData) =>
+    dispatch(sendJoinRequestStart(groupData)),
+});
+
+export const VirtualGroupCard = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VirtualGroupCardComponent);

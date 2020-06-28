@@ -32,27 +32,9 @@ export const searchGroup = (searchQuery) => ({
   payload: searchQuery,
 });
 
-export const updateVirtualGroup = (data) => ({
-  type: virtualGroupActionType.UPDATE_VIRTUAL_GROUP_START,
+export const updateVirtualGroupReducer = (data) => ({
+  type: virtualGroupActionType.UPDATE_VIRTUAL_GROUP_REDUCER,
   payload: data,
-});
-
-export const updateVirtualGroupSuccess = (data) => ({
-  type: virtualGroupActionType.UPDATE_VIRTUAL_GROUP_SUCCESS,
-  payload: data,
-});
-
-export const updateVirtualGroupError = (error) => ({
-  type: virtualGroupActionType.UPDATE_VIRTUAL_GROUP_ERROR,
-  payload: error,
-});
-
-export const clearOnUpdateSuccess = () => ({
-  type: virtualGroupActionType.CLEAR_UPDATE_SUCCESS,
-});
-
-export const clearUpdateError = () => ({
-  type: virtualGroupActionType.CLEAR_UPDATE_ERROR,
 });
 
 export const readMyVirtualGroups = (userId) => ({
@@ -68,4 +50,49 @@ export const readVirtualGroupsByModule = (moduleCode) => ({
 export const listenMyVirtualGroup = (userId) => ({
   type: virtualGroupActionType.LISTEN_MY_VIRTUAL_GROUP,
   payload: userId,
+});
+
+export const sendJoinRequestStart = (virtualGroup) => ({
+  type: virtualGroupActionType.SEND_JOIN_REQUEST_START,
+  payload: virtualGroup,
+});
+
+export const sendJoinRequestSuccess = (virtualGroup) => ({
+  type: virtualGroupActionType.SEND_JOIN_REQUEST_SUCCESS,
+  payload: virtualGroup,
+});
+
+export const sendJoinRequestError = (errorMessage) => ({
+  type: virtualGroupActionType.SEND_JOIN_REQUEST_ERROR,
+  payload: errorMessage,
+});
+
+export const acceptUserRequestStart = (virtualGroup) => ({
+  type: virtualGroupActionType.ACCEPT_USER_REQUEST_START,
+  payload: virtualGroup,
+});
+
+export const acceptUserRequestSuccess = (virtualGroup) => ({
+  type: virtualGroupActionType.ACCEPT_USER_REQUEST_SUCCESS,
+  payload: virtualGroup,
+});
+
+export const acceptUserRequestError = (errorMessage) => ({
+  type: virtualGroupActionType.ACCEPT_USER_REQUEST_ERROR,
+  payload: errorMessage,
+});
+
+export const removeUserRequestStart = (virtualGroup) => ({
+  type: virtualGroupActionType.REMOVE_USER_REQUEST_START,
+  payload: virtualGroup,
+});
+
+export const removeUserRequestSuccess = (virtualGroup) => ({
+  type: virtualGroupActionType.REMOVE_USER_REQUEST_SUCCESS,
+  payload: virtualGroup,
+});
+
+export const removeUserRequestError = (errorMessage) => ({
+  type: virtualGroupActionType.REMOVE_USER_REQUEST_ERROR,
+  payload: errorMessage,
 });

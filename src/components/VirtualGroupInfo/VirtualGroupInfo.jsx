@@ -1,5 +1,6 @@
 import React from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -8,18 +9,77 @@ import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import Chat from '@material-ui/icons/Chat';
 import PersonAdd from '@material-ui/icons/PersonAdd';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
+import IconButton from '@material-ui/core/IconButton';
 
-//import { readDocument } from '../../services/firestore';
+import {
+  sendJoinRequestStart,
+  acceptUserRequestStart,
+  removeUserRequestStart,
+} from '../../redux/virtualGroup/virtualGroup.action';
+import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
 
-export const VirtualGroupInfo = ({ currentUser, groupData }) => {
-  /*
-  let groupMembers = groupData.users.map(async (id) => {
-    const result = await readDocument({ collection: 'users', docId: id });
-    return result;
-  });
+const VirtualGroupInfoComponent = ({
+  currentUser,
+  groupData,
+  members,
+  joinRequests,
+  sendJoinRequestStart,
+  acceptJoinRequestStart,
+  removeJoinRequestStart,
+}) => {
+  const usernameArray = [];
+  for (var i in members) {
+    usernameArray.push(members[i]);
+  }
 
-  console.log(groupMembers);
-  */
+  const joinRequestsArray = [];
+  for (var j in joinRequests) {
+    joinRequestsArray.push({ id: j, username: joinRequests[j] });
+  }
+
+  const isOwner = currentUser.id === groupData.ownerId;
+  const isMember = groupData.users.find((userId) => currentUser.id === userId);
+
+  const [requestSent, setRequestSent] = React.useState(
+    groupData.userRequests.includes(currentUser.id)
+  );
+
+  const sendJoinRequest = async () => {
+    const updateGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: currentUser.id,
+    };
+    setRequestSent(true);
+    sendJoinRequestStart(updateGroupData);
+  };
+
+  const removeUserRequest = (userId) => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: userId,
+    };
+    removeJoinRequestStart(virtualGroupData);
+    const idx = groupData.userRequests.indexOf(userId);
+    if (idx !== -1) {
+      groupData.userRequests.splice(idx, 1);
+    }
+  };
+
+  const acceptUserRequest = (userId) => {
+    removeUserRequest(userId);
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: userId,
+    };
+    acceptJoinRequestStart(virtualGroupData);
+    groupData.users.push(userId);
+  };
 
   return (
     <Box m="10px">
@@ -55,47 +115,94 @@ export const VirtualGroupInfo = ({ currentUser, groupData }) => {
                 Members
               </Typography>
               <List>
-                {groupData.users.map((userId, index) => (
+                {usernameArray.map((username, index) => (
                   <ListItem disableGutters key={index}>
                     <Typography variant="body1" noWrap>
-                      {userId}
+                      {username}
                     </Typography>
                   </ListItem>
                 ))}
               </List>
             </Grid>
+            {isOwner && joinRequestsArray.length > 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="h6">Join Requests</Typography>
+                <List>
+                  {joinRequestsArray.map((user, index) => (
+                    <ListItem disableGutters key={index}>
+                      <Typography variant="body1" noWrap>
+                        {user.username}
+                      </Typography>
+                      <ListItemSecondaryAction>
+                        <IconButton>
+                          <CheckCircleRoundedIcon
+                            onClick={acceptUserRequest(user.id)}
+                          />
+                        </IconButton>
+                        <IconButton>
+                          <CancelRoundedIcon
+                            onClick={removeUserRequest(user.id)}
+                          />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+              </Grid>
+            ) : (
+              <div></div>
+            )}
           </Grid>
         </Grid>
         <Grid item md={4} xs={12}>
-          {currentUser ? (
-            groupData.users.find((userId) => currentUser.id === userId) ? (
-              <List disablePadding>
-                <ListItem button mb="10px" alignItems="center">
-                  <Box mr="10px">
-                    <Chat fontSize="small" />
-                  </Box>
-                  <Typography variant="subtitle2">Chat room</Typography>
-                </ListItem>
-                <ListItem button mb="10px" alignItems="center">
-                  <Box mr="10px">
-                    <PersonAdd fontSize="small" />
-                  </Box>
-                  <Typography variant="subtitle2">Add friend</Typography>
-                </ListItem>
-                <ListItem button mb="10px" alignItems="center">
-                  <Typography color="error" variant="subtitle2">
-                    Leave group
-                  </Typography>
-                </ListItem>
-              </List>
-            ) : (
-              <Button variant="contained" fullWidth>
-                Join
-              </Button>
-            )
+          {isOwner ? (
+            <List disablePadding>
+              <ListItem button mb="10px" alignItems="center">
+                <Box mr="10px">
+                  <Chat fontSize="small" />
+                </Box>
+                <Typography variant="subtitle2">Chat room</Typography>
+              </ListItem>
+              <ListItem button mb="10px" alignItems="center">
+                <Box mr="10px">
+                  <PersonAdd fontSize="small" />
+                </Box>
+                <Typography variant="subtitle2">Add friend</Typography>
+              </ListItem>
+              <ListItem button mb="10px" alignItems="center">
+                <Typography color="error" variant="subtitle2">
+                  Delete group
+                </Typography>
+              </ListItem>
+            </List>
+          ) : isMember ? (
+            <List disablePadding>
+              <ListItem button mb="10px" alignItems="center">
+                <Box mr="10px">
+                  <Chat fontSize="small" />
+                </Box>
+                <Typography variant="subtitle2">Chat room</Typography>
+              </ListItem>
+              <ListItem button mb="10px" alignItems="center">
+                <Box mr="10px">
+                  <PersonAdd fontSize="small" />
+                </Box>
+                <Typography variant="subtitle2">Add friend</Typography>
+              </ListItem>
+              <ListItem button mb="10px" alignItems="center">
+                <Typography color="error" variant="subtitle2">
+                  Leave group
+                </Typography>
+              </ListItem>
+            </List>
           ) : (
-            <Button variant="contained" fullWidth disabled>
-              Join
+            <Button
+              disabled={requestSent}
+              onClick={sendJoinRequest}
+              variant="contained"
+              fullWidth
+            >
+              {requestSent ? 'Pending' : 'Join'}
             </Button>
           )}
         </Grid>
@@ -103,3 +210,21 @@ export const VirtualGroupInfo = ({ currentUser, groupData }) => {
     </Box>
   );
 };
+
+const mapStateToProps = createStructuredSelector({
+  sendRequestSuccess: selectSendRequestSuccess,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  sendJoinRequestStart: (groupData) =>
+    dispatch(sendJoinRequestStart(groupData)),
+  removeJoinRequestStart: (groupData) =>
+    dispatch(removeUserRequestStart(groupData)),
+  acceptJoinRequestStart: (groupData) =>
+    dispatch(acceptUserRequestStart(groupData)),
+});
+
+export const VirtualGroupInfo = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VirtualGroupInfoComponent);

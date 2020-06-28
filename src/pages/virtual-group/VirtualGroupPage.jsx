@@ -27,6 +27,7 @@ import { YourGroupsSmall } from '../../components/YourVirtualGroupsSmall/YourVir
 import { VirtualGroupModule } from '../../components/VirtualGroupModule/VirtualGroupModule';
 import { YourGroupCard } from '../../components/YourVirtualGroupCard/YourVirtualGroupCard';
 import { VirtualGroupDialog } from '../../components/VirtualGroupDialog/VirtualGroupDialog';
+import { InfoAlert } from '../../components/shared/InfoAlert';
 
 const recruitingGroupStyles = makeStyles({
   header: {
@@ -124,16 +125,39 @@ const VirtualGroupPageComponent = ({
               <VirtualGroupDialog />
             </Grid>
           </Grid>
-          <Box className={recruitingGroupsClasses.list} width={1}>
-            {modules.map((module, index) => (
-              <VirtualGroupModule
-                currentUser={currentUser}
-                moduleCode={module.id}
-                key={index}
-                groups={virtualGroupsByModule(module.id)}
+          {currentUser === null && (
+            <Grid xs={12} item>
+              <Box mt={3} />
+              <InfoAlert
+                alertTitle="You are not logged in"
+                alertText="Please log in to your account on "
+                route="/login"
+                pageName="Login page"
               />
+            </Grid>
+          )}
+          {currentUser &&
+            (currentUser.modules.length === 0 ? (
+              <Box mt={3}>
+                <InfoAlert
+                  alertTitle="You don't have any modules"
+                  alertText="Please add your modules on "
+                  route="/dashboard"
+                  pageName="Dashboard page"
+                />
+              </Box>
+            ) : (
+              <Box className={recruitingGroupsClasses.list} width={1}>
+                {currentUser.modules.map((moduleCode, index) => (
+                  <VirtualGroupModule
+                    currentUser={currentUser}
+                    moduleCode={moduleCode}
+                    key={index}
+                    groups={virtualGroupsByModule(moduleCode)}
+                  />
+                ))}
+              </Box>
             ))}
-          </Box>
         </Grid>
         <Hidden smDown>
           <Grid item md={3}>
@@ -143,13 +167,14 @@ const VirtualGroupPageComponent = ({
               </Typography>
             </Box>
             <Box width={1} className={myGroupsClasses.list}>
-              {myGroups.map((virtualGroup, index) => (
-                <YourGroupCard
-                  currentUser={currentUser}
-                  groupData={virtualGroup}
-                  key={index}
-                />
-              ))}
+              {currentUser &&
+                myGroups.map((virtualGroup, index) => (
+                  <YourGroupCard
+                    currentUser={currentUser}
+                    groupData={virtualGroup}
+                    key={index}
+                  />
+                ))}
             </Box>
           </Grid>
         </Hidden>

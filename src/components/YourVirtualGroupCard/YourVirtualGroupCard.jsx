@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
-import { Link } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import { useMediaQuery } from '@material-ui/core';
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
@@ -10,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import CloseIcon from '@material-ui/icons/Close';
 import { Box } from '@material-ui/core';
+import { readDocument } from '../../services/firestore';
 
 import { VirtualGroupInfo } from '../../components/VirtualGroupInfo/VirtualGroupInfo';
 
@@ -56,6 +56,7 @@ export const YourGroupCard = ({ currentUser, groupData }) => {
   const xs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [open, setOpen] = React.useState(false);
+  const [usernameMap, setUsernameMap] = React.useState({});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -64,6 +65,14 @@ export const YourGroupCard = ({ currentUser, groupData }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    groupData.users.forEach(async (userId) => {
+      const user = await readDocument({ collection: 'users', docId: userId });
+      usernameMap[userId] = user.username;
+      setUsernameMap(usernameMap);
+    });
+  });
 
   return (
     <Box width={1} component={Paper} mb="5px">
@@ -88,7 +97,11 @@ export const YourGroupCard = ({ currentUser, groupData }) => {
           </IconButton>
         </Box>
         <DialogContent>
-          <VirtualGroupInfo currentUser={currentUser} groupData={groupData} />
+          <VirtualGroupInfo
+            currentUser={currentUser}
+            groupData={groupData}
+            members={usernameMap}
+          />
         </DialogContent>
       </Dialog>
       <Box

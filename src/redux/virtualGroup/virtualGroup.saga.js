@@ -4,15 +4,20 @@ import { virtualGroupActionType } from './virtualGroup.type';
 import {
   createVirtualGroupSuccess,
   createVirtualGroupError,
-  updateVirtualGroup,
-  updateVirtualGroupSuccess,
-  updateVirtualGroupError,
+  updateVirtualGroupReducer,
+  sendJoinRequestSuccess,
+  sendJoinRequestError,
+  removeUserRequestSuccess,
+  removeUserRequestError,
+  acceptUserRequestSuccess,
+  acceptUserRequestError,
 } from './virtualGroup.action';
 import {
   addDocument,
   readDocumentsWhereContains,
   readDocumentsWhereEqual,
-  updateDocument,
+  updateDocumentArrayUnion,
+  updateDocumentArrayRemove,
 } from '../../services/firestore';
 
 const collectionName = 'virtualGroups';
@@ -47,7 +52,7 @@ export function* readMyVirtualGroupsGenarator({ payload }) {
     const data = {
       myGroups: virtualGroups,
     };
-    yield put(updateVirtualGroup(data));
+    yield put(updateVirtualGroupReducer(data));
   } catch (error) {
     console.log(error);
   }
@@ -70,7 +75,7 @@ export function* readVirtualGroupsByModuleGenarator({ payload }) {
     const data = {
       [payload]: virtualGroups,
     };
-    yield put(updateVirtualGroup(data));
+    yield put(updateVirtualGroupReducer(data));
   } catch (error) {
     console.log(error);
   }
@@ -83,23 +88,71 @@ export function* onReadVirtualGroupsByModule() {
   );
 }
 
-export function* updateVirtualGroupGenerator({ payload }) {
+export function* sendJoinRequestGenerator({ payload }) {
   try {
-    yield updateDocument({
+    yield updateDocumentArrayUnion({
       collection: collectionName,
       docId: payload.id,
+      field: 'userRequests',
       data: payload.data,
     });
-    yield put(updateVirtualGroupSuccess(payload.data));
+    // update the virtual group with the new user request
+    yield put(sendJoinRequestSuccess(payload));
   } catch (error) {
-    yield put(updateVirtualGroupError(error));
+    yield put(sendJoinRequestError(error));
   }
 }
 
-export function* onUpdateVirtualGroup() {
-  yield takeLatest(
-    virtualGroupActionType.UPDATE_VIRTUAL_GROUP_START,
-    updateVirtualGroupGenerator
+export function* onSendJoinRequest() {
+  yield takeEvery(
+    virtualGroupActionType.SEND_JOIN_REQUEST_START,
+    sendJoinRequestGenerator
+  );
+}
+
+export function* acceptUserRequestGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayUnion({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'users',
+      data: payload.data,
+    });
+    // update the virtual group with the new accepted user
+    // and updated user requests
+    payload.prop = 'users';
+    yield put(acceptUserRequestSuccess(payload));
+  } catch (error) {
+    yield put(acceptUserRequestError(error));
+  }
+}
+
+export function* onAcceptUserRequest() {
+  yield takeEvery(
+    virtualGroupActionType.ACCEPT_USER_REQUEST_START,
+    acceptUserRequestGenerator
+  );
+}
+
+export function* removeUserRequestGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'userRequests',
+      data: payload.data,
+    });
+    // update the study group with the updated user requests
+    yield put(removeUserRequestSuccess(payload));
+  } catch (error) {
+    yield put(removeUserRequestError(error));
+  }
+}
+
+export function* onRemoveUserRequest() {
+  yield takeEvery(
+    virtualGroupActionType.REMOVE_USER_REQUEST_START,
+    removeUserRequestGenerator
   );
 }
 
@@ -108,6 +161,8 @@ export function* virtualGroupSaga() {
     call(onCreateVirtualGroup),
     call(onReadMyVirtualGroups),
     call(onReadVirtualGroupsByModule),
-    call(onUpdateVirtualGroup),
+    call(onSendJoinRequest),
+    call(onRemoveUserRequest),
+    call(onAcceptUserRequest),
   ]);
 }
