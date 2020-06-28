@@ -21,6 +21,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { ErrorMessage } from '../shared/ErrorMessage';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Chip from '@material-ui/core/Chip';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -86,6 +88,17 @@ const AddModuleFormComponent = ({
                   className={classes.form}
                   options={modules}
                   getOptionLabel={(option) => option.id}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip
+                        icon={<ImportContactsIcon />}
+                        color="primary"
+                        variant="outlined"
+                        label={option.id}
+                        {...getTagProps({ index })}
+                      />
+                    ))
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
