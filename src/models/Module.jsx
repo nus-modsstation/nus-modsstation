@@ -11,6 +11,10 @@ export class Module {
 
 export const modules = [
   {
+    id: 'MOD1001',
+    name: 'Test Module',
+  },
+  {
     id: 'CS2030',
     name: 'Programming Methodology II',
   },
