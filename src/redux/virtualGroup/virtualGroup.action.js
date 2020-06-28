@@ -72,11 +72,6 @@ export const acceptUserRequestStart = (virtualGroup) => ({
   payload: virtualGroup,
 });
 
-export const acceptUserRequestSuccess = (virtualGroup) => ({
-  type: virtualGroupActionType.ACCEPT_USER_REQUEST_SUCCESS,
-  payload: virtualGroup,
-});
-
 export const acceptUserRequestError = (errorMessage) => ({
   type: virtualGroupActionType.ACCEPT_USER_REQUEST_ERROR,
   payload: errorMessage,
@@ -94,5 +89,45 @@ export const removeUserRequestSuccess = (virtualGroup) => ({
 
 export const removeUserRequestError = (errorMessage) => ({
   type: virtualGroupActionType.REMOVE_USER_REQUEST_ERROR,
+  payload: errorMessage,
+});
+
+export const leaveGroupStart = (virtualGroup) => ({
+  type: virtualGroupActionType.LEAVE_GROUP_START,
+  payload: virtualGroup,
+});
+
+export const removeMyGroupById = (groupId) => ({
+  type: virtualGroupActionType.REMOVE_MY_GROUP_BY_ID,
+  payload: groupId,
+});
+
+export const removeModuleGroupById = (groupId) => ({
+  type: virtualGroupActionType.REMOVE_MODULE_GROUP_BY_ID,
+  payload: groupId,
+});
+
+export const leaveGroupError = (errorMessage) => ({
+  type: virtualGroupActionType.LEAVE_GROUP_ERROR,
+  payload: errorMessage,
+});
+
+export const updateVirtualGroupPropPush = (virtualGroup) => ({
+  type: virtualGroupActionType.UPDATE_VIRTUAL_GROUP_PROP_PUSH,
+  payload: virtualGroup,
+});
+
+export const updateVirtualGroupPropRemove = (virtualGroup) => ({
+  type: virtualGroupActionType.UPDATE_VIRTUAL_GROUP_PROP_REMOVE,
+  payload: virtualGroup,
+});
+
+export const deleteGroupStart = (virtualGroup) => ({
+  type: virtualGroupActionType.DELETE_GROUP_START,
+  payload: virtualGroup,
+});
+
+export const deleteGroupError = (errorMessage) => ({
+  type: virtualGroupActionType.DELETE_GROUP_ERROR,
   payload: errorMessage,
 });

@@ -14,7 +14,11 @@ import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-import { sendJoinRequestStart } from '../../redux/virtualGroup/virtualGroup.action';
+import {
+  leaveGroupStart,
+  deleteGroupStart,
+  sendJoinRequestStart,
+} from '../../redux/virtualGroup/virtualGroup.action';
 import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
 
 import { VirtualGroupInfo } from '../../components/VirtualGroupInfo/VirtualGroupInfo';
@@ -71,6 +75,8 @@ const VirtualGroupCardComponent = ({
   modulePage,
   groupData,
   sendJoinRequestStart,
+  leaveGroupStart,
+  deleteGroupStart,
 }) => {
   const component = componentStyles();
   const theme = useTheme();
@@ -100,6 +106,29 @@ const VirtualGroupCardComponent = ({
     };
     setRequestSent(true);
     sendJoinRequestStart(updateGroupData);
+  };
+
+  const leaveGroup = () => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: currentUser.id,
+    };
+    leaveGroupStart(virtualGroupData);
+    const idx = groupData.users.indexOf(currentUser.id);
+    if (idx !== -1) {
+      groupData.users.splice(idx, 1);
+    }
+    setOpen(false);
+  };
+
+  const deleteGroup = () => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+    };
+    deleteGroupStart(virtualGroupData);
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -146,6 +175,8 @@ const VirtualGroupCardComponent = ({
             groupData={groupData}
             members={usernameMap}
             joinRequests={userRequestsMap}
+            leaveGroup={leaveGroup}
+            deleteGroup={deleteGroup}
           />
         </DialogContent>
       </Dialog>
@@ -209,6 +240,8 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   sendJoinRequestStart: (groupData) =>
     dispatch(sendJoinRequestStart(groupData)),
+  leaveGroupStart: (groupData) => dispatch(leaveGroupStart(groupData)),
+  deleteGroupStart: (groupData) => dispatch(deleteGroupStart(groupData)),
 });
 
 export const VirtualGroupCard = connect(

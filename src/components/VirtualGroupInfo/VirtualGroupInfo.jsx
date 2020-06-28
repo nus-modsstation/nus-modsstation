@@ -29,6 +29,8 @@ const VirtualGroupInfoComponent = ({
   sendJoinRequestStart,
   acceptJoinRequestStart,
   removeJoinRequestStart,
+  leaveGroup,
+  deleteGroup,
 }) => {
   const usernameArray = [];
   for (var i in members) {
@@ -134,12 +136,12 @@ const VirtualGroupInfoComponent = ({
                         {user.username}
                       </Typography>
                       <ListItemSecondaryAction>
-                        <IconButton>
+                        <IconButton color="secondary">
                           <CheckCircleRoundedIcon
                             onClick={acceptUserRequest(user.id)}
                           />
                         </IconButton>
-                        <IconButton>
+                        <IconButton color="error">
                           <CancelRoundedIcon
                             onClick={removeUserRequest(user.id)}
                           />
@@ -169,7 +171,12 @@ const VirtualGroupInfoComponent = ({
                 </Box>
                 <Typography variant="subtitle2">Add friend</Typography>
               </ListItem>
-              <ListItem button mb="10px" alignItems="center">
+              <ListItem
+                button
+                onClick={deleteGroup}
+                mb="10px"
+                alignItems="center"
+              >
                 <Typography color="error" variant="subtitle2">
                   Delete group
                 </Typography>
@@ -189,7 +196,12 @@ const VirtualGroupInfoComponent = ({
                 </Box>
                 <Typography variant="subtitle2">Add friend</Typography>
               </ListItem>
-              <ListItem button mb="10px" alignItems="center">
+              <ListItem
+                button
+                onClick={leaveGroup}
+                mb="10px"
+                alignItems="center"
+              >
                 <Typography color="error" variant="subtitle2">
                   Leave group
                 </Typography>

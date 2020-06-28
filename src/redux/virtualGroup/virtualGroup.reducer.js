@@ -66,7 +66,7 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
     case virtualGroupActionType.REMOVE_USER_REQUEST_SUCCESS:
       return {
         ...state,
-        // update the study group with the removed user request
+        // update the virtual group with the removed user request
         [action.payload.moduleCode]: state[action.payload.moduleCode].map(
           (group) => {
             if (group.id === action.payload.id) {
@@ -83,21 +83,60 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
           }
         ),
       };
-    case virtualGroupActionType.ACCEPT_USER_REQUEST_SUCCESS:
+    case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_PROP_PUSH:
       return {
         ...state,
-        // update the study group with the new user request
+        // update the virtual group with the new prop
         [action.payload.moduleCode]: state[action.payload.moduleCode].map(
           (group) => {
             if (group.id === action.payload.id) {
               return {
                 ...group,
-                [action.payload.prop]: [...group.prop, action.payload.data],
+                [action.payload.prop]: [
+                  ...group[action.payload.prop],
+                  action.payload.data,
+                ],
               };
             }
             return group;
           }
         ),
+      };
+    case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_PROP_REMOVE:
+      return {
+        ...state,
+        // update the virtual group with the removed prop
+        [action.payload.moduleCode]: state[action.payload.moduleCode].map(
+          (group) => {
+            if (group.id === action.payload.id) {
+              return {
+                ...group,
+                [action.payload.prop]: [
+                  ...group[action.payload.prop].filter(
+                    (data) => data !== action.payload.data
+                  ),
+                ],
+              };
+            }
+            return group;
+          }
+        ),
+      };
+    case virtualGroupActionType.REMOVE_MY_GROUP_BY_ID:
+      return {
+        ...state,
+        myGroups: [
+          ...state.myGroups.filter((group) => group.id !== action.payload),
+        ],
+      };
+    case virtualGroupActionType.REMOVE_MODULE_GROUP_BY_ID:
+      return {
+        ...state,
+        [action.payload.moduleCode]: [
+          ...state[action.payload.moduleCode].filter(
+            (group) => group.id !== action.payload.id
+          ),
+        ],
       };
     default:
       return state;

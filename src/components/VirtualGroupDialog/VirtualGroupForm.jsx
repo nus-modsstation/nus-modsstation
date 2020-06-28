@@ -56,17 +56,23 @@ const VirtualGroupFormComponent = ({
   module,
 }) => {
   const componentClasses = componentStyles();
+  const [isPrivate, setPrivate] = React.useState(false);
 
   const { register, handleSubmit, errors, control } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
 
+  const handleChange = () => {
+    setPrivate(!isPrivate);
+  };
+
   const onSubmit = async (data) => {
     // convert to json format to save in database
     let virtualGroup = VirtualGroup.toJson({
       data: data,
       creatorId: currentUser.id,
+      isPublic: !isPrivate,
     });
     console.log(virtualGroup);
     await createGroupStart(virtualGroup);
@@ -184,7 +190,7 @@ const VirtualGroupFormComponent = ({
           <Grid xs={8} md={6} item>
             <FormControl className={componentClasses.form}>
               <FormControlLabel
-                control={<Checkbox id="isPublic" />}
+                control={<Checkbox id="isPublic" onChange={handleChange} />}
                 label="Set group as private"
               />
             </FormControl>
