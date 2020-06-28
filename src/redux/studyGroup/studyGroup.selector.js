@@ -34,3 +34,13 @@ export const selectCreateSuccess = createSelector(
   [selectStudyGroup],
   (studyGroup) => studyGroup.createSuccess
 );
+
+export const selectSendRequestSuccess = createSelector(
+  [selectStudyGroup],
+  (studyGroup) => studyGroup.SendRequestSuccess
+);
+
+export const selectSendRequestError = createSelector(
+  [selectStudyGroup],
+  (studyGroup) => studyGroup.SendRequestError
+);

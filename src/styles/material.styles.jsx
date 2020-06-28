@@ -45,4 +45,24 @@ export const materialStyles = makeStyles((theme) => ({
   fix: {
     flex: 1,
   },
+  dialogTitleText: {
+    display: 'inline',
+    padding: 0,
+  },
+  dialogTitleSection: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    alignItems: 'center',
+  },
+  clickableCursor: {
+    cursor: 'pointer',
+  },
+  listPaddingTopBottom: {
+    padding: 0,
+    margin: 0,
+  },
 }));

@@ -32,8 +32,8 @@ export const searchGroup = (searchQuery) => ({
   payload: searchQuery,
 });
 
-export const updateStudyGroup = (data) => ({
-  type: studyGroupActionType.UPDATE_STUDY_GROUP,
+export const updateStudyGroupReducer = (data) => ({
+  type: studyGroupActionType.UPDATE_STUDY_GROUP_REDUCER,
   payload: data,
 });
 
@@ -50,4 +50,89 @@ export const readGroupsByModule = (moduleCode) => ({
 export const listenMyGroup = (userId) => ({
   type: studyGroupActionType.LISTEN_MY_GROUP,
   payload: userId,
+});
+
+export const sendJoinGroupStart = (studyGroup) => ({
+  type: studyGroupActionType.SEND_JOIN_GROUP_START,
+  payload: studyGroup,
+});
+
+export const sendJoinGroupSuccess = (studyGroup) => ({
+  type: studyGroupActionType.SEND_JOIN_GROUP_SUCCESS,
+  payload: studyGroup,
+});
+
+export const sendJoinGroupError = (errorMessage) => ({
+  type: studyGroupActionType.SEND_JOIN_GROUP_ERROR,
+  payload: errorMessage,
+});
+
+export const acceptUserRequestStart = (studyGroup) => ({
+  type: studyGroupActionType.ACCEPT_USER_REQUEST_START,
+  payload: studyGroup,
+});
+
+export const acceptUserRequestSuccess = (studyGroup) => ({
+  type: studyGroupActionType.ACCEPT_USER_REQUEST_SUCCESS,
+  payload: studyGroup,
+});
+
+export const acceptUserRequestError = (errorMessage) => ({
+  type: studyGroupActionType.ACCEPT_USER_REQUEST_ERROR,
+  payload: errorMessage,
+});
+
+export const removeUserRequestStart = (studyGroup) => ({
+  type: studyGroupActionType.REMOVE_USER_REQUEST_START,
+  payload: studyGroup,
+});
+
+export const removeUserRequestSuccess = (studyGroup) => ({
+  type: studyGroupActionType.REMOVE_USER_REQUEST_SUCCESS,
+  payload: studyGroup,
+});
+
+export const removeUserRequestError = (errorMessage) => ({
+  type: studyGroupActionType.REMOVE_USER_REQUEST_ERROR,
+  payload: errorMessage,
+});
+
+export const leaveGroupStart = (studyGroup) => ({
+  type: studyGroupActionType.LEAVE_GROUP_START,
+  payload: studyGroup,
+});
+
+export const removeMyGroupById = (groupId) => ({
+  type: studyGroupActionType.REMOVE_MY_GROUP_BY_ID,
+  payload: groupId,
+});
+
+export const removeModuleGroupById = (groupId) => ({
+  type: studyGroupActionType.REMOVE_MODULE_GROUP_BY_ID,
+  payload: groupId,
+});
+
+export const leaveGroupError = (errorMessage) => ({
+  type: studyGroupActionType.LEAVE_GROUP_ERROR,
+  payload: errorMessage,
+});
+
+export const updateStudyGroupPropPush = (studyGroup) => ({
+  type: studyGroupActionType.UPDATE_STUDY_GROUP_PROP_PUSH,
+  payload: studyGroup,
+});
+
+export const updateStudyGroupPropRemove = (studyGroup) => ({
+  type: studyGroupActionType.UPDATE_STUDY_GROUP_PROP_REMOVE,
+  payload: studyGroup,
+});
+
+export const deleteGroupStart = (studyGroup) => ({
+  type: studyGroupActionType.DELETE_GROUP_START,
+  payload: studyGroup,
+});
+
+export const deleteGroupError = (errorMessage) => ({
+  type: studyGroupActionType.DELETE_GROUP_ERROR,
+  payload: errorMessage,
 });
