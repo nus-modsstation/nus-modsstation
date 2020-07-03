@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import { readDocument } from '../../services/firestore';
+
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -21,6 +23,56 @@ import {
 } from '../../redux/virtualGroup/virtualGroup.action';
 import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
 
+const JoinRequestItem = ({ user, removeJoinRequest, acceptJoinRequest }) => {
+  const [accepted, setAccepted] = React.useState(false);
+  const [declined, setDeclined] = React.useState(false);
+
+  const declineRequest = (userId) => {
+    removeJoinRequest(userId);
+    setDeclined(true);
+  };
+
+  const acceptRequest = (userId) => {
+    acceptJoinRequest(userId);
+    setAccepted(true);
+  };
+
+  return (
+    <ListItem disableGutters key={user.id}>
+      <Typography variant="body1" noWrap>
+        {user.username}
+      </Typography>
+      <ListItemSecondaryAction>
+        {accepted ? (
+          <div>
+            <Typography variant="button" color="secondary">
+              Accepted
+            </Typography>
+          </div>
+        ) : declined ? (
+          <div>
+            <Typography variant="button" color="error">
+              Removed
+            </Typography>
+          </div>
+        ) : (
+          <div>
+            <IconButton
+              color="secondary"
+              onClick={() => acceptRequest(user.id)}
+            >
+              <CheckCircleRoundedIcon />
+            </IconButton>
+            <IconButton onClick={() => declineRequest(user.id)}>
+              <CancelRoundedIcon />
+            </IconButton>
+          </div>
+        )}
+      </ListItemSecondaryAction>
+    </ListItem>
+  );
+};
+
 const VirtualGroupInfoComponent = ({
   currentUser,
   groupData,
@@ -32,11 +84,10 @@ const VirtualGroupInfoComponent = ({
   leaveGroup,
   deleteGroup,
 }) => {
-  const usernameArray = [];
+  const membersArray = [];
   for (var i in members) {
-    usernameArray.push(members[i]);
+    membersArray.push({ id: i, username: members[i] });
   }
-
   const joinRequestsArray = [];
   for (var j in joinRequests) {
     joinRequestsArray.push({ id: j, username: joinRequests[j] });
@@ -117,10 +168,10 @@ const VirtualGroupInfoComponent = ({
                 Members
               </Typography>
               <List>
-                {usernameArray.map((username, index) => (
-                  <ListItem disableGutters key={index}>
+                {membersArray.map((user) => (
+                  <ListItem disableGutters key={user.id}>
                     <Typography variant="body1" noWrap>
-                      {username}
+                      {user.username}
                     </Typography>
                   </ListItem>
                 ))}
@@ -130,23 +181,12 @@ const VirtualGroupInfoComponent = ({
               <Grid item xs={12}>
                 <Typography variant="h6">Join Requests</Typography>
                 <List>
-                  {joinRequestsArray.map((user, index) => (
-                    <ListItem disableGutters key={index}>
-                      <Typography variant="body1" noWrap>
-                        {user.username}
-                      </Typography>
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => acceptUserRequest(user.id)}
-                        >
-                          <CheckCircleRoundedIcon />
-                        </IconButton>
-                        <IconButton onClick={() => removeUserRequest(user.id)}>
-                          <CancelRoundedIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
+                  {joinRequestsArray.map((user) => (
+                    <JoinRequestItem
+                      user={user}
+                      removeJoinRequest={removeUserRequest}
+                      acceptJoinRequest={acceptUserRequest}
+                    />
                   ))}
                 </List>
               </Grid>
