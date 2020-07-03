@@ -109,7 +109,7 @@ const YourGroupCardComponent = ({
       userRequestsMap[userId] = user.username;
       setUserRequestsMap(userRequestsMap);
     });
-  }, [groupData]);
+  }, [groupData, usernameMap, userRequestsMap]);
 
   return (
     <Box width={1} component={Paper} mb="5px">

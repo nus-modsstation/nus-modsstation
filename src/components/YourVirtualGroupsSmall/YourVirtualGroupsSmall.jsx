@@ -97,7 +97,7 @@ const GroupComponent = ({
       userRequestsMap[userId] = user.username;
       setUserRequestsMap(userRequestsMap);
     });
-  }, [groupData]);
+  }, [groupData, usernameMap, userRequestsMap]);
   return (
     <div>
       <Dialog

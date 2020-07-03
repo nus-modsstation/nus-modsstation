@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { readDocument } from '../../services/firestore';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -183,6 +182,7 @@ const VirtualGroupInfoComponent = ({
                 <List>
                   {joinRequestsArray.map((user) => (
                     <JoinRequestItem
+                      key={user.id}
                       user={user}
                       removeJoinRequest={removeUserRequest}
                       acceptJoinRequest={acceptUserRequest}

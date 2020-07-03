@@ -143,7 +143,7 @@ const VirtualGroupCardComponent = ({
       userRequestsMap[userId] = user.username;
       setUserRequestsMap(userRequestsMap);
     });
-  }, [groupData]);
+  }, [groupData, usernameMap, userRequestsMap]);
 
   return (
     <Card
