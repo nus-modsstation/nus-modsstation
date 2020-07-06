@@ -13,6 +13,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Badge from '@material-ui/core/Badge';
+import MailIcon from '@material-ui/icons/Mail';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,6 +57,10 @@ const Appbar = ({ currentUser, logoutStart, history }) => {
     handleClose();
   };
 
+  const navigateToChatRoomPage = () => {
+    history.push('/chat-room');
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -75,6 +81,15 @@ const Appbar = ({ currentUser, logoutStart, history }) => {
             NUS ModsStation
           </Typography>
           <div>
+            <IconButton
+              onClick={navigateToChatRoomPage}
+              aria-label="show 4 new mails"
+              color="inherit"
+            >
+              <Badge badgeContent={4} color="secondary">
+                <MailIcon />
+              </Badge>
+            </IconButton>
             <IconButton
               aria-label="account of current user"
               aria-controls="menu-appbar"

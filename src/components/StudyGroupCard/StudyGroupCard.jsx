@@ -153,6 +153,8 @@ export const StudyGroupCardComponent = ({
         ...userMap,
         [userId]: user.username,
       };
+      console.log('studyGroup: ', studyGroup.id);
+      console.log('data: ', data);
       if (isMounted) {
         setUserMap(data);
       }
@@ -177,7 +179,7 @@ export const StudyGroupCardComponent = ({
       isMounted = false;
     };
     //eslint-disable-next-line
-  }, [studyGroup]);
+  }, []);
 
   return (
     <Box className={classes.clickableCursor}>

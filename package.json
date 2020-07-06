@@ -38,8 +38,7 @@
     "react-hooks"
   ],
   "eslintConfig": {
-    "extends": "react-app",
-    "react-hooks/exhaustive-deps": "warn"
+    "extends": "react-app"
   },
   "browserslist": {
     "production": [

@@ -24,6 +24,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 // pick a date util library
 import MomentUtils from '@date-io/moment';
 import './App.css';
+import { ChatRoomPage } from './pages/chat-room/ChatRoomPage';
 
 const App = ({ checkUserSession, currentUser }) => {
   useEffect(() => {
@@ -63,10 +64,13 @@ const App = ({ checkUserSession, currentUser }) => {
               }
             />
             <Route path="/virtual-group-module">
-              <VirtualGroupModulePage />     
+              <VirtualGroupModulePage />
             </Route>
             <Route path="/qa-thread-module">
               <QAThreadModulePage />
+            </Route>
+            <Route path="/chat-room">
+              <ChatRoomPage user={currentUser} />
             </Route>
           </Switch>
           <BottomNavbar />
