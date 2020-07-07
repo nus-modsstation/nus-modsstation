@@ -12,6 +12,11 @@ export const formatTime = (startTime, endTime) => {
   }
 };
 
+export const formatMessageTime = (time) => {
+  const momentTime = moment(time);
+  return momentTime.format('hh:mm A');
+};
+
 export const formatDateTime = (dateTime) => {
   return dateTime.format('MMM D hh:mm A');
 };

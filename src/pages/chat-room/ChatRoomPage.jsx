@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { writeChatMessages } from '../../services/messages';
-
 import { materialStyles } from '../../styles/material.styles';
-import { Typography } from '@material-ui/core';
 import { Box } from '@material-ui/core';
 import { ChatRoomContainer } from '../../components/ChatRoom/ChatRoomContainer';
 
@@ -24,7 +21,7 @@ export const ChatRoomPage = ({ user }) => {
 
   return (
     <Box className={materialClasses.root}>
-      <ChatRoomContainer />
+      <ChatRoomContainer user={user} />
     </Box>
   );
 };

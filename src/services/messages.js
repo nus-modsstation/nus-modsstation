@@ -3,13 +3,12 @@ import { database } from '../lib/firebase/firebase.config';
 const databaseRef = 'chatMessages/';
 
 export const writeChatMessages = ({
-  groupId,
+  groupId = 'AV24cIMRXUWrBqkYc7cfqm2BTOy1',
   userId,
   message,
   type = '',
   tag = '',
 }) => {
-  console.log('groupId: ', groupId);
   let messageRef = database.ref(databaseRef + groupId).push();
   messageRef.set({
     id: messageRef.key,
@@ -23,6 +22,9 @@ export const writeChatMessages = ({
   });
 };
 
-export const listenChatMessages = ({ groupId, callback }) => {
+export const listenChatMessages = ({
+  groupId = 'AV24cIMRXUWrBqkYc7cfqm2BTOy1',
+  callback,
+}) => {
   database.ref(databaseRef + groupId).on('value', callback);
 };
