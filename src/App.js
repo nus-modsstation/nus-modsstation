@@ -69,7 +69,10 @@ const App = ({ checkUserSession, currentUser }) => {
             <Route path="/qa-thread-module">
               <QAThreadModulePage />
             </Route>
-            <Route path="/chat-room">
+            <Route exact path="/chat-room">
+              <ChatRoomPage user={currentUser} />
+            </Route>
+            <Route path="/chat-room/:id">
               <ChatRoomPage user={currentUser} />
             </Route>
           </Switch>

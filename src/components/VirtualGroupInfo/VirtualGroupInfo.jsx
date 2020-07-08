@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import Box from '@material-ui/core/Box';
@@ -158,7 +159,13 @@ const VirtualGroupInfoComponent = ({
         <Grid item md={4} xs={12}>
           {isOwner ? (
             <List disablePadding>
-              <ListItem button mb="10px" alignItems="center">
+              <ListItem
+                component={Link}
+                to={`/chat-room/${groupData.id}`}
+                button
+                mb="10px"
+                alignItems="center"
+              >
                 <Box mr="10px">
                   <Chat fontSize="small" />
                 </Box>
@@ -183,7 +190,13 @@ const VirtualGroupInfoComponent = ({
             </List>
           ) : isMember ? (
             <List disablePadding>
-              <ListItem button mb="10px" alignItems="center">
+              <ListItem
+                component={Link}
+                to={`/chat-room/${groupData.id}`}
+                button
+                mb="10px"
+                alignItems="center"
+              >
                 <Box mr="10px">
                   <Chat fontSize="small" />
                 </Box>

@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import { teal } from '@material-ui/core/colors';
 
 export const theme = responsiveFontSizes(
   createMuiTheme({
@@ -64,5 +65,9 @@ export const materialStyles = makeStyles((theme) => ({
   listPaddingTopBottom: {
     padding: 0,
     margin: 0,
+  },
+  userAvatar: {
+    color: theme.palette.getContrastText(teal[500]),
+    backgroundColor: teal[500],
   },
 }));

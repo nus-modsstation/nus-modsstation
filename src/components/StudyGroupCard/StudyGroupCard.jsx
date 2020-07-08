@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { readDocument } from '../../services/firestore';
@@ -363,7 +364,12 @@ export const StudyGroupCardComponent = ({
                 )}
                 {isJoined && (
                   <Grid item xs={12}>
-                    <Button size="small" variant="outlined">
+                    <Button
+                      component={Link}
+                      to={`chat-room/${studyGroup.id}`}
+                      size="small"
+                      variant="outlined"
+                    >
                       Chat room
                     </Button>
                   </Grid>
