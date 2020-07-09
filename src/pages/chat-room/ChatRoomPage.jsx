@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { useParams } from 'react-router-dom';
@@ -8,46 +8,29 @@ import { selectMyVirtualGroups } from '../../redux/virtualGroup/virtualGroup.sel
 
 import { materialStyles } from '../../styles/material.styles';
 import { Box } from '@material-ui/core';
-import { ChatRoomContainer } from '../../components/ChatRoom/ChatRoomContainer';
-import { CustomAlert } from '../../components/shared/CustomAlert';
+import { ChatRoomList } from '../../components/ChatRoom/ChatRoomList';
 
 const ChatRoomComponent = ({ user, myGroups, myVirtualGroups }) => {
   const materialClasses = materialStyles();
   const { id } = useParams();
-  const groupIndex = myGroups.findIndex((group) => group.id === id);
-  const virtualGroupIndex = myVirtualGroups.findIndex(
-    (group) => group.id === id
-  );
-  const roomData =
-    groupIndex !== -1
-      ? myGroups[groupIndex]
-      : virtualGroupIndex !== -1
-      ? myVirtualGroups[virtualGroupIndex]
-      : null;
 
-  // Similar to componentDidMount and componentDidUpdate:
-  useEffect(() => {
-    // fetch chatMessages
-    // create a chatMessage
-    // const chatMessage = {
-    //   groupId: 'AV24cIMRXUWrBqkYc7cfqm2BTOy1',
-    //   userId: user.id,
-    //   message: 'This is the second message',
-    // };
-    // writeChatMessages(chatMessage);
-  });
+  const roomNames = [
+    ...myGroups.map((group) => group.title),
+    ...myVirtualGroups.map((group) => group.groupName),
+  ];
+  const roomIds = [
+    ...myGroups.map((group) => group.id),
+    ...myVirtualGroups.map((group) => group.id),
+  ];
 
   return (
     <Box className={materialClasses.root}>
-      {roomData !== null ? (
-        <ChatRoomContainer roomData={roomData} user={user} />
-      ) : (
-        <CustomAlert
-          severity="error"
-          alertTitle="Invalid group id"
-          alertText="There is no chat room associated with the group id."
-        />
-      )}
+      <ChatRoomList
+        id={id}
+        user={user}
+        roomIds={roomIds}
+        roomNames={roomNames}
+      />
     </Box>
   );
 };

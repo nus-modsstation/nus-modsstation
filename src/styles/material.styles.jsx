@@ -67,7 +67,6 @@ export const materialStyles = makeStyles((theme) => ({
     margin: 0,
   },
   userAvatar: {
-    color: theme.palette.getContrastText(teal[500]),
-    backgroundColor: teal[500],
+    backgroundColor: teal['A700'],
   },
 }));

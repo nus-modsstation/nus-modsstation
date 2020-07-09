@@ -10,11 +10,10 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
-import { Grid } from '@material-ui/core';
-import Hidden from '@material-ui/core/Hidden';
 import { CustomAlert } from '../shared/CustomAlert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-export const ChatRoomContainer = ({ roomData, user }) => {
+export const ChatRoomContainer = ({ roomId, user }) => {
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
 
@@ -25,7 +24,7 @@ export const ChatRoomContainer = ({ roomData, user }) => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     listenChatMessages({
-      id: roomData.id,
+      id: roomId,
       callback: (snapshot) => {
         if (snapshot.val() !== null) {
           const data = Object.values(snapshot.val());
@@ -38,13 +37,13 @@ export const ChatRoomContainer = ({ roomData, user }) => {
       },
     });
     // eslint-disable-next-line
-  }, []);
+  }, [roomId]);
 
   const onSubmit = (data) => {
     const newMessage = data.newMessage.trim();
     if (newMessage !== '') {
       writeChatMessages({
-        id: roomData.id,
+        id: roomId,
         userId: user.id,
         message: newMessage,
       });
@@ -53,70 +52,69 @@ export const ChatRoomContainer = ({ roomData, user }) => {
   };
 
   return (
-    <Grid container>
-      <Hidden xsDown>
-        <Grid item md={4} sm={3}>
-          <Box textOverflow="ellipsis">{roomData.id}</Box>
-        </Grid>
-      </Hidden>
-      <Grid item md={8} sm={9} xs={12}>
-        <Box
-          height="75vh"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          {loading && <div>Loading...</div>}
-          {!loading && messages.length === 0 && (
-            <Box width={1}>
-              <CustomAlert
-                severity="info"
-                alertTitle="No message yet"
-                alertText="Be the first member to break the ice :)"
-              />
-            </Box>
-          )}
-          <Box
-            width={1}
-            flex={1}
-            display="flex"
-            flexDirection="column"
-            justifyContent="flex-end"
-            alignItems
-          >
-            {messages.map((message) => (
-              <MessageItem key={message.id} message={message} />
-            ))}
-          </Box>
-          <Box width={1} mt={2}>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              <TextField
-                inputRef={register}
-                name="newMessage"
-                label="Messages"
-                placeholder="Messages"
-                multiline
-                rowsMax={2}
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        type="submit"
-                        aria-label="send message"
-                        edge="end"
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </form>
-          </Box>
+    <Box
+      p={1}
+      height="80vh"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+      {loading && (
+        <CircularProgress color="secondary" size={32} thickness={4.5} />
+      )}
+      {!loading && messages.length === 0 && (
+        <Box width={1}>
+          <CustomAlert
+            severity="info"
+            alertTitle="No message yet"
+            alertText="Be the first member to break the ice :)"
+          />
         </Box>
-      </Grid>
-    </Grid>
+      )}
+      <Box
+        width={1}
+        flex={1}
+        display="flex"
+        flexDirection="column"
+        justifyContent="flex-end"
+      >
+        {messages.map((message, index) => (
+          <MessageItem
+            key={message.id}
+            message={message}
+            previousMessage={index === 0 ? null : messages[index - 1]}
+            isLast={index === messages.length - 1}
+          />
+        ))}
+      </Box>
+      <Box width={1} mt={2}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <TextField
+            inputRef={register}
+            name="newMessage"
+            label="Messages"
+            placeholder="Messages"
+            multiline
+            rows={1}
+            rowsMax={1}
+            variant="outlined"
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    type="submit"
+                    aria-label="send message"
+                    edge="end"
+                  >
+                    <SendIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </form>
+      </Box>
+    </Box>
   );
 };
