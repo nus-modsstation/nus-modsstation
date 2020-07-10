@@ -14,23 +14,18 @@ const ChatRoomComponent = ({ user, myGroups, myVirtualGroups }) => {
   const materialClasses = materialStyles();
   const { id } = useParams();
 
-  const roomNames = [
-    ...myGroups.map((group) => group.title),
-    ...myVirtualGroups.map((group) => group.groupName),
-  ];
-  const roomIds = [
-    ...myGroups.map((group) => group.id),
-    ...myVirtualGroups.map((group) => group.id),
+  const roomData = [
+    ...myGroups.map((group) => {
+      return { name: group.title, id: group.id, type: 'study-group' };
+    }),
+    ...myVirtualGroups.map((group) => {
+      return { name: group.groupName, id: group.id, type: 'virtual-group' };
+    }),
   ];
 
   return (
     <Box className={materialClasses.root}>
-      <ChatRoomList
-        id={id}
-        user={user}
-        roomIds={roomIds}
-        roomNames={roomNames}
-      />
+      <ChatRoomList id={id} user={user} roomData={roomData} />
     </Box>
   );
 };

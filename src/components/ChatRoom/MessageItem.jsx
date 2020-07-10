@@ -10,10 +10,10 @@ import { Typography, Divider } from '@material-ui/core';
 import { materialStyles } from '../../styles/material.styles';
 import Chip from '@material-ui/core/Chip';
 
-export const MessageItem = ({ message, previousMessage, isLast }) => {
+export const MessageItem = ({ message, previousMessage }) => {
   const materialClasses = materialStyles();
   const [user, setUser] = useState({
-    username: 'username',
+    username: '',
   });
   const sameUser =
     previousMessage !== null && message.userId === previousMessage.userId;
@@ -69,7 +69,7 @@ export const MessageItem = ({ message, previousMessage, isLast }) => {
             <Box width={40} />
           )}
         </Box>
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" flexWrap="wrap">
           {!isSameUserSameTime && (
             <Box display="flex" flexDirection="row">
               <Box mr={1} fontWeight="fontWeightBold">
@@ -82,8 +82,12 @@ export const MessageItem = ({ message, previousMessage, isLast }) => {
               </Box>
             </Box>
           )}
-          <Box mt={isSameUserSameTime ? 0 : 0.5}>
-            <div style={{ whiteSpace: 'pre-wrap' }}>{message.message}</div>
+          <Box display="block" mt={isSameUserSameTime ? 0 : 0.5}>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
+              <Typography style={{ wordBreak: 'break-all' }}>
+                {message.message}
+              </Typography>
+            </div>
           </Box>
         </Box>
       </Box>

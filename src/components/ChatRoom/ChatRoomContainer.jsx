@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { listenChatMessages, writeChatMessages } from '../../services/messages';
@@ -12,8 +12,19 @@ import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import { CustomAlert } from '../shared/CustomAlert';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  hideScrollbar: {
+    '&::-webkit-scrollbar': {
+      display: 'none',
+      width: 0,
+    },
+  },
+}));
 
 export const ChatRoomContainer = ({ roomId, user }) => {
+  const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
 
@@ -21,8 +32,17 @@ export const ChatRoomContainer = ({ roomId, user }) => {
     mode: 'onChange',
   });
 
-  // Similar to componentDidMount and componentDidUpdate:
+  const lastMessageRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (lastMessageRef.current !== null) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'auto' });
+    }
+  };
+
   useEffect(() => {
+    setLoading(true);
+    setMessages([]);
     listenChatMessages({
       id: roomId,
       callback: (snapshot) => {
@@ -39,6 +59,10 @@ export const ChatRoomContainer = ({ roomId, user }) => {
     // eslint-disable-next-line
   }, [roomId]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const onSubmit = (data) => {
     const newMessage = data.newMessage.trim();
     if (newMessage !== '') {
@@ -53,8 +77,7 @@ export const ChatRoomContainer = ({ roomId, user }) => {
 
   return (
     <Box
-      p={1}
-      height="80vh"
+      height="78vh"
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -73,19 +96,26 @@ export const ChatRoomContainer = ({ roomId, user }) => {
       )}
       <Box
         width={1}
+        height="70%"
         flex={1}
         display="flex"
         flexDirection="column"
         justifyContent="flex-end"
+        style={{ overflowY: 'hidden' }}
+        className={classes.hideScrollbar}
       >
-        {messages.map((message, index) => (
-          <MessageItem
-            key={message.id}
-            message={message}
-            previousMessage={index === 0 ? null : messages[index - 1]}
-            isLast={index === messages.length - 1}
-          />
-        ))}
+        <Box style={{ overflowY: 'auto' }}>
+          {messages.map((message, index) => (
+            <Box key={message.id}>
+              <MessageItem
+                message={message}
+                previousMessage={index === 0 ? null : messages[index - 1]}
+                isLast={index === messages.length - 1}
+              />
+              {index === messages.length - 1 && <div ref={lastMessageRef} />}
+            </Box>
+          ))}
+        </Box>
       </Box>
       <Box width={1} mt={2}>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>

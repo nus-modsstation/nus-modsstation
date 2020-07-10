@@ -11,8 +11,11 @@ import { ChatRoomContainer } from './ChatRoomContainer';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { CustomAlert } from '../shared/CustomAlert';
 import { Box } from '@material-ui/core';
+import ContactMailIcon from '@material-ui/icons/ContactMail';
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 
-export const ChatRoomList = ({ id, user, roomNames, roomIds }) => {
+export const ChatRoomList = ({ id, user, roomData }) => {
+  const roomIds = roomData.map((room) => room.id);
   const [roomId, setRoomId] = useState(id === undefined ? roomIds[0] : id);
   const invalidId = !roomIds.includes(roomId);
 
@@ -27,18 +30,24 @@ export const ChatRoomList = ({ id, user, roomNames, roomIds }) => {
       <Hidden xsDown>
         <Grid item md={4} sm={3}>
           <List>
-            {roomNames.map((name, index) => (
+            {roomData.map((room) => (
               <ListItem
                 button
                 component={Link}
-                to={`/chat-room/${roomIds[index]}`}
-                key={name}
-                selected={roomId === roomIds[index]}
+                to={`/chat-room/${room.id}`}
+                key={room.name}
+                selected={roomId === room.id}
               >
                 <ListItemIcon>
-                  <LocalLibraryIcon />
+                  {room.type === 'study-group' ? (
+                    <LocalLibraryIcon />
+                  ) : room.type === 'virtual-group' ? (
+                    <ContactMailIcon />
+                  ) : (
+                    <QuestionAnswerIcon />
+                  )}
                 </ListItemIcon>
-                <ListItemText primary={name} />
+                <ListItemText primary={room.name} />
               </ListItem>
             ))}
           </List>

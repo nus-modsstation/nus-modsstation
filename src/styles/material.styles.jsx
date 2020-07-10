@@ -25,6 +25,20 @@ export const theme = responsiveFontSizes(
       // E.g., shift from Red 500 to Red 300 or Red 700.
       tonalOffset: 0.2,
     },
+    // To hide the scrollbar
+    // overrides: {
+    //   MuiCssBaseline: {
+    //     '@global': {
+    //       '*': {
+    //         'scrollbar-width': 'thin',
+    //       },
+    //       '*::-webkit-scrollbar': {
+    //         width: '4px',
+    //         height: '4px',
+    //       },
+    //     },
+    //   },
+    // },
   })
 );
 
