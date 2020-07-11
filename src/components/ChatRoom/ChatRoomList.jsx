@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -13,11 +13,21 @@ import { CustomAlert } from '../shared/CustomAlert';
 import { Box } from '@material-ui/core';
 import ContactMailIcon from '@material-ui/icons/ContactMail';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 
 export const ChatRoomList = ({ id, user, roomData }) => {
+  const history = useHistory();
   const roomIds = roomData.map((room) => room.id);
   const [roomId, setRoomId] = useState(id === undefined ? roomIds[0] : id);
   const invalidId = !roomIds.includes(roomId);
+
+  const handleSelectRoom = (event) => {
+    console.log('selectRoom: ', event.target.value);
+    history.push(`/chat-room/${event.target.value}`);
+  };
 
   useEffect(() => {
     if (id !== undefined) {
@@ -28,7 +38,7 @@ export const ChatRoomList = ({ id, user, roomData }) => {
   return (
     <Grid spacing={2} container>
       <Hidden xsDown>
-        <Grid item md={4} sm={3}>
+        <Grid item md={3} sm={4}>
           <List>
             {roomData.map((room) => (
               <ListItem
@@ -47,13 +57,49 @@ export const ChatRoomList = ({ id, user, roomData }) => {
                     <QuestionAnswerIcon />
                   )}
                 </ListItemIcon>
-                <ListItemText primary={room.name} />
+                <ListItemText>
+                  <Typography noWrap>{room.name}</Typography>
+                </ListItemText>
               </ListItem>
             ))}
           </List>
         </Grid>
       </Hidden>
-      <Grid item md={8} sm={9} xs={12}>
+      <Hidden smUp>
+        <Grid item xs={12}>
+          <FormControl fullWidth style={{ width: '100%' }} variant="outlined">
+            <InputLabel id="demo-simple-select-outlined-label">
+              Chat room
+            </InputLabel>
+            <Select
+              SelectDisplayProps={{
+                style: { display: 'flex', alignItems: 'center' },
+              }}
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={roomId}
+              onChange={handleSelectRoom}
+              label="Chat room"
+            >
+              {roomData.map((room) => (
+                <MenuItem key={room.id} value={room.id}>
+                  <ListItemIcon>
+                    {room.type === 'study-group' ? (
+                      <LocalLibraryIcon />
+                    ) : room.type === 'virtual-group' ? (
+                      <ContactMailIcon />
+                    ) : (
+                      <QuestionAnswerIcon />
+                    )}
+                  </ListItemIcon>
+                  {room.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </Hidden>
+      <Grid item md={9} sm={8} xs={12}>
         {invalidId ? (
           <Box width={1}>
             <CustomAlert

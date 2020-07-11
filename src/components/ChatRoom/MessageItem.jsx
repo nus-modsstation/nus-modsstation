@@ -27,12 +27,17 @@ export const MessageItem = ({ message, previousMessage }) => {
     !moment(previousMessage.timestamp).isSame(message.timestamp, 'day');
 
   useEffect(() => {
+    let isMounted = true; // note this flag denote mount status
     const getUser = async () => {
       const result = await findUserById(message.userId);
-      setUser(result);
-      return result;
+      if (isMounted) {
+        setUser(result);
+      }
     };
     getUser();
+    return () => {
+      isMounted = false;
+    }; // use effect cleanup to set flag false, if unmounted
     // eslint-disable-next-line
   }, []);
 

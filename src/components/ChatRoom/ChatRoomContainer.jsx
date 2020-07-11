@@ -77,10 +77,11 @@ export const ChatRoomContainer = ({ roomId, user }) => {
 
   return (
     <Box
-      height="78vh"
+      height="76vh"
       display="flex"
       flexDirection="column"
       alignItems="center"
+      overflow="hidden"
     >
       {loading && (
         <CircularProgress color="secondary" size={32} thickness={4.5} />
@@ -96,7 +97,6 @@ export const ChatRoomContainer = ({ roomId, user }) => {
       )}
       <Box
         width={1}
-        height="70%"
         flex={1}
         display="flex"
         flexDirection="column"
@@ -123,7 +123,7 @@ export const ChatRoomContainer = ({ roomId, user }) => {
             inputRef={register}
             name="newMessage"
             label="Messages"
-            placeholder="Messages"
+            style={{ zIndex: 0 }}
             multiline
             rows={1}
             rowsMax={1}
