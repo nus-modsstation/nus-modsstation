@@ -3,7 +3,7 @@ import { database } from '../lib/firebase/firebase.config';
 const databaseRef = 'chatMessages/';
 
 export const writeChatMessages = ({
-  id = 'AV24cIMRXUWrBqkYc7cfqm2BTOy1',
+  id,
   userId,
   message,
   type = '',
@@ -22,9 +22,23 @@ export const writeChatMessages = ({
   });
 };
 
-export const listenChatMessages = ({
-  id = 'AV24cIMRXUWrBqkYc7cfqm2BTOy1',
-  callback,
-}) => {
+export const listenChatMessages = ({ id, callback }) => {
   database.ref(databaseRef + id).on('value', callback);
+};
+
+export const listenOnMessageAdded = ({ id, callback }) => {
+  database
+    .ref(databaseRef + id)
+    .orderByChild('timestamp')
+    .limitToLast(1)
+    .on('child_added', callback);
+};
+
+export const readRecentMessages = ({ id, size, callback }) => {
+  database
+    .ref(databaseRef + id)
+    .orderByChild('timestamp')
+    .limitToLast(size)
+    .once('value')
+    .then(callback);
 };

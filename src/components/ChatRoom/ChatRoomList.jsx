@@ -25,7 +25,6 @@ export const ChatRoomList = ({ id, user, roomData }) => {
   const invalidId = !roomIds.includes(roomId);
 
   const handleSelectRoom = (event) => {
-    console.log('selectRoom: ', event.target.value);
     history.push(`/chat-room/${event.target.value}`);
   };
 

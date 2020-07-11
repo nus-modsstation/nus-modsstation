@@ -89,7 +89,14 @@ export const MessageItem = ({ message, previousMessage }) => {
           )}
           <Box display="block" mt={isSameUserSameTime ? 0 : 0.5}>
             <div style={{ whiteSpace: 'pre-wrap' }}>
-              <Typography style={{ wordBreak: 'break-all' }}>
+              <Typography
+                style={{
+                  overflowWrap: 'break-word',
+                  wordWrap: 'break-word',
+                  wordBreak: 'break-word',
+                  hyphens: 'auto',
+                }}
+              >
                 {message.message}
               </Typography>
             </div>

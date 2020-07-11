@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { listenChatMessages, writeChatMessages } from '../../services/messages';
+import {
+  listenChatMessages,
+  listenOnMessageAdded,
+  writeChatMessages,
+  readRecentMessages,
+} from '../../services/messages';
 
 import { MessageItem } from '../../components/ChatRoom/MessageItem';
 
@@ -27,7 +32,6 @@ export const ChatRoomContainer = ({ roomId, user }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
-
   const { register, handleSubmit, reset } = useForm({
     mode: 'onChange',
   });
@@ -40,14 +44,30 @@ export const ChatRoomContainer = ({ roomId, user }) => {
     }
   };
 
+  // trigger when roomId changes
   useEffect(() => {
-    setLoading(true);
     setMessages([]);
-    listenChatMessages({
+    setLoading(true);
+    // listenChatMessages({
+    //   id: roomId,
+    //   callback: (snapshot) => {
+    //     if (snapshot.val() !== null) {
+    //       const data = Object.values(snapshot.val());
+    //       setLoading(false);
+    //       setMessages(data);
+    //     } else {
+    //       setLoading(false);
+    //       setMessages([]);
+    //     }
+    //   },
+    // });
+    readRecentMessages({
       id: roomId,
+      size: 5,
       callback: (snapshot) => {
+        let data = [];
         if (snapshot.val() !== null) {
-          const data = Object.values(snapshot.val());
+          data = Object.values(snapshot.val());
           setLoading(false);
           setMessages(data);
         } else {
@@ -60,7 +80,20 @@ export const ChatRoomContainer = ({ roomId, user }) => {
   }, [roomId]);
 
   useEffect(() => {
+    let initialRead = true;
+    listenOnMessageAdded({
+      id: roomId,
+      callback: (snapshot) => {
+        if (!initialRead) {
+          const newMessage = snapshot.val();
+          const updatedData = [...messages, newMessage];
+          setMessages(updatedData);
+        }
+        initialRead = false;
+      },
+    });
     scrollToBottom();
+    // eslint-disable-next-line
   }, [messages]);
 
   const onSubmit = (data) => {
