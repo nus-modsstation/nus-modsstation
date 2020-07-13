@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { readDocument } from '../../services/firestore';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
@@ -20,6 +20,7 @@ import {
   sendJoinRequestStart,
 } from '../../redux/virtualGroup/virtualGroup.action';
 import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
+import { readDocument } from '../../services/firestore';
 
 import { VirtualGroupInfo } from '../../components/VirtualGroupInfo/VirtualGroupInfo';
 
@@ -142,7 +143,7 @@ const VirtualGroupCardComponent = ({
       userRequestsMap[userId] = user.username;
       setUserRequestsMap(userRequestsMap);
     });
-  });
+  }, [groupData, usernameMap, userRequestsMap]);
 
   return (
     <Card

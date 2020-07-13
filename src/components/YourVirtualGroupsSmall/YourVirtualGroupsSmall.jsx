@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { List, ListItem } from '@material-ui/core';
@@ -7,6 +10,12 @@ import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Box from '@material-ui/core/Box';
+
+import {
+  leaveGroupStart,
+  deleteGroupStart,
+} from '../../redux/virtualGroup/virtualGroup.action';
+import { readDocument } from '../../services/firestore';
 
 import { VirtualGroupInfo } from '../../components/VirtualGroupInfo/VirtualGroupInfo';
 
@@ -34,9 +43,17 @@ const componentStyles = makeStyles((theme) => ({
   },
 }));
 
-const Group = ({ currentUser, groupData }) => {
+const GroupComponent = ({
+  currentUser,
+  groupData,
+  leaveGroupStart,
+  deleteGroupStart,
+}) => {
   const component = componentStyles();
+
   const [open, setOpen] = React.useState(false);
+  const [usernameMap, setUsernameMap] = React.useState({});
+  const [userRequestsMap, setUserRequestsMap] = React.useState({});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -45,6 +62,42 @@ const Group = ({ currentUser, groupData }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const leaveGroup = () => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: currentUser.id,
+    };
+    leaveGroupStart(virtualGroupData);
+    const idx = groupData.users.indexOf(currentUser.id);
+    if (idx !== -1) {
+      groupData.users.splice(idx, 1);
+    }
+    setOpen(false);
+  };
+
+  const deleteGroup = () => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+    };
+    deleteGroupStart(virtualGroupData);
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    groupData.users.forEach(async (userId) => {
+      const user = await readDocument({ collection: 'users', docId: userId });
+      usernameMap[userId] = user.username;
+      setUsernameMap(usernameMap);
+    });
+    groupData.userRequests.forEach(async (userId) => {
+      const user = await readDocument({ collection: 'users', docId: userId });
+      userRequestsMap[userId] = user.username;
+      setUserRequestsMap(userRequestsMap);
+    });
+  }, [groupData, usernameMap, userRequestsMap]);
   return (
     <div>
       <Dialog
@@ -68,7 +121,14 @@ const Group = ({ currentUser, groupData }) => {
           </IconButton>
         </Box>
         <DialogContent>
-          <VirtualGroupInfo currentUser={currentUser} groupData={groupData} />
+          <VirtualGroupInfo
+            currentUser={currentUser}
+            groupData={groupData}
+            members={usernameMap}
+            joinRequests={userRequestsMap}
+            leaveGroup={leaveGroup}
+            deleteGroup={deleteGroup}
+          />
         </DialogContent>
       </Dialog>
       <ListItem button onClick={handleClickOpen}>
@@ -91,6 +151,15 @@ const Group = ({ currentUser, groupData }) => {
     </div>
   );
 };
+
+const mapStateToProps = createStructuredSelector({});
+
+const mapDispatchToProps = (dispatch) => ({
+  leaveGroupStart: (groupData) => dispatch(leaveGroupStart(groupData)),
+  deleteGroupStart: (groupData) => dispatch(deleteGroupStart(groupData)),
+});
+
+const Group = connect(mapStateToProps, mapDispatchToProps)(GroupComponent);
 
 export const YourGroupsSmall = ({ currentUser, yourGroups }) => {
   const component = componentStyles();
