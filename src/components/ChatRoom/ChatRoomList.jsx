@@ -28,6 +28,7 @@ export const ChatRoomList = ({ id, user, roomData }) => {
     history.push(`/chat-room/${event.target.value}`);
   };
 
+  // trigger when id changes
   useEffect(() => {
     if (id !== undefined) {
       setRoomId(id);
@@ -67,15 +68,11 @@ export const ChatRoomList = ({ id, user, roomData }) => {
       <Hidden smUp>
         <Grid item xs={12}>
           <FormControl fullWidth style={{ width: '100%' }} variant="outlined">
-            <InputLabel id="demo-simple-select-outlined-label">
-              Chat room
-            </InputLabel>
+            <InputLabel>Chat room</InputLabel>
             <Select
               SelectDisplayProps={{
                 style: { display: 'flex', alignItems: 'center' },
               }}
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
               value={roomId}
               onChange={handleSelectRoom}
               label="Chat room"
@@ -104,7 +101,7 @@ export const ChatRoomList = ({ id, user, roomData }) => {
             <CustomAlert
               severity="warning"
               alertTitle="Chat room not found"
-              alertText="Please select one of your chat room"
+              alertText="Please join a study group/virtual group/Q&A thread first"
             />
           </Box>
         ) : (

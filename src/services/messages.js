@@ -34,11 +34,27 @@ export const listenOnMessageAdded = ({ id, callback }) => {
     .on('child_added', callback);
 };
 
-export const readRecentMessages = ({ id, size, callback }) => {
-  database
-    .ref(databaseRef + id)
-    .orderByChild('timestamp')
-    .limitToLast(size)
-    .once('value')
-    .then(callback);
+export const readRecentMessages = ({
+  id,
+  size = 10,
+  callback,
+  previousTimestamp,
+  previousKey,
+}) => {
+  if (previousTimestamp == null || previousKey == null) {
+    database
+      .ref(databaseRef + id)
+      .orderByChild('timestamp')
+      .limitToLast(size)
+      .once('value')
+      .then(callback);
+  } else {
+    database
+      .ref(databaseRef + id)
+      .orderByChild('timestamp')
+      .endAt(previousTimestamp)
+      .limitToLast(size + 1)
+      .once('value')
+      .then(callback);
+  }
 };

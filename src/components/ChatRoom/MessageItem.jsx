@@ -27,10 +27,11 @@ export const MessageItem = ({ message, previousMessage }) => {
     !moment(previousMessage.timestamp).isSame(message.timestamp, 'day');
 
   useEffect(() => {
-    let isMounted = true; // note this flag denote mount status
+    let isMounted = true; // denote mount status
     const getUser = async () => {
       const result = await findUserById(message.userId);
       if (isMounted) {
+        // prevent setUser when component unmount
         setUser(result);
       }
     };

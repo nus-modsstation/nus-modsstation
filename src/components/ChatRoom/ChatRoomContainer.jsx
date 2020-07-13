@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
 import {
-  listenChatMessages,
   listenOnMessageAdded,
   writeChatMessages,
   readRecentMessages,
@@ -17,30 +16,56 @@ import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import { CustomAlert } from '../shared/CustomAlert';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles((theme) => ({
-  hideScrollbar: {
-    '&::-webkit-scrollbar': {
-      display: 'none',
-      width: 0,
-    },
-  },
-}));
+import Typography from '@material-ui/core/Typography';
 
 export const ChatRoomContainer = ({ roomId, user }) => {
-  const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
+  const [noMoreMessage, setNoMoreMessage] = useState(false);
+  const [previousMessage, setPreviousMessage] = useState(null);
+
   const { register, handleSubmit, reset } = useForm({
     mode: 'onChange',
   });
 
   const lastMessageRef = useRef(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = ({ behavior }) => {
     if (lastMessageRef.current !== null) {
-      lastMessageRef.current.scrollIntoView({ behavior: 'auto' });
+      lastMessageRef.current.scrollIntoView({ behavior: behavior });
+    }
+  };
+
+  // handle onScroll event
+  const handleScroll = (event) => {
+    const target = event.target;
+    // fetch previous messages when scroll to top
+    if (target.scrollTop === 0 && !noMoreMessage) {
+      setLoading(true);
+      readRecentMessages({
+        id: roomId,
+        previousKey: previousMessage.id,
+        previousTimestamp: previousMessage.timestamp,
+        callback: (snapshot) => {
+          if (snapshot.val() !== null) {
+            const messageData = Object.values(snapshot.val());
+            // delete the last message from messageData
+            // as it is the previous message before fetching
+            messageData.pop();
+            setLoading(false);
+            setMessages([...messageData, ...messages]);
+            // set the first message as the previous message for pagination
+            setPreviousMessage(messageData[0]);
+            // if read message < 10, then no more messages
+            if (messageData.length < 10) {
+              setNoMoreMessage(true);
+            }
+          } else {
+            setLoading(false);
+            setMessages([]);
+          }
+        },
+      });
     }
   };
 
@@ -48,37 +73,30 @@ export const ChatRoomContainer = ({ roomId, user }) => {
   useEffect(() => {
     setMessages([]);
     setLoading(true);
-    // listenChatMessages({
-    //   id: roomId,
-    //   callback: (snapshot) => {
-    //     if (snapshot.val() !== null) {
-    //       const data = Object.values(snapshot.val());
-    //       setLoading(false);
-    //       setMessages(data);
-    //     } else {
-    //       setLoading(false);
-    //       setMessages([]);
-    //     }
-    //   },
-    // });
+    setNoMoreMessage(false);
     readRecentMessages({
       id: roomId,
-      size: 5,
       callback: (snapshot) => {
-        let data = [];
         if (snapshot.val() !== null) {
-          data = Object.values(snapshot.val());
+          const messageData = Object.values(snapshot.val());
           setLoading(false);
-          setMessages(data);
+          setMessages(messageData);
+          // set the first message as the previous message for pagination
+          setPreviousMessage(messageData[0]);
+          // if read message < 10, then no more messages
+          if (messageData.length < 10) {
+            setNoMoreMessage(true);
+          }
+          scrollToBottom({ behavior: 'auto' });
         } else {
           setLoading(false);
           setMessages([]);
         }
       },
     });
-    // eslint-disable-next-line
   }, [roomId]);
 
+  // trigger when messages change
   useEffect(() => {
     let initialRead = true;
     listenOnMessageAdded({
@@ -88,11 +106,12 @@ export const ChatRoomContainer = ({ roomId, user }) => {
           const newMessage = snapshot.val();
           const updatedData = [...messages, newMessage];
           setMessages(updatedData);
+          // scroll to bottom when new message arrives
+          scrollToBottom({ behavior: 'auto' });
         }
         initialRead = false;
       },
     });
-    scrollToBottom();
     // eslint-disable-next-line
   }, [messages]);
 
@@ -110,6 +129,7 @@ export const ChatRoomContainer = ({ roomId, user }) => {
 
   return (
     <Box
+      pt={1}
       height="76vh"
       display="flex"
       flexDirection="column"
@@ -135,11 +155,25 @@ export const ChatRoomContainer = ({ roomId, user }) => {
         flexDirection="column"
         justifyContent="flex-end"
         style={{ overflowY: 'hidden' }}
-        className={classes.hideScrollbar}
       >
-        <Box style={{ overflowY: 'auto' }}>
+        <Box
+          onScroll={handleScroll}
+          style={{ height: 'auto', overflowY: 'scroll' }}
+        >
+          {noMoreMessage && messages.length !== 0 && (
+            <Box display="flex" justifyContent="center" width={1}>
+              <Typography variant="caption">All messages are shown</Typography>
+            </Box>
+          )}
           {messages.map((message, index) => (
             <Box key={message.id}>
+              {!noMoreMessage && !loading && index === 0 && (
+                <Box display="flex" justifyContent="center" width={1}>
+                  <Typography variant="caption" align="center">
+                    Scroll up for previous messages
+                  </Typography>
+                </Box>
+              )}
               <MessageItem
                 message={message}
                 previousMessage={index === 0 ? null : messages[index - 1]}
