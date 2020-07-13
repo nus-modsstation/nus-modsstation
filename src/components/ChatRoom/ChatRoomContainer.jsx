@@ -99,6 +99,9 @@ export const ChatRoomContainer = ({ roomId, user }) => {
   // trigger when messages change
   useEffect(() => {
     let initialRead = true;
+    if (messages.length === 0) {
+      initialRead = false;
+    }
     listenOnMessageAdded({
       id: roomId,
       callback: (snapshot) => {
