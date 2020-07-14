@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import { teal } from '@material-ui/core/colors';
 
 export const theme = responsiveFontSizes(
   createMuiTheme({
@@ -24,6 +25,20 @@ export const theme = responsiveFontSizes(
       // E.g., shift from Red 500 to Red 300 or Red 700.
       tonalOffset: 0.2,
     },
+    // To hide the scrollbar
+    // overrides: {
+    //   MuiCssBaseline: {
+    //     '@global': {
+    //       '*': {
+    //         'scrollbar-width': 'thin',
+    //       },
+    //       '*::-webkit-scrollbar': {
+    //         width: '4px',
+    //         height: '4px',
+    //       },
+    //     },
+    //   },
+    // },
   })
 );
 
@@ -64,5 +79,8 @@ export const materialStyles = makeStyles((theme) => ({
   listPaddingTopBottom: {
     padding: 0,
     margin: 0,
+  },
+  userAvatar: {
+    backgroundColor: teal['A700'],
   },
 }));

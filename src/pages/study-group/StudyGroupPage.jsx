@@ -26,7 +26,7 @@ import { Searchbar } from '../../components/Searchbar/Searchbar';
 import { UpcomingGroupList } from '../../components/UpcomingGroupList/UpcomingGroupList';
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 import { StudyGroupDialog } from '../../components/StudyGroupDialog/StudyGroupDialog';
-import { InfoAlert } from '../../components/shared/InfoAlert';
+import { CustomAlert } from '../../components/shared/CustomAlert';
 
 const StudyGroupPageComponent = ({
   myGroups,
@@ -110,7 +110,8 @@ const StudyGroupPageComponent = ({
             {currentUser == null && (
               <Grid xs={12} item>
                 <Box mt={3} />
-                <InfoAlert
+                <CustomAlert
+                  severity="info"
                   alertTitle="You are not logged in"
                   alertText="Please log in to your account on "
                   route="/login"
@@ -121,7 +122,8 @@ const StudyGroupPageComponent = ({
             {currentUser && currentUser.modules.length === 0 && (
               <Grid xs={12} item>
                 <Box mt={3} />
-                <InfoAlert
+                <CustomAlert
+                  severity="info"
                   alertTitle="You don't have any modules"
                   alertText="Please add your modules on "
                   route="/dashboard"

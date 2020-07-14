@@ -27,7 +27,7 @@ import { YourGroupsSmall } from '../../components/YourVirtualGroupsSmall/YourVir
 import { VirtualGroupModule } from '../../components/VirtualGroupModule/VirtualGroupModule';
 import { YourGroupCard } from '../../components/YourVirtualGroupCard/YourVirtualGroupCard';
 import { VirtualGroupDialog } from '../../components/VirtualGroupDialog/VirtualGroupDialog';
-import { InfoAlert } from '../../components/shared/InfoAlert';
+import { CustomAlert } from '../../components/shared/CustomAlert';
 
 const recruitingGroupStyles = makeStyles({
   header: {
@@ -128,7 +128,8 @@ const VirtualGroupPageComponent = ({
           {currentUser === null && (
             <Grid xs={12} item>
               <Box mt={3} />
-              <InfoAlert
+              <CustomAlert
+                severity="info"
                 alertTitle="You are not logged in"
                 alertText="Please log in to your account on "
                 route="/login"
@@ -139,7 +140,8 @@ const VirtualGroupPageComponent = ({
           {currentUser &&
             (currentUser.modules.length === 0 ? (
               <Box mt={3}>
-                <InfoAlert
+                <CustomAlert
+                  severity="info"
                   alertTitle="You don't have any modules"
                   alertText="Please add your modules on "
                   route="/dashboard"

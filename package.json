@@ -38,8 +38,7 @@
     "react-hooks"
   ],
   "eslintConfig": {
-    "extends": "react-app",
-    "react-hooks/exhaustive-deps": "warn"
+    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -52,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@hookform/devtools": "^2.0.1"
   }
 }
