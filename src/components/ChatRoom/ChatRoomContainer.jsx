@@ -5,6 +5,7 @@ import {
   listenOnMessageAdded,
   writeChatMessages,
   readRecentMessages,
+  cancelOnMessageAdded,
 } from '../../services/messages';
 
 import { MessageItem } from '../../components/ChatRoom/MessageItem';
@@ -21,6 +22,7 @@ import Typography from '@material-ui/core/Typography';
 export const ChatRoomContainer = ({ roomId, user }) => {
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
+  const [emptyMessage, setEmptyMessage] = useState(false);
   const [noMoreMessage, setNoMoreMessage] = useState(false);
   const [previousMessage, setPreviousMessage] = useState(null);
 
@@ -72,13 +74,15 @@ export const ChatRoomContainer = ({ roomId, user }) => {
   // trigger when roomId changes
   useEffect(() => {
     setMessages([]);
+    setEmptyMessage(false);
     setLoading(true);
     setNoMoreMessage(false);
     readRecentMessages({
       id: roomId,
       callback: (snapshot) => {
+        let messageData = [];
         if (snapshot.val() !== null) {
-          const messageData = Object.values(snapshot.val());
+          messageData = Object.values(snapshot.val());
           setLoading(false);
           setMessages(messageData);
           // set the first message as the previous message for pagination
@@ -91,17 +95,38 @@ export const ChatRoomContainer = ({ roomId, user }) => {
         } else {
           setLoading(false);
           setMessages([]);
+          setEmptyMessage(true);
+          setNoMoreMessage(true);
         }
       },
     });
+    // eslint-disable-next-line
   }, [roomId]);
+
+  // trigger when emptyMessage change
+  useEffect(() => {
+    // only listen for the first message of the chat room
+    if (emptyMessage) {
+      listenOnMessageAdded({
+        id: roomId,
+        callback: (snapshot) => {
+          const newMessage = snapshot.val();
+          const updatedData = [...messages, newMessage];
+          setMessages(updatedData);
+          // scroll to bottom when new message arrives
+          scrollToBottom({ behavior: 'auto' });
+        },
+      });
+    }
+    // eslint-disable-next-line
+  }, [emptyMessage]);
 
   // trigger when messages change
   useEffect(() => {
+    // cancel previous listener on message added
+    // to avoid multiple listeners to update the messages
+    cancelOnMessageAdded({ id: roomId });
     let initialRead = true;
-    if (messages.length === 0) {
-      initialRead = false;
-    }
     listenOnMessageAdded({
       id: roomId,
       callback: (snapshot) => {
@@ -111,8 +136,9 @@ export const ChatRoomContainer = ({ roomId, user }) => {
           setMessages(updatedData);
           // scroll to bottom when new message arrives
           scrollToBottom({ behavior: 'auto' });
+        } else {
+          initialRead = false;
         }
-        initialRead = false;
       },
     });
     // eslint-disable-next-line

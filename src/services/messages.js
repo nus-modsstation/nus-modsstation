@@ -34,6 +34,14 @@ export const listenOnMessageAdded = ({ id, callback }) => {
     .on('child_added', callback);
 };
 
+export const cancelOnMessageAdded = ({ id }) => {
+  database
+    .ref(databaseRef + id)
+    .orderByChild('timestamp')
+    .limitToLast(1)
+    .off();
+};
+
 export const readRecentMessages = ({
   id,
   size = 10,
