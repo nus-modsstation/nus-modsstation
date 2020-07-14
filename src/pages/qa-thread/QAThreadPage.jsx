@@ -1,31 +1,31 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { materialStyles } from "../../styles/material.styles";
-import { Typography } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
-import { Hidden } from "@material-ui/core";
-import { Button } from "@material-ui/core";
-import { Popper } from "@material-ui/core";
-import { ClickAwayListener } from "@material-ui/core";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { materialStyles } from '../../styles/material.styles';
+import { Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import { Hidden } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { Popper } from '@material-ui/core';
+import { ClickAwayListener } from '@material-ui/core';
 
-import { Searchbar } from "../../components/Searchbar/Searchbar";
-import { QAThreadModule } from "../../components/QAThreadModule/QAThreadModule";
-import { YourQAThread } from "../../components/YourQAThread/YourQAThread";
-import { YourQAThreadSmall } from "../../components/YourQAThreadSmall/YourQAThreadSmall";
+import { Searchbar } from '../../components/Searchbar/Searchbar';
+import { QAThreadModule } from '../../components/QAThreadModule/QAThreadModule';
+import { YourQAThread } from '../../components/YourQAThread/YourQAThread';
+import { YourQAThreadSmall } from '../../components/YourQAThreadSmall/YourQAThreadSmall';
 
 // temporary imports
-import { StudyGroup } from "../../models/StudyGroup";
+import { StudyGroup } from '../../models/StudyGroup';
 
 const liveThreadsStyles = makeStyles({
   list: {
-    overflow: "auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginTop: 20,
-    "&::-webkit-scrollbar": {
-      display: "none",
+    '&::-webkit-scrollbar': {
+      display: 'none',
     },
   },
 });
@@ -33,12 +33,12 @@ const liveThreadsStyles = makeStyles({
 const yourThreadsStyles = makeStyles({
   list: {
     height: 200,
-    margin: "20px 0px",
-    overflow: "auto",
-    alignItems: "flex-start",
-    flexDirection: "column",
-    "&::-webkit-scrollbar": {
-      display: "none",
+    margin: '20px 0px',
+    overflow: 'auto',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    '&::-webkit-scrollbar': {
+      display: 'none',
     },
   },
 });
@@ -118,7 +118,10 @@ export const QAThreadPage = () => {
             </Box>
           </Hidden>
           <Box>
-            <Searchbar searchOptions={StudyGroup.searchOptions} />
+            <Searchbar
+              searchOptions={StudyGroup.searchOptions}
+              searchCallback={() => {}}
+            />
           </Box>
           <Box width={1} className={liveThreadsClasses.list}>
             <QAThreadModule />

@@ -8,11 +8,18 @@ export const register = async ({ username, email, password }) => {
   await userCredential.user.updateProfile({
     displayName: username,
   });
+  // send verification email
+  await userCredential.user.sendEmailVerification();
   return userCredential;
 };
 
 export const login = async ({ email, password }) => {
   const userCredential = await auth.signInWithEmailAndPassword(email, password);
+  const user = userCredential.user;
+  if (!user.emailVerified) {
+    await userCredential.user.sendEmailVerification();
+    throw Error('Please verify your email first');
+  }
   return userCredential;
 };
 

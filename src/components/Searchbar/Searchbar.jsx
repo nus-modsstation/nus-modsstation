@@ -48,8 +48,8 @@ export const Searchbar = ({ searchOptions, searchCallback }) => {
           <TextField
             {...params}
             variant="standard"
-            label="Search module, location"
-            placeholder="CS2030S, COM1"
+            label="Search module"
+            placeholder="CS2030S"
           />
         )}
       />

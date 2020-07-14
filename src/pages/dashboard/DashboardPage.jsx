@@ -56,7 +56,10 @@ const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
         <Grid item xs={12} md={8}>
           <Grid container spacing={2} alignItems="center">
             <Grid xs={10} sm={11} md={12} item>
-              <Searchbar searchOptions={StudyGroup.searchOptions} />
+              <Searchbar
+                searchOptions={StudyGroup.searchOptions}
+                searchCallback={() => {}}
+              />
             </Grid>
             <Grid xs={2} sm={1} item>
               <Hidden mdUp>
@@ -105,13 +108,11 @@ const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
             </Grid>
             <Grid xs={12} item>
               <Paper className={materialClasses.paper}>
-                {currentUser && myGroups.length > 0 && (
-                  <StudyGroupSection
-                    sectionTitle="My study groups"
-                    sectionData={myGroups}
-                    hideJoin
-                  />
-                )}
+                <StudyGroupSection
+                  sectionTitle="My study groups"
+                  sectionData={myGroups}
+                  hideJoin
+                />
               </Paper>
             </Grid>
             <Grid xs={12} item>

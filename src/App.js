@@ -43,14 +43,10 @@ const App = ({ checkUserSession, currentUser }) => {
               path="/"
               render={() => <Redirect to="/study-group" />}
             />
-            <Route
-              path="/study-group"
-              render={() => <StudyGroupPage />}
-            ></Route>
-            <Route path="/virtual-group" component={VirtualGroupPage}></Route>
-            <Route path="/qa-thread" component={QAThreadPage}></Route>
-            <Route path="/dashboard" component={DashboardPage}></Route>
-            <Route path="/template" component={TemplatePage}></Route>
+            <Route path="/study-group" render={() => <StudyGroupPage />} />
+            <Route path="/virtual-group" render={() => <VirtualGroupPage />} />
+            <Route path="/qa-thread" render={() => <QAThreadPage />} />
+            <Route path="/dashboard" render={() => <DashboardPage />} />
             <Route
               path="/login"
               render={() =>
@@ -63,18 +59,24 @@ const App = ({ checkUserSession, currentUser }) => {
                 currentUser ? <Redirect to="/study-group" /> : <LoginPage />
               }
             />
-            <Route path="/virtual-group-module">
-              <VirtualGroupModulePage />
-            </Route>
-            <Route path="/qa-thread-module">
-              <QAThreadModulePage />
-            </Route>
-            <Route exact path="/chat-room">
-              <ChatRoomPage user={currentUser} />
-            </Route>
-            <Route path="/chat-room/:id">
-              <ChatRoomPage user={currentUser} />
-            </Route>
+            <Route
+              path="/virtual-group-module"
+              render={() => <VirtualGroupModulePage />}
+            />
+            <Route
+              path="/qa-thread-module"
+              render={() => <QAThreadModulePage />}
+            />
+            <Route
+              exact
+              path="/chat-room"
+              render={() => <ChatRoomPage user={currentUser} />}
+            />
+            <Route
+              path="/chat-room/:id"
+              render={() => <ChatRoomPage user={currentUser} />}
+            />
+            <Route path="/template" component={TemplatePage} />
           </Switch>
           <BottomNavbar />
         </div>
