@@ -54,10 +54,15 @@ export const LoginFormComponent = ({
     reValidateMode: 'onChange',
   });
 
-  useEffect(() => {
-    clearAuthError();
-    reset();
-  }, [location, clearAuthError, reset]);
+  const validateRule = ({ requiredMessage, pattern }) => {
+    const rule = {
+      required: requiredMessage,
+    };
+    if (pattern !== undefined) {
+      rule.pattern = pattern;
+    }
+    return rule;
+  };
 
   const onSubmit = async (data) => {
     if (isLogin) {
@@ -66,6 +71,11 @@ export const LoginFormComponent = ({
       await registerStart(data);
     }
   };
+
+  useEffect(() => {
+    clearAuthError();
+    reset();
+  }, [location, clearAuthError, reset]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -107,13 +117,21 @@ export const LoginFormComponent = ({
             autoComplete="email"
             autoFocus={isLogin}
             error={!!errors.email}
-            inputRef={register({
-              required: 'Email is required',
-              pattern: {
-                value: /^[a-zA-Z0-9_.+-]+@(nus.edu.sg|comp.nus.edu.sg|u.nus.edu)$/,
-                message: 'Use NUS email only',
-              },
-            })}
+            inputRef={
+              isLogin
+                ? register(
+                    validateRule({ requiredMessage: 'Email is required' })
+                  )
+                : register(
+                    validateRule({
+                      requiredMessage: 'Email is required',
+                      pattern: {
+                        value: /^[a-zA-Z0-9_.+-]+@(nus.edu.sg|comp.nus.edu.sg|u.nus.edu)$/,
+                        message: 'Use NUS email only',
+                      },
+                    })
+                  )
+            }
           />
           {errors.email && <ErrorMessage errorMessage={errors.email.message} />}
           <TextField
@@ -127,13 +145,22 @@ export const LoginFormComponent = ({
             id="password"
             autoComplete="current-password"
             error={!!errors.password}
-            inputRef={register({
-              required: 'Password is required',
-              pattern: {
-                value: /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z_@./#&+-]{8,}$/,
-                message: 'Use 8 or more characters with letters and numbers',
-              },
-            })}
+            inputRef={
+              isLogin
+                ? register(
+                    validateRule({ requiredMessage: 'Password is required' })
+                  )
+                : register(
+                    validateRule({
+                      requiredMessage: 'Password is required',
+                      pattern: {
+                        value: /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z_@./#&+-]{8,}$/,
+                        message:
+                          'Use 8 or more characters with letters and numbers',
+                      },
+                    })
+                  )
+            }
           />
           {errors.password && (
             <ErrorMessage errorMessage={errors.password.message} />
