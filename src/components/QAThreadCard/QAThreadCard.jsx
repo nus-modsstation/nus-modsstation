@@ -1,11 +1,11 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import { Card, CardActions } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
-import { Button } from "@material-ui/core";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { Card, CardActions } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 const componentStyles = makeStyles({
   card: {
@@ -15,7 +15,7 @@ const componentStyles = makeStyles({
   },
   cardContent: {
     margin: 8,
-    overflow: "hidden",
+    overflow: 'hidden',
     padding: 8,
   },
   listItem: {
@@ -23,13 +23,13 @@ const componentStyles = makeStyles({
     padding: 8,
   },
   listItemContent: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
 });
 
-const ThreadPortraitCard = () => {
+const ThreadPortraitCard = ({ thread }) => {
   const componentClasses = componentStyles();
   return (
     <Card variant="outlined" className={componentClasses.card}>
@@ -40,11 +40,11 @@ const ThreadPortraitCard = () => {
         m="5px"
       >
         <Box textOverflow="ellipsis">
-          <Typography variant="body1">Task name</Typography>
+          <Typography variant="body1">{thread.taskName}</Typography>
         </Box>
         <Box overflow="hidden">
           <Typography component="p" variant="caption">
-            Current question Current question Current question Current question
+            Current question
           </Typography>
         </Box>
       </Box>
@@ -55,7 +55,7 @@ const ThreadPortraitCard = () => {
   );
 };
 
-const ThreadLandscapeCard = () => {
+const ThreadLandscapeCard = ({ thread }) => {
   const componentClasses = componentStyles();
   return (
     <Box component={Paper} className={componentClasses.listItem}>
@@ -63,7 +63,7 @@ const ThreadLandscapeCard = () => {
         <Grid item xs={8} md={9}>
           <Box width={1} className={componentClasses.listItemContent}>
             <Box width={1}>
-              <Typography variant="body1">Task name</Typography>
+              <Typography variant="body1">{thread.taskName}</Typography>
             </Box>
             <Box width={1}>
               <Typography variant="caption" component="p">
@@ -82,10 +82,14 @@ const ThreadLandscapeCard = () => {
   );
 };
 
-export const QAThreadCard = ({ modulePage }) => {
+export const QAThreadCard = ({ modulePage, thread }) => {
   return (
     <div>
-      {modulePage ? <ThreadLandscapeCard /> : <ThreadPortraitCard />}
+      {modulePage ? (
+        <ThreadLandscapeCard thread={thread} />
+      ) : (
+        <ThreadPortraitCard thread={thread} />
+      )}
     </div>
   );
 };

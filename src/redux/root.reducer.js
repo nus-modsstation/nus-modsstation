@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import { userReducer } from './user/user.reducer';
 import { studyGroupReducer } from './studyGroup/studyGroup.reducer';
 import { virtualGroupReducer } from './virtualGroup/virtualGroup.reducer';
+import { qaThreadReducer } from './qaThread/qaThread.reducer';
 import { userActionType } from './user/user.type';
 
 const persistConfig = {
@@ -31,6 +32,7 @@ const appReducer = combineReducers({
   user: userReducer,
   studyGroup: persistReducer(studyGroupPersistConfig, studyGroupReducer),
   virtualGroup: virtualGroupReducer,
+  qaThread: qaThreadReducer,
 });
 
 const initialState = appReducer({}, {});
