@@ -5,8 +5,16 @@ import {
   createQAThreadSuccess,
   createQAThreadError,
   updateQAThreadReducer,
+  updateQAThreadPropPush,
+  updateQAThreadPropRemove,
 } from './qaThread.action';
-import { addDocument, readDocumentsWhereEqual } from '../../services/firestore';
+import {
+  addDocument,
+  readDocumentsWhereEqual,
+  readDocumentsWhereContains,
+  updateDocumentArrayUnion,
+  updateDocumentArrayRemove,
+} from '../../services/firestore';
 
 const collectionName = 'qaThreads';
 
@@ -32,13 +40,13 @@ export function* onCreateQAThread() {
 
 export function* readMyQAThreadsGenarator({ payload }) {
   try {
-    let qaThreads = yield readDocumentsWhereEqual({
+    let myThreads = yield readDocumentsWhereEqual({
       collection: collectionName,
       fieldName: 'ownerId',
       fieldValue: payload,
     });
     const data = {
-      myThreads: qaThreads,
+      myThreads: myThreads,
     };
     yield put(updateQAThreadReducer(data));
   } catch (error) {
@@ -50,6 +58,29 @@ export function* onReadMyQAThreads() {
   yield takeLatest(
     qaThreadActionType.READ_MY_THREADS,
     readMyQAThreadsGenarator
+  );
+}
+
+export function* readMyStarredThreadsGenerator({ payload }) {
+  try {
+    let starredThreads = yield readDocumentsWhereContains({
+      collection: collectionName,
+      arrayName: 'starredUsers',
+      fieldValue: payload,
+    });
+    const data = {
+      starredThreads: starredThreads,
+    };
+    yield put(updateQAThreadReducer(data));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* onReadMyStarredThreads() {
+  yield takeLatest(
+    qaThreadActionType.READ_STARRED_THREADS,
+    readMyStarredThreadsGenerator
   );
 }
 
@@ -76,10 +107,54 @@ export function* onReadQAThreadsByModule() {
   );
 }
 
+export function* starThreadGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayUnion({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'starredUsers',
+      data: payload.data,
+    });
+    payload.prop = 'starredUsers';
+    yield put(updateQAThreadPropPush(payload));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* onStarQAThread() {
+  yield takeEvery(qaThreadActionType.STAR_THREAD_START, starThreadGenerator);
+}
+
+export function* removeStarredThreadGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'starredUsers',
+      data: payload.data,
+    });
+    payload.prop = 'starredUsers';
+    yield put(updateQAThreadPropRemove(payload));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* onRemoveStarredThread() {
+  yield takeEvery(
+    qaThreadActionType.REMOVE_STARRED_THREAD_START,
+    removeStarredThreadGenerator
+  );
+}
+
 export function* qaThreadSaga() {
   yield all([
     call(onCreateQAThread),
     call(onReadMyQAThreads),
+    call(onReadMyStarredThreads),
     call(onReadQAThreadsByModule),
+    call(onStarQAThread),
+    call(onRemoveStarredThread),
   ]);
 }

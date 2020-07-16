@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { materialStyles } from '../../styles/material.styles';
 import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
@@ -36,7 +38,7 @@ export const YourQAThread = ({ thread }) => {
           </Typography>
         </Grid>
         <Grid item md={3}>
-          <Button size="small">
+          <Button component={Link} to={`chat-room/${thread.id}`} size="small">
             <Typography variant="button">View</Typography>
           </Button>
         </Grid>

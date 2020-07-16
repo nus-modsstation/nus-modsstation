@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { modules } from '../../models/Module';
 import { QAThread } from '../../models/QAThread';
 import {
   selectMyQAThreads,
   selectQAThreadsByModule,
+  selectMyStarredQAThreads,
 } from '../../redux/qaThread/qaThread.selector';
 import {
   readMyQAThreads,
+  readMyStarredQAThreads,
   readQAThreadsByModule,
 } from '../../redux/qaThread/qaThread.action';
 import { selectCurrentUser } from '../../redux/user/user.selector';
@@ -21,10 +22,10 @@ import { Grid } from '@material-ui/core';
 import { Hidden } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { Popper } from '@material-ui/core';
-import { ClickAwayListener } from '@material-ui/core';
+// import { ClickAwayListener } from '@material-ui/core';
 
 import { Searchbar } from '../../components/Searchbar/Searchbar';
-import { InfoAlert } from '../../components/shared/InfoAlert';
+import { CustomAlert } from '../../components/shared/CustomAlert';
 import { QAThreadDialog } from '../../components/QAThreadDialog/QAThreadDialog';
 import { QAThreadModule } from '../../components/QAThreadModule/QAThreadModule';
 import { YourQAThread } from '../../components/YourQAThread/YourQAThread';
@@ -58,8 +59,10 @@ const yourThreadsStyles = makeStyles({
 
 const QAThreadPageComponent = ({
   myThreads,
+  starredThreads,
   currentUser,
   readMyThreads,
+  readMyStarredThreads,
   readThreadsByModule,
   qaThreadsByModule,
 }) => {
@@ -85,6 +88,7 @@ const QAThreadPageComponent = ({
     setAnotherAnchorEl(event.currentTarget);
   };
 
+  /*
   const handleClickAway = () => {
     setOpen(false);
   };
@@ -92,9 +96,10 @@ const QAThreadPageComponent = ({
   const handleAnotherClickAway = () => {
     setAnotherOpen(false);
   };
+  */
 
+  // filter user modules by searchbar selection(s)
   const searchCallback = (searchData) => {
-    setSearchQueries(searchData.value);
     if (searchData.value.length > 0) {
       const results = currentUser.modules.filter((moduleCode) =>
         searchData.value.map((module) => module.option).includes(moduleCode)
@@ -105,17 +110,24 @@ const QAThreadPageComponent = ({
     }
   };
 
+  const userOptions = currentUser
+    ? QAThread.searchOptions.filter((item) =>
+        currentUser.modules.includes(item.option)
+      )
+    : [];
+
   useEffect(() => {
     // fetch threads by module and my threads
     // call this when variables change by providing the variables in the second argument
     // this behaves like componentDidMount
-    modules.forEach((module) => {
-      readThreadsByModule(module.id);
-    });
     if (currentUser && currentUser.id != null) {
       readMyThreads(currentUser.id);
+      readMyStarredThreads(currentUser.id);
+      currentUser.modules.forEach((moduleCode) =>
+        readThreadsByModule(moduleCode)
+      );
     }
-  }, [currentUser, readThreadsByModule, readMyThreads]);
+  }, [currentUser, readThreadsByModule, readMyThreads, readMyStarredThreads]);
 
   return (
     <Box className={materialClasses.root}>
@@ -130,37 +142,33 @@ const QAThreadPageComponent = ({
           anchorEl={anotherAnchorEl}
           placement="bottom"
         >
-          <YourQAThreadSmall myThreads={myThreads} />
+          <YourQAThreadSmall myThreads={starredThreads} />
         </Popper>
       </Hidden>
       <Grid container spacing={3} justify="space-between">
         <Grid item xs={12} md={9}>
           <Hidden mdUp>
             <Box my="4px">
-              <ClickAwayListener onClickAway={handleClickAway}>
-                <Button
-                  onClick={handleClick}
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                >
-                  <Typography variant="button">Starred threads</Typography>
-                </Button>
-              </ClickAwayListener>
+              <Button
+                onClick={handleClick}
+                variant="outlined"
+                fullWidth
+                size="small"
+              >
+                <Typography variant="button">My threads</Typography>
+              </Button>
             </Box>
           </Hidden>
           <Hidden mdUp>
             <Box my="4px">
-              <ClickAwayListener onClickAway={handleAnotherClickAway}>
-                <Button
-                  onClick={handleAnotherClick}
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                >
-                  <Typography variant="button">Recent threads</Typography>
-                </Button>
-              </ClickAwayListener>
+              <Button
+                onClick={handleAnotherClick}
+                variant="outlined"
+                fullWidth
+                size="small"
+              >
+                <Typography variant="button">Starred threads</Typography>
+              </Button>
             </Box>
           </Hidden>
           <Grid
@@ -172,7 +180,7 @@ const QAThreadPageComponent = ({
             <Grid item xs={10} md={11}>
               <Searchbar
                 searchCallback={searchCallback}
-                searchOptions={QAThread.searchOptions}
+                searchOptions={userOptions}
               />
             </Grid>
             <Grid item xs={2} md={1}>
@@ -182,7 +190,8 @@ const QAThreadPageComponent = ({
           {currentUser === null && (
             <Grid xs={12} item>
               <Box mt={3} />
-              <InfoAlert
+              <CustomAlert
+                severity="info"
                 alertTitle="You are not logged in"
                 alertText="Please log in to your account on "
                 route="/login"
@@ -193,7 +202,8 @@ const QAThreadPageComponent = ({
           {currentUser &&
             (currentUser.modules.length === 0 ? (
               <Box mt={3}>
-                <InfoAlert
+                <CustomAlert
+                  severity="info"
                   alertTitle="You don't have any modules"
                   alertText="Please add your modules on "
                   route="/dashboard"
@@ -202,10 +212,11 @@ const QAThreadPageComponent = ({
               </Box>
             ) : (
               <Box width={1} className={liveThreadsClasses.list}>
-                {searchQueries.map((moduleCode, index) => (
+                {searchQueries.map((moduleCode) => (
                   <QAThreadModule
+                    currentUser={currentUser}
                     moduleCode={moduleCode}
-                    key={index}
+                    key={moduleCode}
                     threads={qaThreadsByModule(moduleCode)}
                   />
                 ))}
@@ -216,7 +227,7 @@ const QAThreadPageComponent = ({
           <Grid item md={3}>
             <Box my="10px">
               <Typography variant="h6" align="center">
-                Starred threads
+                My threads
               </Typography>
             </Box>
             <Box className={yourThreadsClasses.list}>
@@ -226,11 +237,11 @@ const QAThreadPageComponent = ({
             </Box>
             <Box my={2}>
               <Typography variant="h6" align="center">
-                Recent threads
+                Starred threads
               </Typography>
             </Box>
             <Box className={yourThreadsClasses.list}>
-              {myThreads.map((thread, index) => (
+              {starredThreads.map((thread, index) => (
                 <YourQAThread key={index} thread={thread} />
               ))}
             </Box>
@@ -242,6 +253,7 @@ const QAThreadPageComponent = ({
 };
 
 const mapStateToProps = (state) => ({
+  starredThreads: selectMyStarredQAThreads(state),
   myThreads: selectMyQAThreads(state),
   currentUser: selectCurrentUser(state),
   qaThreadsByModule: (moduleCode) => selectQAThreadsByModule(moduleCode)(state),
@@ -249,6 +261,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   readMyThreads: (userId) => dispatch(readMyQAThreads(userId)),
+  readMyStarredThreads: (userId) => dispatch(readMyStarredQAThreads(userId)),
   readThreadsByModule: (moduleCode) =>
     dispatch(readQAThreadsByModule(moduleCode)),
 });

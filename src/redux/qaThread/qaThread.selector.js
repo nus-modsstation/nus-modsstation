@@ -7,8 +7,22 @@ export const selectMyQAThreads = createSelector([selectQAThread], (qaThread) =>
   qaThread.myThreads.map((thread) => QAThread.fromJson(thread))
 );
 
+export const selectMyStarredQAThreads = createSelector(
+  [selectQAThread],
+  (qaThread) =>
+    qaThread.starredThreads.map((thread) => QAThread.fromJson(thread))
+);
+
 export const selectQAThreadsByModule = (moduleCode) =>
   createSelector([selectQAThread], (qaThread) => qaThread[moduleCode]);
+
+export const selectCurrentQAThread = createSelector(
+  [selectQAThread],
+  (qaThread) =>
+    qaThread.currentThread
+      ? QAThread.fromJson(qaThread.currentThread)
+      : qaThread.currentThread
+);
 
 export const selectQAThreadError = createSelector(
   [selectQAThread],

@@ -40,7 +40,7 @@ const componentStyles = makeStyles({
   },
 });
 
-export const QAThreadModule = ({ moduleCode, threads }) => {
+export const QAThreadModule = ({ moduleCode, threads, currentUser }) => {
   const componentClasses = componentStyles();
 
   const [open, setOpen] = React.useState(true);
@@ -66,9 +66,14 @@ export const QAThreadModule = ({ moduleCode, threads }) => {
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={componentClasses.itemContent}>
-            {threads.map((thread, index) => (
-              <QAThreadCard key={index} thread={thread} />
-            ))}
+            {threads &&
+              threads.map((thread, index) => (
+                <QAThreadCard
+                  key={index}
+                  thread={thread}
+                  currentUser={currentUser}
+                />
+              ))}
           </Box>
         </Collapse>
       </Box>

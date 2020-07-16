@@ -1,4 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { visitQAThread } from '../../redux/qaThread/qaThread.action';
+
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Card, CardActions } from '@material-ui/core';
@@ -29,8 +34,18 @@ const componentStyles = makeStyles({
   },
 });
 
-const ThreadPortraitCard = ({ thread }) => {
+const ThreadPortraitCard = ({ thread, currentUser, visitThread }) => {
   const componentClasses = componentStyles();
+
+  const visit = async () => {
+    if (currentUser.id !== thread.ownerId) {
+      // store the thread to a temporary state
+      // so that the chat room page can fetch the thread
+      // to get chat room data
+      visitThread(thread);
+    }
+  };
+
   return (
     <Card variant="outlined" className={componentClasses.card}>
       <Box
@@ -49,14 +64,28 @@ const ThreadPortraitCard = ({ thread }) => {
         </Box>
       </Box>
       <CardActions disableSpacing>
-        <Button fullWidth>View</Button>
+        <Button
+          component={Link}
+          onClick={visit}
+          to={`/chat-room/${thread.id}`}
+          fullWidth
+        >
+          View
+        </Button>
       </CardActions>
     </Card>
   );
 };
 
-const ThreadLandscapeCard = ({ thread }) => {
+const ThreadLandscapeCard = ({ thread, currentUser, visitThread }) => {
   const componentClasses = componentStyles();
+
+  const visit = async () => {
+    if (currentUser.id !== thread.ownerId) {
+      visitThread(thread);
+    }
+  };
+
   return (
     <Box component={Paper} className={componentClasses.listItem}>
       <Grid container alignItems="center" spacing={1} justify="space-between">
@@ -73,7 +102,13 @@ const ThreadLandscapeCard = ({ thread }) => {
           </Box>
         </Grid>
         <Grid item xs={3} md={1}>
-          <Button size="small" fullWidth>
+          <Button
+            component={Link}
+            onClick={visit}
+            to={`/chat-room/${thread.id}`}
+            size="small"
+            fullWidth
+          >
             View
           </Button>
         </Grid>
@@ -82,14 +117,38 @@ const ThreadLandscapeCard = ({ thread }) => {
   );
 };
 
-export const QAThreadCard = ({ modulePage, thread }) => {
+const QAThreadCardComponent = ({
+  modulePage,
+  thread,
+  currentUser,
+  visitThread,
+}) => {
   return (
     <div>
       {modulePage ? (
-        <ThreadLandscapeCard thread={thread} />
+        <ThreadLandscapeCard
+          thread={thread}
+          currentUser={currentUser}
+          visitThread={visitThread}
+        />
       ) : (
-        <ThreadPortraitCard thread={thread} />
+        <ThreadPortraitCard
+          thread={thread}
+          currentUser={currentUser}
+          visitThread={visitThread}
+        />
       )}
     </div>
   );
 };
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  visitThread: (thread) => dispatch(visitQAThread(thread)),
+});
+
+export const QAThreadCard = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QAThreadCardComponent);

@@ -12,7 +12,7 @@ const persistConfig = {
   key: 'root',
   storage,
   //blacklist: ['user'],
-  blacklist: ['studyGroup'],
+  blacklist: ['studyGroup', 'qaThread'],
 };
 
 // const userPersistConfig = {
@@ -27,12 +27,19 @@ const studyGroupPersistConfig = {
   blacklist: ['searchResults'],
 };
 
+const qaThreadPersistConfig = {
+  key: 'qaThread',
+  storage,
+  blacklist: ['currentThread'],
+};
+
 const appReducer = combineReducers({
   //user: persistReducer(userPersistConfig, userReducer),
   user: userReducer,
   studyGroup: persistReducer(studyGroupPersistConfig, studyGroupReducer),
   virtualGroup: virtualGroupReducer,
-  qaThread: qaThreadReducer,
+  // qaThread: qaThreadReducer,
+  qaThread: persistReducer(qaThreadPersistConfig, qaThreadReducer),
 });
 
 const initialState = appReducer({}, {});

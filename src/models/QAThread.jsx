@@ -9,13 +9,20 @@ export class QAThread {
     { type: 'module', option: 'CS2103', color: 'primary' },
   ];
 
-  constructor({ id, ownerId, isOpen = true, moduleCode, taskName, chatRoom }) {
+  constructor({
+    id,
+    ownerId,
+    isOpen = true,
+    moduleCode,
+    taskName,
+    starredUsers = [],
+  }) {
     this.id = id;
     this.ownerId = ownerId;
     this.isOpen = isOpen;
     this.moduleCode = moduleCode;
     this.taskName = taskName;
-    this.chatRoom = chatRoom;
+    this.starredUsers = starredUsers;
   }
 
   static fromJson(data) {
@@ -31,6 +38,7 @@ export class QAThread {
     return {
       ...data,
       ownerId: creatorId,
+      starredUsers: [],
     };
   }
 }
