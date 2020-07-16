@@ -1,24 +1,25 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import { List, ListItem } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { List, ListItem } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 const componentStyles = makeStyles({
   root: {
-    backgroundColor: "white",
-    borderStyle: "solid",
+    backgroundColor: 'white',
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, .4)",
+    borderColor: 'rgba(0, 0, 0, .4)',
     borderRadius: 5,
     width: 332,
   },
 });
 
-const Thread = () => {
+const Thread = ({ thread }) => {
   return (
     <div>
-      <ListItem button>
+      <ListItem button component={Link} to={`chat-room/${thread.id}`}>
         <Grid
           container
           direction="row"
@@ -27,11 +28,11 @@ const Thread = () => {
         >
           <Grid item xs={8}>
             <Typography variant="body1" noWrap>
-              Task name
+              {thread.taskName}
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="button">MOD1001</Typography>
+            <Typography variant="button">{thread.moduleCode}</Typography>
           </Grid>
         </Grid>
       </ListItem>
@@ -39,13 +40,14 @@ const Thread = () => {
   );
 };
 
-export const YourQAThreadSmall = () => {
+export const YourQAThreadSmall = ({ myThreads }) => {
   const component = componentStyles();
   return (
     <div>
       <List className={component.root}>
-        <Thread />
-        <Thread />
+        {myThreads.map((thread, index) => (
+          <Thread key={index} thread={thread} />
+        ))}
       </List>
     </div>
   );
