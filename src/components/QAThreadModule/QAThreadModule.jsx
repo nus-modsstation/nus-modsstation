@@ -59,7 +59,7 @@ export const QAThreadModule = ({ moduleCode, threads, currentUser }) => {
         <IconButton onClick={handleClick}>
           {open ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
-        <Button component={NavLink} to="/qa-thread-module">
+        <Button /*component={NavLink} to="/qa-thread-module"*/>
           <Typography variant="body1">{moduleCode}</Typography>
         </Button>
       </Box>
