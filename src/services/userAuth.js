@@ -8,11 +8,22 @@ export const register = async ({ username, email, password }) => {
   await userCredential.user.updateProfile({
     displayName: username,
   });
+  // send verification email
+  await userCredential.user.sendEmailVerification();
   return userCredential;
 };
 
 export const login = async ({ email, password }) => {
   const userCredential = await auth.signInWithEmailAndPassword(email, password);
+  const user = userCredential.user;
+  // verify email for production environment
+  if (
+    (process.env.NODE_ENV || '').trim() === 'production' &&
+    !user.emailVerified
+  ) {
+    await user.sendEmailVerification();
+    throw Error('Please verify your email first');
+  }
   return userCredential;
 };
 
@@ -27,4 +38,8 @@ export const getCurrentUser = () => {
       resolve(userAuth);
     }, reject);
   });
+};
+
+export const sendResetPasswordEmail = async (email) => {
+  await auth.sendPasswordResetEmail(email);
 };

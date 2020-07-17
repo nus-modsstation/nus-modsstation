@@ -18,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ErrorMessage } from '../shared/ErrorMessage';
+import { ForgotPasswordDialog } from '../ForgotPasswordDialog/ForgotPasswordDialog';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,10 +55,15 @@ export const LoginFormComponent = ({
     reValidateMode: 'onChange',
   });
 
-  useEffect(() => {
-    clearAuthError();
-    reset();
-  }, [location, clearAuthError, reset]);
+  const validateRule = ({ requiredMessage, pattern }) => {
+    const rule = {
+      required: requiredMessage,
+    };
+    if (pattern !== undefined) {
+      rule.pattern = pattern;
+    }
+    return rule;
+  };
 
   const onSubmit = async (data) => {
     if (isLogin) {
@@ -67,6 +73,11 @@ export const LoginFormComponent = ({
     }
   };
 
+  useEffect(() => {
+    clearAuthError();
+    reset();
+  }, [location, clearAuthError, reset]);
+
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
@@ -74,6 +85,7 @@ export const LoginFormComponent = ({
           {isLogin ? 'Login' : 'Register'}
         </Typography>
         <form
+          key={1}
           className={classes.form}
           onSubmit={handleSubmit(onSubmit)}
           noValidate
@@ -107,13 +119,21 @@ export const LoginFormComponent = ({
             autoComplete="email"
             autoFocus={isLogin}
             error={!!errors.email}
-            inputRef={register({
-              required: 'Email is required',
-              pattern: {
-                value: /^[a-zA-Z0-9_.+-]+@(nus.edu.sg|comp.nus.edu.sg|u.nus.edu)$/,
-                message: 'Use NUS email only',
-              },
-            })}
+            inputRef={
+              isLogin
+                ? register(
+                    validateRule({ requiredMessage: 'Email is required' })
+                  )
+                : register(
+                    validateRule({
+                      requiredMessage: 'Email is required',
+                      pattern: {
+                        value: /^[a-zA-Z0-9_.+-]+@(nus.edu.sg|comp.nus.edu.sg|u.nus.edu)$/,
+                        message: 'Use NUS email only',
+                      },
+                    })
+                  )
+            }
           />
           {errors.email && <ErrorMessage errorMessage={errors.email.message} />}
           <TextField
@@ -127,13 +147,22 @@ export const LoginFormComponent = ({
             id="password"
             autoComplete="current-password"
             error={!!errors.password}
-            inputRef={register({
-              required: 'Password is required',
-              pattern: {
-                value: /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z_@./#&+-]{8,}$/,
-                message: 'Use 8 or more characters with letters and numbers',
-              },
-            })}
+            inputRef={
+              isLogin
+                ? register(
+                    validateRule({ requiredMessage: 'Password is required' })
+                  )
+                : register(
+                    validateRule({
+                      requiredMessage: 'Password is required',
+                      pattern: {
+                        value: /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z_@./#&+-]{8,}$/,
+                        message:
+                          'Use 8 or more characters with letters and numbers',
+                      },
+                    })
+                  )
+            }
           />
           {errors.password && (
             <ErrorMessage errorMessage={errors.password.message} />
@@ -149,11 +178,9 @@ export const LoginFormComponent = ({
           >
             {isLogin ? 'Login' : 'Register'}
           </Button>
-          <Grid container justify="space-between">
+          <Grid container>
             <Grid item xs>
-              <Link to="/" variant="body2">
-                Forgot password?
-              </Link>
+              <ForgotPasswordDialog />
             </Grid>
             <Grid item>
               <Link to={isLogin ? '/register' : '/login'} variant="body2">

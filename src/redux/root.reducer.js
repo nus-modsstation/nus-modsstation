@@ -11,15 +11,8 @@ import { userActionType } from './user/user.type';
 const persistConfig = {
   key: 'root',
   storage,
-  //blacklist: ['user'],
-  blacklist: ['studyGroup', 'qaThread'],
+  blacklist: ['studyGroup'],
 };
-
-// const userPersistConfig = {
-//   key: 'user',
-//   storage,
-//   blacklist: ['authError'],
-// };
 
 const studyGroupPersistConfig = {
   key: 'studyGroup',
@@ -34,7 +27,6 @@ const qaThreadPersistConfig = {
 };
 
 const appReducer = combineReducers({
-  //user: persistReducer(userPersistConfig, userReducer),
   user: userReducer,
   studyGroup: persistReducer(studyGroupPersistConfig, studyGroupReducer),
   virtualGroup: virtualGroupReducer,

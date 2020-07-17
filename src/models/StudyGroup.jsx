@@ -2,12 +2,12 @@ import moment from 'moment';
 
 export class StudyGroup {
   static searchOptions = [
-    { type: 'location', option: 'AS1', color: 'secondary' },
-    { type: 'location', option: 'Central Library', color: 'secondary' },
-    { type: 'location', option: 'COM1', color: 'secondary' },
-    { type: 'location', option: 'COM2', color: 'secondary' },
-    { type: 'location', option: 'HSSML', color: 'secondary' },
-    { type: 'location', option: 'I3', color: 'secondary' },
+    // { type: 'location', option: 'AS1', color: 'secondary' },
+    // { type: 'location', option: 'Central Library', color: 'secondary' },
+    // { type: 'location', option: 'COM1', color: 'secondary' },
+    // { type: 'location', option: 'COM2', color: 'secondary' },
+    // { type: 'location', option: 'HSSML', color: 'secondary' },
+    // { type: 'location', option: 'I3', color: 'secondary' },
     { type: 'module', option: 'CS2030', color: 'primary' },
     { type: 'module', option: 'CS2040S', color: 'primary' },
     { type: 'module', option: 'CS2100', color: 'primary' },

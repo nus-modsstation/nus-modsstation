@@ -133,17 +133,25 @@ export const ChatRoomList = ({ id, user, roomData, removeRoom, starRoom }) => {
         </Grid>
       </Hidden>
       <Grid item md={9} sm={8} xs={12}>
-        {invalidId ? (
-          <Box width={1}>
+        <Box width={1}>
+          {user === null ? (
             <CustomAlert
-              severity="warning"
-              alertTitle="Chat room not found"
+              severity="info"
+              alertTitle="You are not logged in"
+              alertText="Please log in to your account on "
+              route="/login"
+              pageName="Login page"
+            />
+          ) : invalidId ? (
+            <CustomAlert
+              severity="info"
+              alertTitle="You don't have any chat room"
               alertText="Please join a study group/virtual group/Q&A thread first"
             />
-          </Box>
-        ) : (
-          <ChatRoomContainer roomId={roomId} user={user} />
-        )}
+          ) : (
+            <ChatRoomContainer roomId={roomId} user={user} />
+          )}
+        </Box>
       </Grid>
     </Grid>
   );

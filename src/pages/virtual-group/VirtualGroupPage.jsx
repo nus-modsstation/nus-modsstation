@@ -119,7 +119,10 @@ const VirtualGroupPageComponent = ({
             justify="space-between"
           >
             <Grid item xs={10} md={11}>
-              <Searchbar searchOptions={VirtualGroup.searchOptions} />
+              <Searchbar
+                searchOptions={VirtualGroup.searchOptions}
+                searchCallback={() => {}}
+              />
             </Grid>
             <Grid item xs={2} md={1}>
               <VirtualGroupDialog />

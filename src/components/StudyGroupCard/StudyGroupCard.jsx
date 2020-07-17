@@ -74,10 +74,11 @@ export const StudyGroupCardComponent = ({
     sendJoinRequest();
   };
 
-  const isOwner = studyGroup.ownerId === currentUser.id;
-  const isJoined = studyGroup.users.includes(currentUser.id);
+  const isOwner = currentUser !== null && studyGroup.ownerId === currentUser.id;
+  const isJoined =
+    currentUser !== null && studyGroup.users.includes(currentUser.id);
   const [isRequestSent, setRequestSent] = useState(
-    studyGroup.userRequests.includes(currentUser.id)
+    currentUser !== null && studyGroup.userRequests.includes(currentUser.id)
   );
   const [userMap, setUserMap] = useState({});
   const [requestMap, setRequestMap] = useState({});
@@ -159,7 +160,7 @@ export const StudyGroupCardComponent = ({
       }
     });
     // diplay group users' request for group's owner
-    if (studyGroup.ownerId === currentUser.id) {
+    if (currentUser !== null && studyGroup.ownerId === currentUser.id) {
       studyGroup.userRequests.forEach(async (userId) => {
         const user = await readDocument({
           collection: 'users',
@@ -224,7 +225,7 @@ export const StudyGroupCardComponent = ({
             <Box m={3} />
           ) : (
             <Button
-              disabled={isJoined || isRequestSent}
+              disabled={currentUser === null || isJoined || isRequestSent}
               size="large"
               onClick={joinStudyGroup}
               fullWidth
@@ -351,7 +352,9 @@ export const StudyGroupCardComponent = ({
                 {!isOwner && !isJoined && (
                   <Grid item xs={12}>
                     <Button
-                      disabled={isJoined || isRequestSent}
+                      disabled={
+                        currentUser === null || isJoined || isRequestSent
+                      }
                       onClick={sendJoinRequest}
                       variant="contained"
                       color="primary"
