@@ -1,31 +1,41 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
-import { Hidden } from "@material-ui/core";
-import { Button } from "@material-ui/core";
-import { Popper } from "@material-ui/core";
-import { ClickAwayListener } from "@material-ui/core";
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 
-import { materialStyles } from "../../../styles/material.styles";
-import { Searchbar } from "../../../components/Searchbar/Searchbar";
-import { YourQAThread } from "../../../components/YourQAThread/YourQAThread";
-import { YourQAThreadSmall } from "../../../components/YourQAThreadSmall/YourQAThreadSmall";
-import { QAThreadCard } from "../../../components/QAThreadCard/QAThreadCard";
+import { QAThread } from '../../../models/QAThread';
+import {
+  selectMyQAThreads,
+  selectQAThreadsByModule,
+} from '../../../redux/qaThread/qaThread.selector';
+import {
+  readMyQAThreads,
+  readQAThreadsByModule,
+} from '../../../redux/qaThread/qaThread.action';
+import { selectCurrentUser } from '../../../redux/user/user.selector';
 
-// temporary imports
-import { StudyGroup } from "../../../models/StudyGroup";
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import { Hidden } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { Popper } from '@material-ui/core';
+import { ClickAwayListener } from '@material-ui/core';
+
+import { materialStyles } from '../../../styles/material.styles';
+import { Searchbar } from '../../../components/Searchbar/Searchbar';
+import { YourQAThread } from '../../../components/YourQAThread/YourQAThread';
+import { YourQAThreadSmall } from '../../../components/YourQAThreadSmall/YourQAThreadSmall';
+import { QAThreadCard } from '../../../components/QAThreadCard/QAThreadCard';
 
 const liveThreadsStyles = makeStyles({
   list: {
-    overflow: "auto",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
     marginTop: 20,
-    "&::-webkit-scrollbar": {
-      display: "none",
+    '&::-webkit-scrollbar': {
+      display: 'none',
     },
   },
 });
@@ -33,17 +43,23 @@ const liveThreadsStyles = makeStyles({
 const yourThreadsStyles = makeStyles({
   list: {
     height: 200,
-    margin: "20px 0px",
-    overflow: "auto",
-    alignItems: "flex-start",
-    flexDirection: "column",
-    "&::-webkit-scrollbar": {
-      display: "none",
+    margin: '20px 0px',
+    overflow: 'auto',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    '&::-webkit-scrollbar': {
+      display: 'none',
     },
   },
 });
 
-export const QAThreadModulePage = () => {
+const QAThreadModulePageComponent = ({
+  myThreads,
+  currentUser,
+  readMyThreads,
+  readThreadsByModule,
+  qaThreadsByModule,
+}) => {
   const materialClasses = materialStyles();
   const liveThreadsClasses = liveThreadsStyles();
   const yourThreadsClasses = yourThreadsStyles();
@@ -70,6 +86,16 @@ export const QAThreadModulePage = () => {
   const handleAnotherClickAway = () => {
     setAnotherOpen(false);
   };
+
+  useEffect(() => {
+    // fetch open threads under the module and my threads
+    readThreadsByModule('MOD1001');
+    if (currentUser && currentUser.id != null) {
+      readMyThreads(currentUser.id);
+    }
+  }, [currentUser, readThreadsByModule, readMyThreads]);
+
+  const threads = qaThreadsByModule('MOD1001');
 
   return (
     <Box className={materialClasses.root}>
@@ -122,14 +148,13 @@ export const QAThreadModulePage = () => {
           </Hidden>
           <Grid container height={1} spacing={1}>
             <Grid item xs={12}>
-              <Searchbar searchOptions={StudyGroup.searchOptions} />
+              <Searchbar searchOptions={QAThread.searchOptions} />
             </Grid>
             <Grid item xs={12} wrap="nowrap">
               <Box width={1} className={liveThreadsClasses.list}>
-                <QAThreadCard modulePage />
-                <QAThreadCard modulePage />
-                <QAThreadCard modulePage />
-                <QAThreadCard modulePage />
+                {threads.map((thread, index) => (
+                  <QAThreadCard key={index} thread={thread} modulePage />
+                ))}
               </Box>
             </Grid>
           </Grid>
@@ -143,10 +168,6 @@ export const QAThreadModulePage = () => {
             </Box>
             <Box className={yourThreadsClasses.list}>
               <YourQAThread />
-              <YourQAThread />
-              <YourQAThread />
-              <YourQAThread />
-              <YourQAThread />
             </Box>
             <Box my={2}>
               <Typography variant="h6" align="center">
@@ -155,10 +176,6 @@ export const QAThreadModulePage = () => {
             </Box>
             <Box className={yourThreadsClasses.list}>
               <YourQAThread />
-              <YourQAThread />
-              <YourQAThread />
-              <YourQAThread />
-              <YourQAThread />
             </Box>
           </Grid>
         </Hidden>
@@ -166,3 +183,20 @@ export const QAThreadModulePage = () => {
     </Box>
   );
 };
+
+const mapStateToProps = (state) => ({
+  myThreads: selectMyQAThreads(state),
+  currentUser: selectCurrentUser(state),
+  qaThreadsByModule: (moduleCode) => selectQAThreadsByModule(moduleCode)(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  readMyThreads: (userId) => dispatch(readMyQAThreads(userId)),
+  readThreadsByModule: (moduleCode) =>
+    dispatch(readQAThreadsByModule(moduleCode)),
+});
+
+export const QAThreadModulePage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QAThreadModulePageComponent);

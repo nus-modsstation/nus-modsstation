@@ -1,11 +1,16 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
-import { Card, CardActions } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
-import { Button } from "@material-ui/core";
+import React from 'react';
+import { connect } from 'react-redux';
+
+import { visitQAThread } from '../../redux/qaThread/qaThread.action';
+
+import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { Card, CardActions } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 const componentStyles = makeStyles({
   card: {
@@ -15,7 +20,7 @@ const componentStyles = makeStyles({
   },
   cardContent: {
     margin: 8,
-    overflow: "hidden",
+    overflow: 'hidden',
     padding: 8,
   },
   listItem: {
@@ -23,14 +28,24 @@ const componentStyles = makeStyles({
     padding: 8,
   },
   listItemContent: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
 });
 
-const ThreadPortraitCard = () => {
+const ThreadPortraitCard = ({ thread, currentUser, visitThread }) => {
   const componentClasses = componentStyles();
+
+  const visit = async () => {
+    if (currentUser.id !== thread.ownerId) {
+      // store the thread to a temporary state
+      // so that the chat room page can fetch the thread
+      // to get chat room data
+      visitThread(thread);
+    }
+  };
+
   return (
     <Card variant="outlined" className={componentClasses.card}>
       <Box
@@ -40,30 +55,44 @@ const ThreadPortraitCard = () => {
         m="5px"
       >
         <Box textOverflow="ellipsis">
-          <Typography variant="body1">Task name</Typography>
+          <Typography variant="body1">{thread.taskName}</Typography>
         </Box>
         <Box overflow="hidden">
           <Typography component="p" variant="caption">
-            Current question Current question Current question Current question
+            Current question
           </Typography>
         </Box>
       </Box>
       <CardActions disableSpacing>
-        <Button fullWidth>View</Button>
+        <Button
+          component={Link}
+          onClick={visit}
+          to={`/chat-room/${thread.id}`}
+          fullWidth
+        >
+          View
+        </Button>
       </CardActions>
     </Card>
   );
 };
 
-const ThreadLandscapeCard = () => {
+const ThreadLandscapeCard = ({ thread, currentUser, visitThread }) => {
   const componentClasses = componentStyles();
+
+  const visit = async () => {
+    if (currentUser.id !== thread.ownerId) {
+      visitThread(thread);
+    }
+  };
+
   return (
     <Box component={Paper} className={componentClasses.listItem}>
       <Grid container alignItems="center" spacing={1} justify="space-between">
         <Grid item xs={8} md={9}>
           <Box width={1} className={componentClasses.listItemContent}>
             <Box width={1}>
-              <Typography variant="body1">Task name</Typography>
+              <Typography variant="body1">{thread.taskName}</Typography>
             </Box>
             <Box width={1}>
               <Typography variant="caption" component="p">
@@ -73,7 +102,13 @@ const ThreadLandscapeCard = () => {
           </Box>
         </Grid>
         <Grid item xs={3} md={1}>
-          <Button size="small" fullWidth>
+          <Button
+            component={Link}
+            onClick={visit}
+            to={`/chat-room/${thread.id}`}
+            size="small"
+            fullWidth
+          >
             View
           </Button>
         </Grid>
@@ -82,10 +117,38 @@ const ThreadLandscapeCard = () => {
   );
 };
 
-export const QAThreadCard = ({ modulePage }) => {
+const QAThreadCardComponent = ({
+  modulePage,
+  thread,
+  currentUser,
+  visitThread,
+}) => {
   return (
     <div>
-      {modulePage ? <ThreadLandscapeCard /> : <ThreadPortraitCard />}
+      {modulePage ? (
+        <ThreadLandscapeCard
+          thread={thread}
+          currentUser={currentUser}
+          visitThread={visitThread}
+        />
+      ) : (
+        <ThreadPortraitCard
+          thread={thread}
+          currentUser={currentUser}
+          visitThread={visitThread}
+        />
+      )}
     </div>
   );
 };
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  visitThread: (thread) => dispatch(visitQAThread(thread)),
+});
+
+export const QAThreadCard = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QAThreadCardComponent);

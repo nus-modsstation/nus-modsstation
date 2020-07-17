@@ -7,6 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { ChatRoomContainer } from './ChatRoomContainer';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { CustomAlert } from '../shared/CustomAlert';
@@ -17,8 +18,11 @@ import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
+import StarIcon from '@material-ui/icons/Star';
 
-export const ChatRoomList = ({ id, user, roomData }) => {
+export const ChatRoomList = ({ id, user, roomData, removeRoom, starRoom }) => {
   const history = useHistory();
   const roomIds = roomData.map((room) => room.id);
   const [roomId, setRoomId] = useState(id === undefined ? roomIds[0] : id);
@@ -60,6 +64,28 @@ export const ChatRoomList = ({ id, user, roomData }) => {
                 <ListItemText>
                   <Typography noWrap>{room.name}</Typography>
                 </ListItemText>
+                {room.type === 'qa-thread' &&
+                  !room.isOwner &&
+                  (room.temp ? (
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        onClick={() => starRoom(room)}
+                        to={'/chat-room'}
+                      >
+                        <StarIcon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  ) : (
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        component={Link}
+                        onClick={() => removeRoom(room)}
+                        to={'/chat-room'}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  ))}
               </ListItem>
             ))}
           </List>
@@ -89,6 +115,17 @@ export const ChatRoomList = ({ id, user, roomData }) => {
                     )}
                   </ListItemIcon>
                   {room.name}
+                  {room.type === 'qa-thread' && !room.isOwner && (
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        component={Link}
+                        onClick={() => removeRoom(room)}
+                        to={'/chat-room'}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  )}
                 </MenuItem>
               ))}
             </Select>

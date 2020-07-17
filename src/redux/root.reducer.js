@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import { userReducer } from './user/user.reducer';
 import { studyGroupReducer } from './studyGroup/studyGroup.reducer';
 import { virtualGroupReducer } from './virtualGroup/virtualGroup.reducer';
+import { qaThreadReducer } from './qaThread/qaThread.reducer';
 import { userActionType } from './user/user.type';
 
 const persistConfig = {
@@ -19,10 +20,18 @@ const studyGroupPersistConfig = {
   blacklist: ['searchResults'],
 };
 
+const qaThreadPersistConfig = {
+  key: 'qaThread',
+  storage,
+  blacklist: ['currentThread'],
+};
+
 const appReducer = combineReducers({
   user: userReducer,
   studyGroup: persistReducer(studyGroupPersistConfig, studyGroupReducer),
   virtualGroup: virtualGroupReducer,
+  // qaThread: qaThreadReducer,
+  qaThread: persistReducer(qaThreadPersistConfig, qaThreadReducer),
 });
 
 const initialState = appReducer({}, {});
