@@ -18,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ErrorMessage } from '../shared/ErrorMessage';
+import { ForgotPasswordDialog } from '../ForgotPasswordDialog/ForgotPasswordDialog';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -84,6 +85,7 @@ export const LoginFormComponent = ({
           {isLogin ? 'Login' : 'Register'}
         </Typography>
         <form
+          key={1}
           className={classes.form}
           onSubmit={handleSubmit(onSubmit)}
           noValidate
@@ -176,11 +178,9 @@ export const LoginFormComponent = ({
           >
             {isLogin ? 'Login' : 'Register'}
           </Button>
-          <Grid container justify="space-between">
+          <Grid container>
             <Grid item xs>
-              <Link to="/" variant="body2">
-                Forgot password?
-              </Link>
+              <ForgotPasswordDialog />
             </Grid>
             <Grid item>
               <Link to={isLogin ? '/register' : '/login'} variant="body2">
