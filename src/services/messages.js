@@ -13,8 +13,9 @@ export const writeChatMessages = ({
   messageRef.set({
     id: messageRef.key,
     timestamp: Date.now(),
-    upCount: 0,
-    downCount: 0,
+    userReactions: { react: 0 },
+    upvoteCount: 0,
+    downvoteCount: 0,
     userId,
     message,
     type,
@@ -64,5 +65,44 @@ export const readRecentMessages = ({
       .limitToLast(size + 1)
       .once('value')
       .then(callback);
+  }
+};
+
+export const updateReactChatMessage = (roomId, messageId, updateData) => {
+  // updateData format:
+  // {
+  //   userId: id of the user reacting to the message,
+  //   reaction: 1 if upvote, -1 if downvote
+  // }
+  if (updateData.userId && updateData.reaction) {
+    database
+      .ref(databaseRef + roomId + '/' + messageId)
+      .transaction((message) => {
+        if (
+          message &&
+          message.userReactions
+          //&& message.upvoteCount &&
+          //message.downvoteCount &&
+        ) {
+          if (message.userReactions[updateData.userId]) {
+            if (
+              updateData.reaction !== message.userReactions[updateData.userId]
+            ) {
+              message.upvoteCount = message.upvoteCount + updateData.reaction;
+              message.downvoteCount =
+                message.downvoteCount - updateData.reaction;
+              message.userReactions[updateData.userId] = updateData.reaction;
+            }
+          } else {
+            if (updateData.reaction === 1) {
+              message.upvoteCount += updateData.reaction;
+            } else {
+              message.downvoteCount -= updateData.reaction;
+            }
+            message.userReactions[updateData.userId] = updateData.reaction;
+          }
+        }
+        return message;
+      });
   }
 };

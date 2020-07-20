@@ -10,6 +10,13 @@ import {
 
 import { MessageItem } from '../../components/ChatRoom/MessageItem';
 
+//import { makeStyles } from '@material-ui/core/styles';
+import FormControl from '@material-ui/core/FormControl';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Checkbox';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -18,13 +25,29 @@ import SendIcon from '@material-ui/icons/Send';
 import { CustomAlert } from '../shared/CustomAlert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+import { FormHelperText } from '@material-ui/core';
 
-export const ChatRoomContainer = ({ roomId, user }) => {
+/*
+const chatStyles = makeStyles({
+  messageBox: {
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+  },
+});
+*/
+
+export const ChatRoomContainer = ({ roomId, user, threadRoom }) => {
+  //const chatClasses = chatStyles();
+
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [emptyMessage, setEmptyMessage] = useState(false);
   const [noMoreMessage, setNoMoreMessage] = useState(false);
   const [previousMessage, setPreviousMessage] = useState(null);
+  const [qaTag, setQATag] = useState({ question: false, answer: false });
+  const { question, answer } = qaTag;
+  const [noQATagError, setTagError] = useState(false);
 
   const { register, handleSubmit, reset } = useForm({
     mode: 'onChange',
@@ -69,6 +92,21 @@ export const ChatRoomContainer = ({ roomId, user }) => {
         },
       });
     }
+  };
+
+  const handleChange = (event) => {
+    if (event.target.name === 'question') {
+      setQATag({
+        question: event.target.checked,
+        answer: !event.target.checked,
+      });
+    } else if (event.target.name === 'answer') {
+      setQATag({
+        question: !event.target.checked,
+        answer: event.target.checked,
+      });
+    }
+    setTagError(false);
   };
 
   // trigger when roomId changes
@@ -147,12 +185,28 @@ export const ChatRoomContainer = ({ roomId, user }) => {
   const onSubmit = (data) => {
     const newMessage = data.newMessage.trim();
     if (newMessage !== '') {
-      writeChatMessages({
-        id: roomId,
-        userId: user.id,
-        message: newMessage,
-      });
-      reset();
+      if (threadRoom) {
+        if (question || answer) {
+          writeChatMessages({
+            id: roomId,
+            userId: user.id,
+            message: newMessage,
+            type: question ? 'question' : 'answer',
+          });
+          setTagError(false);
+          setQATag({ question: false, answer: false });
+          reset();
+        } else {
+          setTagError(true);
+        }
+      } else {
+        writeChatMessages({
+          id: roomId,
+          userId: user.id,
+          message: newMessage,
+        });
+        reset();
+      }
     }
   };
 
@@ -204,7 +258,10 @@ export const ChatRoomContainer = ({ roomId, user }) => {
                 </Box>
               )}
               <MessageItem
+                roomId={roomId}
                 message={message}
+                currentUser={user}
+                threadRoom={threadRoom}
                 previousMessage={index === 0 ? null : messages[index - 1]}
                 isLast={index === messages.length - 1}
               />
@@ -218,11 +275,11 @@ export const ChatRoomContainer = ({ roomId, user }) => {
           <TextField
             inputRef={register}
             name="newMessage"
-            label="Messages"
+            label="Type message here"
             style={{ zIndex: 0 }}
             multiline
             rows={1}
-            rowsMax={1}
+            rowsMax={3}
             variant="outlined"
             fullWidth
             InputProps={{
@@ -239,6 +296,43 @@ export const ChatRoomContainer = ({ roomId, user }) => {
               ),
             }}
           />
+          {threadRoom && (
+            <FormControl required error={noQATagError}>
+              <RadioGroup row>
+                <FormControlLabel
+                  control={
+                    <Radio
+                      checked={question}
+                      color="primary"
+                      icon={<RadioButtonUncheckedIcon />}
+                      checkedIcon={<RadioButtonCheckedIcon />}
+                      onChange={handleChange}
+                    />
+                  }
+                  label="Question"
+                  name="question"
+                />
+                <FormControlLabel
+                  control={
+                    <Radio
+                      checked={answer}
+                      color="primary"
+                      icon={<RadioButtonUncheckedIcon />}
+                      checkedIcon={<RadioButtonCheckedIcon />}
+                      onChange={handleChange}
+                    />
+                  }
+                  label="Answer"
+                  name="answer"
+                />
+              </RadioGroup>
+              {noQATagError && (
+                <FormHelperText error>
+                  Please indicate your message type
+                </FormHelperText>
+              )}
+            </FormControl>
+          )}
         </form>
       </Box>
     </Box>
