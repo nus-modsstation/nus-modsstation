@@ -27,6 +27,7 @@ export const ChatRoomList = ({ id, user, roomData, removeRoom, starRoom }) => {
   const roomIds = roomData.map((room) => room.id);
   const [roomId, setRoomId] = useState(id === undefined ? roomIds[0] : id);
   const invalidId = !roomIds.includes(roomId);
+  const [threadRoom, setThreadRoom] = useState(false);
 
   const handleSelectRoom = (event) => {
     history.push(`/chat-room/${event.target.value}`);
@@ -35,9 +36,13 @@ export const ChatRoomList = ({ id, user, roomData, removeRoom, starRoom }) => {
   // trigger when id changes
   useEffect(() => {
     if (id !== undefined) {
+      const getRoomData = roomData.filter((roomData) => roomData.id === id);
+      const isThreadRoom =
+        getRoomData[0] && getRoomData[0].type === 'qa-thread';
       setRoomId(id);
+      setThreadRoom(isThreadRoom);
     }
-  }, [id]);
+  }, [id, roomData]);
 
   return (
     <Grid spacing={2} container>
@@ -149,7 +154,11 @@ export const ChatRoomList = ({ id, user, roomData, removeRoom, starRoom }) => {
               alertText="Please join a study group/virtual group/Q&A thread first"
             />
           ) : (
-            <ChatRoomContainer roomId={roomId} user={user} />
+            <ChatRoomContainer
+              roomId={roomId}
+              threadRoom={threadRoom}
+              user={user}
+            />
           )}
         </Box>
       </Grid>
