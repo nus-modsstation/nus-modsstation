@@ -117,7 +117,7 @@ const StudyGroupPageComponent = ({
                   />
                 </Grid>
               )}
-            {searchResults !== null && (
+            {searchQueries !== null && searchResults !== null && (
               <Grid xs={12} item>
                 <StudyGroupSection
                   sectionTitle={`Search results: ${searchQueries.moduleCode}`}
