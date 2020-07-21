@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { modules } from '../../models/Module';
-import { VirtualGroup } from '../../models/VirtualGroup';
 import {
   selectMyVirtualGroups,
   selectVirtualGroupsByModule,
@@ -80,8 +78,8 @@ const VirtualGroupPageComponent = ({
     // fetch recruiting groups by module and my groups
     // call this when variables change by providing the variables in the second argument
     // this behaves like componentDidMount
-    modules.forEach((module) => {
-      readGroupsByModule(module.id);
+    currentUser.modules.forEach((moduleCode) => {
+      readGroupsByModule(moduleCode);
     });
     if (currentUser && currentUser.id != null) {
       readMyGroups(currentUser.id);
@@ -119,10 +117,7 @@ const VirtualGroupPageComponent = ({
             justify="space-between"
           >
             <Grid item xs={10} md={11}>
-              <Searchbar
-                searchOptions={VirtualGroup.searchOptions}
-                searchCallback={() => {}}
-              />
+              <Searchbar currentUser={currentUser} searchCallback={() => {}} />
             </Grid>
             <Grid item xs={2} md={1}>
               <VirtualGroupDialog />

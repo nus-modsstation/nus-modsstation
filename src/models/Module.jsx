@@ -1,33 +1,14 @@
+import { moduleList } from './moduleList.js';
+
 export class Module {
   constructor({ id, name }) {
     this.id = id;
     this.name = name;
   }
 
-  static getModuleById(id) {
-    return modules.find((module) => module.id === id);
+  static getModuleByModuleCode(moduleCode) {
+    return modules.find((module) => module.moduleCode === moduleCode);
   }
 }
 
-export const modules = [
-  {
-    id: 'MOD1001',
-    name: 'Test Module',
-  },
-  {
-    id: 'CS2030',
-    name: 'Programming Methodology II',
-  },
-  {
-    id: 'CS2040S',
-    name: 'Data Structures and Algorithms',
-  },
-  {
-    id: 'CS2100',
-    name: 'Computer Organisation',
-  },
-  {
-    id: 'CS2106',
-    name: 'Introduction to Operating Systems',
-  },
-];
+export const modules = moduleList;

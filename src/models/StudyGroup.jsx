@@ -1,18 +1,24 @@
 import moment from 'moment';
+import { moduleList } from './moduleList.js';
 
 export class StudyGroup {
-  static searchOptions = [
-    // { type: 'location', option: 'AS1', color: 'secondary' },
-    // { type: 'location', option: 'Central Library', color: 'secondary' },
-    // { type: 'location', option: 'COM1', color: 'secondary' },
-    // { type: 'location', option: 'COM2', color: 'secondary' },
-    // { type: 'location', option: 'HSSML', color: 'secondary' },
-    // { type: 'location', option: 'I3', color: 'secondary' },
-    { type: 'module', option: 'CS2030', color: 'primary' },
-    { type: 'module', option: 'CS2040S', color: 'primary' },
-    { type: 'module', option: 'CS2100', color: 'primary' },
-    { type: 'module', option: 'CS2106', color: 'primary' },
-  ];
+  // static searchOptions = [
+  //   // { type: 'location', option: 'AS1', color: 'secondary' },
+  //   // { type: 'location', option: 'Central Library', color: 'secondary' },
+  //   // { type: 'location', option: 'COM1', color: 'secondary' },
+  //   // { type: 'location', option: 'COM2', color: 'secondary' },
+  //   // { type: 'location', option: 'HSSML', color: 'secondary' },
+  //   // { type: 'location', option: 'I3', color: 'secondary' },
+  //   { type: 'module', option: 'CS2030', color: 'primary' },
+  //   { type: 'module', option: 'CS2040S', color: 'primary' },
+  //   { type: 'module', option: 'CS2100', color: 'primary' },
+  //   { type: 'module', option: 'CS2106', color: 'primary' },
+  // ];
+
+  static searchOptions = moduleList.map((module) => {
+    return { ...module, type: 'module', color: 'primary' };
+  });
+
   constructor({
     id,
     ownerId,
@@ -63,7 +69,7 @@ export class StudyGroup {
 
   static toJson({ data, currentUserId }) {
     // set moduleCode and delete module field
-    data.moduleCode = data.module.id;
+    data.moduleCode = data.module.moduleCode;
     delete data.module;
     return {
       ...data,
