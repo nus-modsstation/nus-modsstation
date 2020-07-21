@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { createStructuredSelector } from 'reselect';
 
 import { QAThread } from '../../models/QAThread';
-import { modules } from '../../models/Module';
+import { Module } from '../../models/Module';
 import {
   createQAThreadStart,
   clearOnCreateSuccess,
@@ -75,8 +75,8 @@ const QAThreadFormComponent = ({
     [threadError, clearThreadError, createSuccess, clearCreateSuccess]
   );
 
-  const userModules = modules.filter((module) =>
-    currentUser.modules.includes(module.id)
+  const modules = currentUser.modules.map((moduleCode) =>
+    Module.getModuleByModuleCode(moduleCode)
   );
 
   return (
@@ -88,12 +88,12 @@ const QAThreadFormComponent = ({
               as={
                 <Autocomplete
                   className={componentClasses.form}
-                  options={userModules}
-                  getOptionLabel={(option) => option.id}
+                  options={modules}
+                  getOptionLabel={(option) => option.moduleCode}
                   renderOption={(option) => (
                     <React.Fragment>
                       <span>
-                        {option.id}: {option.name}
+                        {option.moduleCode}: {option.title}
                       </span>
                     </React.Fragment>
                   )}

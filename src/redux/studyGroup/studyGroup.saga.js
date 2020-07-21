@@ -18,7 +18,6 @@ import {
   deleteDocument,
   readDocumentsWhereContains,
   readDocumentsWhereEqual,
-  readDocumentsWhereIn,
   updateDocumentArrayUnion,
   updateDocumentArrayRemove,
 } from '../../services/firestore';
@@ -235,12 +234,10 @@ export function* onDeleteGroup() {
 
 export function* searchGroupGenarator({ payload }) {
   try {
-    let studyGroups = yield readDocumentsWhereIn({
+    let studyGroups = yield readDocumentsWhereEqual({
       collection: collectionName,
       fieldName: payload.fieldName,
       fieldValue: payload.fieldValue,
-      fieldNames: payload.fieldNames,
-      fieldValues: payload.fieldValues,
     });
     studyGroups = convertGroupsTimestampToDate(studyGroups);
     const data = {

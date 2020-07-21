@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { createStructuredSelector } from 'reselect';
 
 import { VirtualGroup } from '../../models/VirtualGroup';
-import { modules } from '../../models/Module';
+import { Module } from '../../models/Module';
 import {
   createVirtualGroupStart,
   clearOnCreateSuccess,
@@ -57,6 +57,9 @@ const VirtualGroupFormComponent = ({
 }) => {
   const componentClasses = componentStyles();
   const [isPrivate, setPrivate] = React.useState(false);
+  const modules = currentUser.modules.map((moduleCode) =>
+    Module.getModuleByModuleCode(moduleCode)
+  );
 
   const { register, handleSubmit, errors, control } = useForm({
     mode: 'onChange',
@@ -101,11 +104,11 @@ const VirtualGroupFormComponent = ({
                 <Autocomplete
                   className={componentClasses.form}
                   options={modules}
-                  getOptionLabel={(option) => option.id}
+                  getOptionLabel={(option) => option.moduleCode}
                   renderOption={(option) => (
                     <React.Fragment>
                       <span>
-                        {option.id}: {option.name}
+                        {option.moduleCode}: {option.title}
                       </span>
                     </React.Fragment>
                   )}

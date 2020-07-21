@@ -1,17 +1,32 @@
 import React from 'react';
 
+import { Module } from '../../models/Module';
+
 import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 
-export const Searchbar = ({ searchOptions, searchCallback }) => {
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    marginRight: theme.spacing(2),
+  },
+}));
+
+export const Searchbar = ({ currentUser, searchCallback }) => {
   const theme = useTheme();
+  const classes = useStyles();
   const matchXs = useMediaQuery(theme.breakpoints.up('xs'));
-
-  const handleSelect = (event, value, reason) => {
+  const options = currentUser.modules.map((moduleCode) =>
+    Module.getModuleByModuleCode(moduleCode)
+  );
+  const handleSelect = (_, value, reason) => {
     // modules or locations are selected
     // pass back the search data
     // to perform search on Firestore
@@ -25,33 +40,43 @@ export const Searchbar = ({ searchOptions, searchCallback }) => {
   return (
     <Box>
       <Autocomplete
-        multiple
         id="tags-standard"
         size={matchXs ? 'small' : 'medium'}
-        options={searchOptions.sort((a, b) => b.type.localeCompare(a.type))}
-        groupBy={(option) => option.type}
-        getOptionLabel={(option) => option.option}
+        options={options}
+        getOptionLabel={(option) => option.moduleCode}
+        getOptionSelected={(option) => option.moduleCode}
         onChange={handleSelect}
         filterSelectedOptions
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
             <Chip
-              color={option.color}
+              color="primary"
               variant="outlined"
               key={index}
-              label={option.option}
+              label={option.moduleCode}
               {...getTagProps({ index })}
             />
           ))
         }
         renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="standard"
-            label="Search module"
-            placeholder="CS2030S"
-          />
+          <TextField {...params} variant="standard" label="Search module" />
         )}
+        renderOption={(option) => {
+          return (
+            <Grid container alignItems="center">
+              <Grid item>
+                <ImportContactsIcon color="primary" className={classes.icon} />
+              </Grid>
+              <Grid item xs>
+                <Typography>{option.moduleCode}</Typography>
+
+                <Typography variant="body2" color="textSecondary">
+                  {option.title}
+                </Typography>
+              </Grid>
+            </Grid>
+          );
+        }}
       />
     </Box>
   );

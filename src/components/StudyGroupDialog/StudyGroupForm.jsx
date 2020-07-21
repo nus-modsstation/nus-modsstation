@@ -74,7 +74,7 @@ const StudyGroupFormComponent = ({
   });
 
   const modules = currentUser.modules.map((moduleCode) =>
-    Module.getModuleById(moduleCode)
+    Module.getModuleByModuleCode(moduleCode)
   );
 
   const handleCapacityChange = (event) => {
@@ -196,11 +196,11 @@ const StudyGroupFormComponent = ({
                 <Autocomplete
                   className={classes.form}
                   options={modules}
-                  getOptionLabel={(option) => option.id}
+                  getOptionLabel={(option) => option.moduleCode}
                   renderOption={(option) => (
                     <React.Fragment>
                       <span>
-                        {option.id}: {option.name}
+                        {option.moduleCode}: {option.title}
                       </span>
                     </React.Fragment>
                   )}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
 import { createStructuredSelector } from 'reselect';
 
 import { modules, Module } from '../../models/Module';
@@ -44,18 +45,21 @@ const AddModuleFormComponent = ({
   updateUserStart,
 }) => {
   const classes = useStyles();
+  const { handleSubmit, errors, control } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      modules: currentUser.modules.map((moduleCode) =>
+        Module.getModuleByModuleCode(moduleCode)
+      ),
+    },
+  });
   const [options, setOptions] = useState([]);
-  const [userModules, setUserModules] = useState([
-    ...currentUser.modules.map((moduleCode) =>
-      Module.getModuleByModuleCode(moduleCode)
-    ),
-  ]);
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     // extract module code
     const moduleCodes = {
-      modules: userModules.map((module) => module.moduleCode),
+      modules: data.modules.map((module) => module.moduleCode),
     };
     const userData = {
       id: currentUser.id,
@@ -64,18 +68,16 @@ const AddModuleFormComponent = ({
     updateUserStart(userData);
   };
 
-  const handleSelect = (event, value, reason) => {
-    setUserModules(value);
-  };
-
   const inputChange = (_, value, reason) => {
     // populate options based on the input
     let count = 0;
     value = value.toUpperCase();
+    console.log('value:', value);
     const filteredOptions = modules.filter(
       (module) => module.moduleCode.startsWith(value) && count++ < 5
     );
     setOptions(filteredOptions);
+    console.log('options:', options);
   };
 
   useEffect(
@@ -92,65 +94,75 @@ const AddModuleFormComponent = ({
 
   return (
     <Box mt={2}>
-      <form onSubmit={onSubmit} noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={3}>
           <Grid xs={12} item>
-            <Autocomplete
-              multiple
-              filterSelectedOptions
-              className={classes.form}
-              options={[...userModules, ...options]}
-              value={userModules}
-              onInputChange={inputChange}
-              onChange={handleSelect}
-              getOptionLabel={(option) => option.moduleCode}
-              getOptionSelected={(option, value) => {
-                return option.moduleCode === value.moduleCode;
-              }}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    color="primary"
-                    variant="outlined"
-                    label={option.moduleCode}
-                    {...getTagProps({ index })}
-                  />
-                ))
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Modules"
+            <Controller
+              as={
+                <Autocomplete
+                  multiple
+                  filterSelectedOptions
                   className={classes.form}
-                  variant="outlined"
-                  fullWidth
-                  required
-                  inputProps={{
-                    ...params.inputProps,
-                    autoComplete: 'disabled', // disable autocomplete and autofill
+                  options={options}
+                  onInputChange={inputChange}
+                  getOptionLabel={(option) => option.moduleCode}
+                  getOptionSelected={(option) => option.moduleCode}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip
+                        color="primary"
+                        variant="outlined"
+                        label={option.moduleCode}
+                        {...getTagProps({ index })}
+                      />
+                    ))
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Modules"
+                      className={classes.form}
+                      variant="outlined"
+                      fullWidth
+                      required
+                      inputProps={{
+                        ...params.inputProps,
+                        autoComplete: 'disabled', // disable autocomplete and autofill
+                      }}
+                      error={!!errors.modules}
+                    />
+                  )}
+                  renderOption={(option) => {
+                    return (
+                      <Grid container alignItems="center">
+                        <Grid item>
+                          <ImportContactsIcon
+                            color="primary"
+                            className={classes.icon}
+                          />
+                        </Grid>
+                        <Grid item xs>
+                          <Typography>{option.moduleCode}</Typography>
+
+                          <Typography variant="body2" color="textSecondary">
+                            {option.title}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    );
                   }}
                 />
-              )}
-              renderOption={(option) => {
-                return (
-                  <Grid container alignItems="center">
-                    <Grid item>
-                      <ImportContactsIcon
-                        color="primary"
-                        className={classes.icon}
-                      />
-                    </Grid>
-                    <Grid item xs>
-                      <Typography>{option.moduleCode}</Typography>
-
-                      <Typography variant="body2" color="textSecondary">
-                        {option.title}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                );
+              }
+              onChange={([, data]) => data}
+              name="modules"
+              control={control}
+              rules={{
+                required: 'Module is required',
               }}
             />
+            {errors.modules && (
+              <ErrorMessage errorMessage={errors.modules.message} />
+            )}
           </Grid>
           <Grid xs={12} item>
             <Box>
@@ -161,7 +173,12 @@ const AddModuleFormComponent = ({
               )}
             </Box>
             <Box display="flex" justifyContent="flex-end">
-              <Button type="submit" color="primary" variant="contained">
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                disabled={!!errors.modules}
+              >
                 Update
               </Button>
             </Box>

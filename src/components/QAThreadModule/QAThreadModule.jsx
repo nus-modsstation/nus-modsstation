@@ -6,6 +6,7 @@ import { Box } from '@material-ui/core';
 import { Button, IconButton } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { Collapse } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 import { QAThreadCard } from '../../components/QAThreadCard/QAThreadCard';
 
@@ -66,14 +67,21 @@ export const QAThreadModule = ({ moduleCode, threads, currentUser }) => {
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={componentClasses.itemContent}>
-            {threads &&
+            {threads && threads.length > 0 ? (
               threads.map((thread, index) => (
                 <QAThreadCard
                   key={index}
                   thread={thread}
                   currentUser={currentUser}
                 />
-              ))}
+              ))
+            ) : (
+              <Box width={1}>
+                <Alert severity="info">
+                  Looks like there is no any Q&A thread yet...
+                </Alert>
+              </Box>
+            )}
           </Box>
         </Collapse>
       </Box>

@@ -6,6 +6,7 @@ import { Button, IconButton } from '@material-ui/core';
 import { Box } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { Collapse } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 
@@ -72,14 +73,21 @@ export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={component.itemContent}>
-            {groups &&
+            {groups && groups.length > 0 ? (
               groups.map((group, index) => (
                 <VirtualGroupCard
                   currentUser={currentUser}
                   key={index}
                   groupData={group}
                 />
-              ))}
+              ))
+            ) : (
+              <Box width={1}>
+                <Alert severity="info">
+                  Looks like there is no any Q&A thread yet...
+                </Alert>
+              </Box>
+            )}
           </Box>
         </Collapse>
       </Box>
