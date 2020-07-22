@@ -128,7 +128,7 @@ export const VirtualGroupModulePageComponent = ({
                     fullWidth
                     size="small"
                   >
-                    <Typography variant="button">Your groups</Typography>
+                    <Typography variant="button">My groups</Typography>
                   </Button>
                 </Grid>
                 <Grid item xs={2}>

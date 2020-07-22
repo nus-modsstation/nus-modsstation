@@ -74,7 +74,7 @@ const DashboardPageComponent = ({
   const options = Dashboard.options;
 
   useEffect(() => {
-    // fetch my, live and module-specific study groups
+    // fetch user's study groups, virtual groups and Q&A Threads
     // call this when variables change by providing the varaibles in the second argument
     // this behaves like componentDidMount
     if (currentUser && currentUser.id != null) {
