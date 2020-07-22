@@ -70,10 +70,30 @@ const VirtualGroupPageComponent = ({
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
+  const [searchQueries, setSearchQueries] = React.useState(
+    currentUser ? currentUser.modules : []
+  );
+  const userOptions = currentUser
+    ? VirtualGroup.searchOptions.filter((item) =>
+        currentUser.modules.includes(item.option)
+      )
+    : [];
 
   const handleClick = (event) => {
     setOpen((prev) => !prev);
     setAnchorEl(event.currentTarget);
+  };
+
+  // filter user modules by searchbar selection(s)
+  const searchCallback = (searchData) => {
+    if (searchData.value.length > 0) {
+      const results = currentUser.modules.filter((moduleCode) =>
+        searchData.value.map((module) => module.option).includes(moduleCode)
+      );
+      setSearchQueries(results);
+    } else {
+      setSearchQueries(currentUser.modules);
+    }
   };
 
   useEffect(() => {
@@ -120,8 +140,8 @@ const VirtualGroupPageComponent = ({
           >
             <Grid item xs={10} md={11}>
               <Searchbar
-                searchOptions={VirtualGroup.searchOptions}
-                searchCallback={() => {}}
+                searchOptions={userOptions}
+                searchCallback={searchCallback}
               />
             </Grid>
             <Grid item xs={2} md={1}>
@@ -153,7 +173,7 @@ const VirtualGroupPageComponent = ({
               </Box>
             ) : (
               <Box className={recruitingGroupsClasses.list} width={1}>
-                {currentUser.modules.map((moduleCode, index) => (
+                {searchQueries.map((moduleCode, index) => (
                   <VirtualGroupModule
                     currentUser={currentUser}
                     moduleCode={moduleCode}

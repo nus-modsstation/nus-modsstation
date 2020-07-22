@@ -91,6 +91,10 @@ const VirtualGroupFormComponent = ({
     [groupError, clearGroupError, createSuccess, clearCreateSuccess]
   );
 
+  const userModules = modules.filter((module) =>
+    currentUser.modules.includes(module.id)
+  );
+
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -100,7 +104,7 @@ const VirtualGroupFormComponent = ({
               as={
                 <Autocomplete
                   className={componentClasses.form}
-                  options={modules}
+                  options={userModules}
                   getOptionLabel={(option) => option.id}
                   renderOption={(option) => (
                     <React.Fragment>

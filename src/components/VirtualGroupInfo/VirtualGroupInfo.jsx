@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
+import { makeStyles } from '@material-ui/core/styles';
+import { Icon } from '@iconify/react';
+import rocketIcon from '@iconify/icons-mdi/rocket';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -16,12 +19,16 @@ import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 import IconButton from '@material-ui/core/IconButton';
 
-import {
-  sendJoinRequestStart,
-  acceptUserRequestStart,
-  removeUserRequestStart,
-} from '../../redux/virtualGroup/virtualGroup.action';
 import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
+
+const infoStyles = makeStyles({
+  groupPicture: {
+    flex: 'none',
+    width: '75px',
+    height: '75px',
+    marginRight: '15px',
+  },
+});
 
 const JoinRequestItem = ({ user, removeJoinRequest, acceptJoinRequest }) => {
   const [accepted, setAccepted] = React.useState(false);
@@ -78,20 +85,17 @@ const VirtualGroupInfoComponent = ({
   groupData,
   members,
   joinRequests,
-  sendJoinRequestStart,
-  acceptJoinRequestStart,
-  removeJoinRequestStart,
+  sendJoinRequest,
+  sendRequestSuccess,
+  acceptJoinRequest,
+  removeJoinRequest,
   leaveGroup,
   deleteGroup,
 }) => {
-  const membersArray = [];
-  for (var i in members) {
-    membersArray.push({ id: i, username: members[i] });
-  }
-  const joinRequestsArray = [];
-  for (var j in joinRequests) {
-    joinRequestsArray.push({ id: j, username: joinRequests[j] });
-  }
+  const infoClasses = infoStyles();
+  const [joinRequestsState, setJoinRequestsState] = React.useState(
+    joinRequests
+  );
 
   const isOwner = currentUser.id === groupData.ownerId;
   const isMember = groupData.users.find((userId) => currentUser.id === userId);
@@ -100,39 +104,32 @@ const VirtualGroupInfoComponent = ({
     groupData.userRequests.includes(currentUser.id)
   );
 
-  const sendJoinRequest = async () => {
-    const updateGroupData = {
-      id: groupData.id,
-      moduleCode: groupData.moduleCode,
-      data: currentUser.id,
-    };
+  const sendUpdateJoinRequest = async () => {
+    sendJoinRequest();
     setRequestSent(true);
-    sendJoinRequestStart(updateGroupData);
+    const newState = joinRequestsState.filter(
+      (user) => user.id !== currentUser.id
+    );
+    setJoinRequestsState(newState);
   };
 
-  const removeUserRequest = (userId) => {
-    const virtualGroupData = {
-      id: groupData.id,
-      moduleCode: groupData.moduleCode,
-      data: userId,
-    };
-    removeJoinRequestStart(virtualGroupData);
-    const idx = groupData.userRequests.indexOf(userId);
-    if (idx !== -1) {
-      groupData.userRequests.splice(idx, 1);
+  const removeUpdateJoinRequest = async (userId) => {
+    removeJoinRequest(userId);
+    const newState = joinRequestsState.filter((user) => user.id !== userId);
+    setJoinRequestsState(newState);
+  };
+
+  const acceptUpdateJoinRequest = async (userId) => {
+    acceptJoinRequest(userId);
+    const newState = joinRequestsState.filter((user) => user.id !== userId);
+    setJoinRequestsState(newState);
+  };
+
+  useEffect(() => {
+    if (sendRequestSuccess) {
+      setRequestSent(true);
     }
-  };
-
-  const acceptUserRequest = (userId) => {
-    removeUserRequest(userId);
-    const virtualGroupData = {
-      id: groupData.id,
-      moduleCode: groupData.moduleCode,
-      data: userId,
-    };
-    acceptJoinRequestStart(virtualGroupData);
-    groupData.users.push(userId);
-  };
+  }, [sendRequestSuccess]);
 
   return (
     <Box m="10px">
@@ -141,16 +138,21 @@ const VirtualGroupInfoComponent = ({
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Box display="flex" flexDirection="row" alignItems="center">
-                <Box
-                  component="img"
-                  flex="none"
-                  width="75px"
-                  height="75px"
-                  mr="15px"
+                <Icon
+                  icon={rocketIcon}
+                  color="#616161"
+                  className={infoClasses.groupPicture}
                 />
-                <Typography variant="h5" noWrap>
-                  {groupData.groupName}
-                </Typography>
+                <Box display="flex" flexDirection="column">
+                  <Box mb={1}>
+                    <Typography variant="button">
+                      {groupData.moduleCode}
+                    </Typography>
+                  </Box>
+                  <Typography variant="h5" noWrap>
+                    {groupData.groupName}
+                  </Typography>
+                </Box>
               </Box>
             </Grid>
             <Grid item xs={12}>
@@ -168,7 +170,7 @@ const VirtualGroupInfoComponent = ({
                 Members
               </Typography>
               <List>
-                {membersArray.map((user) => (
+                {members.map((user) => (
                   <ListItem disableGutters key={user.id}>
                     <Typography variant="body1" noWrap>
                       {user.username}
@@ -177,16 +179,16 @@ const VirtualGroupInfoComponent = ({
                 ))}
               </List>
             </Grid>
-            {isOwner && joinRequestsArray.length > 0 ? (
+            {isOwner && joinRequestsState.length > 0 ? (
               <Grid item xs={12}>
                 <Typography variant="h6">Join Requests</Typography>
                 <List>
-                  {joinRequestsArray.map((user) => (
+                  {joinRequestsState.map((user) => (
                     <JoinRequestItem
                       key={user.id}
                       user={user}
-                      removeJoinRequest={removeUserRequest}
-                      acceptJoinRequest={acceptUserRequest}
+                      removeJoinRequest={removeUpdateJoinRequest}
+                      acceptJoinRequest={acceptUpdateJoinRequest}
                     />
                   ))}
                 </List>
@@ -262,7 +264,7 @@ const VirtualGroupInfoComponent = ({
           ) : (
             <Button
               disabled={requestSent}
-              onClick={sendJoinRequest}
+              onClick={sendUpdateJoinRequest}
               variant="contained"
               fullWidth
             >
@@ -279,16 +281,6 @@ const mapStateToProps = createStructuredSelector({
   sendRequestSuccess: selectSendRequestSuccess,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  sendJoinRequestStart: (groupData) =>
-    dispatch(sendJoinRequestStart(groupData)),
-  removeJoinRequestStart: (groupData) =>
-    dispatch(removeUserRequestStart(groupData)),
-  acceptJoinRequestStart: (groupData) =>
-    dispatch(acceptUserRequestStart(groupData)),
-});
-
-export const VirtualGroupInfo = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(VirtualGroupInfoComponent);
+export const VirtualGroupInfo = connect(mapStateToProps)(
+  VirtualGroupInfoComponent
+);
