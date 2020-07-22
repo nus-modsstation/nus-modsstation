@@ -54,7 +54,7 @@ const myGroupStyles = makeStyles({
     },
     '&::-webkit-scrollbar-thumb:hover': {
       borderRadius: 8,
-      backgroundColor: '#616161',
+      backgroundColor: 'gray',
     },
   },
 });
