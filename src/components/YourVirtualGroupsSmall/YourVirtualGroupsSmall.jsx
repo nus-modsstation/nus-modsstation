@@ -28,7 +28,7 @@ const componentStyles = makeStyles((theme) => ({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, .4)',
     borderRadius: 5,
-    width: 332,
+    // width: 332,
   },
   dialogTitleText: {
     display: 'inline',
@@ -182,13 +182,17 @@ const GroupComponent = ({
           justify="space-between"
           alignItems="center"
         >
-          <Grid item xs={8}>
+          <Grid item xs={9}>
             <Typography variant="body1" noWrap>
               {groupData.groupName}
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="button">{groupData.moduleCode}</Typography>
+            <Box display="flex" maxWidth={1} justifyContent="flex-end">
+              <Typography variant="button" align="right">
+                {groupData.moduleCode}
+              </Typography>
+            </Box>
           </Grid>
         </Grid>
       </ListItem>
@@ -212,7 +216,7 @@ const Group = connect(mapStateToProps, mapDispatchToProps)(GroupComponent);
 export const YourGroupsSmall = ({ currentUser, yourGroups }) => {
   const component = componentStyles();
   return (
-    <List className={component.root}>
+    <List width={1} className={component.root}>
       {yourGroups &&
         yourGroups.map((virtualGroup, index) => (
           <Group

@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import { Box } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { Collapse } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 
@@ -76,14 +77,21 @@ export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={component.itemContent}>
-            {groups &&
+            {groups && recruitingGroups.length > 0 ? (
               recruitingGroups.map((group, index) => (
                 <VirtualGroupCard
                   currentUser={currentUser}
                   key={index}
                   groupData={group}
                 />
-              ))}
+              ))
+            ) : (
+              <Box width={1}>
+                <Alert severity="info">
+                  No activity detected on this Module :(
+                </Alert>
+              </Box>
+            )}
           </Box>
         </Collapse>
       </Box>

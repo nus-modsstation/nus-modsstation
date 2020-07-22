@@ -18,6 +18,11 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
         ...state,
         error: null,
         createSuccess: true,
+        myGroups: [...state.myGroups, action.payload],
+        [action.payload.moduleCode]: [
+          ...state[action.payload.moduleCode],
+          action.payload,
+        ],
       };
     case virtualGroupActionType.CREATE_VIRTUAL_GROUP_ERROR:
       return {
@@ -137,6 +142,17 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
             (group) => group.id !== action.payload.id
           ),
         ],
+      };
+
+    case virtualGroupActionType.DELETE_GROUP_ERROR:
+      return {
+        ...state,
+        deleteGroupError: action.payload,
+      };
+    case virtualGroupActionType.LEAVE_GROUP_ERROR:
+      return {
+        ...state,
+        leaveGroupError: action.payload,
       };
     default:
       return state;

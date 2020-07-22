@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { QAThread } from '../../models/QAThread';
 import {
   selectMyQAThreads,
   selectQAThreadsByModule,
@@ -100,21 +99,18 @@ const QAThreadPageComponent = ({
 
   // filter user modules by searchbar selection(s)
   const searchCallback = (searchData) => {
-    if (searchData.value.length > 0) {
-      const results = currentUser.modules.filter((moduleCode) =>
-        searchData.value.map((module) => module.option).includes(moduleCode)
-      );
-      setSearchQueries(results);
+    console.log('search:', searchData);
+    if (searchData.value !== null) {
+      console.log('searchData.value:', searchData.value);
+      // const results = currentUser.modules.filter((moduleCode) =>
+      //   searchData.value.map((module) => module.option).includes(moduleCode)
+      // );
+      const moduleCode = searchData.value.moduleCode;
+      setSearchQueries([moduleCode]);
     } else {
       setSearchQueries(currentUser.modules);
     }
   };
-
-  const userOptions = currentUser
-    ? QAThread.searchOptions.filter((item) =>
-        currentUser.modules.includes(item.option)
-      )
-    : [];
 
   useEffect(() => {
     // fetch threads by module and my threads
@@ -179,8 +175,8 @@ const QAThreadPageComponent = ({
           >
             <Grid item xs={10} md={11}>
               <Searchbar
+                currentUser={currentUser}
                 searchCallback={searchCallback}
-                searchOptions={userOptions}
               />
             </Grid>
             <Grid item xs={2} md={1}>

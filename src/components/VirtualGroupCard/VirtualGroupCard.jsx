@@ -41,8 +41,8 @@ const componentStyles = makeStyles((theme) => ({
     marginBottom: 15,
     padding: 8,
     cursor: 'pointer',
-    // purple
-    backgroundColor: 'rgba(190, 144, 212, 0.3)',
+    // blue: Virtual groups
+    backgroundColor: 'rgba(75, 119, 190, 0.3)',
   },
   card: {
     flex: 'none',

@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import { capSentence } from '../../utils/formatString';
 
 import { Dashboard } from '../../models/Dashboard';
-import { StudyGroup } from '../../models/StudyGroup';
 import { selectCurrentUser } from '../../redux/user/user.selector';
 import { selectMyGroups } from '../../redux/studyGroup/studyGroup.selector';
 import { readMyGroups } from '../../redux/studyGroup/studyGroup.action';
+import { selectMyVirtualGroups } from '../../redux/virtualGroup/virtualGroup.selector';
+import { readMyVirtualGroups } from '../../redux/virtualGroup/virtualGroup.action';
 
+import { makeStyles } from '@material-ui/core/styles';
 import { materialStyles } from '../../styles/material.styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -22,11 +25,40 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Alert from '@material-ui/lab/Alert';
+
 import { Searchbar } from '../../components/Searchbar/Searchbar';
 import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialog';
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
+import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 
-const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
+const dashboardStyles = makeStyles({
+  cardsSection: {
+    marginTop: '10px',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    '&::-webkit-scrollbar': {
+      height: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      borderRadius: 8,
+      background: '#421cf8',
+    },
+  },
+});
+
+const DashboardPageComponent = ({
+  currentUser,
+  myStudyGroups,
+  readMyStudyGroups,
+  myVirtualGroups,
+  readMyVirtualGroups,
+}) => {
+  const dashboardClasses = dashboardStyles();
   const materialClasses = materialStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -46,9 +78,10 @@ const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
     // call this when variables change by providing the varaibles in the second argument
     // this behaves like componentDidMount
     if (currentUser && currentUser.id != null) {
-      readMyGroups(currentUser.id);
+      readMyStudyGroups(currentUser.id);
+      readMyVirtualGroups(currentUser.id);
     }
-  }, [currentUser, readMyGroups]);
+  }, [currentUser, readMyStudyGroups, readMyVirtualGroups]);
 
   return (
     <Box className={materialClasses.root}>
@@ -56,10 +89,7 @@ const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
         <Grid item xs={12} md={8}>
           <Grid container spacing={2} alignItems="center">
             <Grid xs={10} sm={11} md={12} item>
-              <Searchbar
-                searchOptions={StudyGroup.searchOptions}
-                searchCallback={() => {}}
-              />
+              <Searchbar currentUser={currentUser} searchCallback={() => {}} />
             </Grid>
             <Grid xs={2} sm={1} item>
               <Hidden mdUp>
@@ -97,11 +127,13 @@ const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
                 <Box>
                   <List>
                     {currentUser &&
-                      currentUser.modules.map((module) => (
-                        <ListItem key={module}>
-                          <ListItemText primary={module} />
-                        </ListItem>
-                      ))}
+                      currentUser.modules
+                        .filter((moduleCode) => moduleCode !== 'MOD1001')
+                        .map((module) => (
+                          <ListItem key={module}>
+                            <ListItemText primary={module} />
+                          </ListItem>
+                        ))}
                   </List>
                 </Box>
               </Paper>
@@ -110,13 +142,46 @@ const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
               <Paper className={materialClasses.paper}>
                 <StudyGroupSection
                   sectionTitle="My study groups"
-                  sectionData={myGroups}
+                  sectionData={myStudyGroups}
                   hideJoin
                 />
               </Paper>
             </Grid>
             <Grid xs={12} item>
-              <Paper className={materialClasses.paper}>Virtual groups</Paper>
+              <Paper className={materialClasses.paper}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Box mb={1}>
+                      <Typography variant="h6">
+                        {capSentence('My virtual groups')}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={12}>
+                    <Box
+                      overflow="auto"
+                      className={dashboardClasses.cardsSection}
+                    >
+                      {myVirtualGroups && myVirtualGroups.length > 0 ? (
+                        myVirtualGroups.map((group, index) => (
+                          <VirtualGroupCard
+                            currentUser={currentUser}
+                            key={index}
+                            groupData={group}
+                          />
+                        ))
+                      ) : (
+                        <Box width={1}>
+                          <Alert severity="info">
+                            Whoops! Looks like you have not joined any virtual
+                            group yet.
+                          </Alert>
+                        </Box>
+                      )}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Paper>
             </Grid>
             <Grid xs={12} item>
               <Paper className={materialClasses.paper}>Q&A Threads</Paper>
@@ -150,12 +215,14 @@ const DashboardPageComponent = ({ currentUser, myGroups, readMyGroups }) => {
 };
 
 const mapStateToProps = createStructuredSelector({
-  myGroups: selectMyGroups,
+  myStudyGroups: selectMyGroups,
+  myVirtualGroups: selectMyVirtualGroups,
   currentUser: selectCurrentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  readMyGroups: (userId) => dispatch(readMyGroups(userId)),
+  readMyStudyGroups: (userId) => dispatch(readMyGroups(userId)),
+  readMyVirtualGroups: (userId) => dispatch(readMyVirtualGroups(userId)),
 });
 
 export const DashboardPage = connect(

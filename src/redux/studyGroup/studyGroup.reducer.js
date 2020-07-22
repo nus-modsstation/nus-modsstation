@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   error: null,
   sendRequestError: null,
   sendRequestSuccess: false,
-  searchResults: [],
+  searchResults: null,
 };
 
 export const studyGroupReducer = (state = INITIAL_STATE, action) => {
@@ -140,6 +140,11 @@ export const studyGroupReducer = (state = INITIAL_STATE, action) => {
             );
           }),
         ],
+      };
+    case studyGroupActionType.CLEAR_SEARCH_RESULTS:
+      return {
+        ...state,
+        searchResults: null,
       };
     default:
       return state;

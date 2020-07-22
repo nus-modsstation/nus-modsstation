@@ -39,7 +39,7 @@ export class VirtualGroup {
 
   static toJson({ data, creatorId, isPublic }) {
     // set module code and delete module field
-    data.moduleCode = data.module.id;
+    data.moduleCode = data.module.moduleCode;
     delete data.module;
     return {
       ...data,

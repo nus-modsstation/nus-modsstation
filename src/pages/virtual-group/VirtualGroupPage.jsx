@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { modules } from '../../models/Module';
-import { VirtualGroup } from '../../models/VirtualGroup';
 import {
   selectMyVirtualGroups,
   selectVirtualGroupsByModule,
@@ -52,7 +50,15 @@ const myGroupStyles = makeStyles({
     alignItems: 'flex-start',
     flexDirection: 'column',
     '&::-webkit-scrollbar': {
-      display: 'none',
+      // display: 'none',
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      borderRadius: 8,
+      background: '#421cf8',
     },
   },
 });
@@ -70,14 +76,12 @@ const VirtualGroupPageComponent = ({
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const [searchQueries, setSearchQueries] = React.useState(
-    currentUser ? currentUser.modules : []
+  const realUserModules = currentUser.modules.filter(
+    (moduleCode) => moduleCode !== 'MOD1001'
   );
-  const userOptions = currentUser
-    ? VirtualGroup.searchOptions.filter((item) =>
-        currentUser.modules.includes(item.option)
-      )
-    : [];
+  const [searchQueries, setSearchQueries] = React.useState(
+    currentUser ? realUserModules : []
+  );
 
   const handleClick = (event) => {
     setOpen((prev) => !prev);
@@ -86,13 +90,13 @@ const VirtualGroupPageComponent = ({
 
   // filter user modules by searchbar selection(s)
   const searchCallback = (searchData) => {
-    if (searchData.value.length > 0) {
-      const results = currentUser.modules.filter((moduleCode) =>
-        searchData.value.map((module) => module.option).includes(moduleCode)
+    if (searchData.value) {
+      const results = realUserModules.filter(
+        (moduleCode) => moduleCode === searchData.value.moduleCode
       );
       setSearchQueries(results);
     } else {
-      setSearchQueries(currentUser.modules);
+      setSearchQueries(realUserModules);
     }
   };
 
@@ -100,8 +104,8 @@ const VirtualGroupPageComponent = ({
     // fetch recruiting groups by module and my groups
     // call this when variables change by providing the variables in the second argument
     // this behaves like componentDidMount
-    modules.forEach((module) => {
-      readGroupsByModule(module.id);
+    currentUser.modules.forEach((moduleCode) => {
+      readGroupsByModule(moduleCode);
     });
     if (currentUser && currentUser.id != null) {
       readMyGroups(currentUser.id);
@@ -113,7 +117,12 @@ const VirtualGroupPageComponent = ({
       <Grid container spacing={4} justify="space-between">
         <Grid item md={9} xs={12}>
           <Hidden mdUp>
-            <Popper open={open} anchorEl={anchorEl} placement="bottom-end">
+            <Popper
+              open={open}
+              style={{ width: '94%' }}
+              anchorEl={anchorEl}
+              placement="bottom"
+            >
               <YourGroupsSmall
                 currentUser={currentUser}
                 yourGroups={myGroups}
@@ -140,7 +149,7 @@ const VirtualGroupPageComponent = ({
           >
             <Grid item xs={10} md={11}>
               <Searchbar
-                searchOptions={userOptions}
+                currentUser={currentUser}
                 searchCallback={searchCallback}
               />
             </Grid>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
-import { StudyGroup } from '../../models/StudyGroup';
 import {
   selectMyGroups,
   selectStudyGroupsByModule,
@@ -11,7 +10,7 @@ import {
   readMyGroups,
   readGroupsByModule,
   searchGroupStart,
-  filterSearchResults,
+  clearSearchResults,
 } from '../../redux/studyGroup/studyGroup.action';
 import { selectCurrentUser } from '../../redux/user/user.selector';
 
@@ -36,7 +35,7 @@ const StudyGroupPageComponent = ({
   studyGroupsByModule,
   searchResults,
   searchGroupStart,
-  filterSearchResults,
+  clearSearchResults,
 }) => {
   const materialClasses = materialStyles();
 
@@ -52,36 +51,21 @@ const StudyGroupPageComponent = ({
     }
   }, [currentUser, readGroupsByModule, readMyGroups]);
 
-  const [searchQueries, setSearchQueries] = useState([]);
+  const [searchQueries, setSearchQueries] = useState(null);
 
   const searchCallback = (searchData) => {
     setSearchQueries(searchData.value);
-    // extract modules and locations
-    const moduleCodes = searchData.value
-      .filter((query) => query.type === 'module')
-      .map((result) => result.option);
-    const locations = searchData.value
-      .filter((query) => query.type === 'location')
-      .map((result) => result.option);
     if (searchData.reason === 'select-option') {
+      // extract modules and locations
+      const moduleCode = searchData.value.moduleCode;
       // perform search on Firestore
-      // dispatch search action
       const queryData = {
         fieldName: 'moduleCode',
-        fieldValue: moduleCodes,
+        fieldValue: moduleCode,
       };
-      // const queryData = {
-      //   fieldNames: ['moduleCode', 'location'],
-      //   fieldValues: [moduleCodes, locations],
-      // };
       searchGroupStart(queryData);
-    } else if (searchData.reason === 'remove-option') {
-      // filter search results when option is removed
-      const queryData = {
-        locations,
-        moduleCodes,
-      };
-      filterSearchResults(queryData);
+    } else if (searchData.reason === 'clear') {
+      clearSearchResults();
     }
   };
 
@@ -94,8 +78,8 @@ const StudyGroupPageComponent = ({
               <Grid container spacing={1} alignItems="center">
                 <Grid xs={9} sm={10} md={11} item>
                   <Searchbar
+                    currentUser={currentUser}
                     searchCallback={searchCallback}
-                    searchOptions={StudyGroup.searchOptions}
                   />
                 </Grid>
                 <Grid xs={3} sm={2} md={1} item>
@@ -119,29 +103,29 @@ const StudyGroupPageComponent = ({
                 />
               </Grid>
             )}
-            {currentUser && currentUser.modules.length === 0 && (
-              <Grid xs={12} item>
-                <Box mt={3} />
-                <CustomAlert
-                  severity="info"
-                  alertTitle="You don't have any modules"
-                  alertText="Please add your modules on "
-                  route="/dashboard"
-                  pageName="Dashboard page"
-                />
-              </Grid>
-            )}
-            {searchQueries.length > 0 && (
+            {currentUser &&
+              currentUser.modules &&
+              currentUser.modules.length === 0 && (
+                <Grid xs={12} item>
+                  <Box mt={3} />
+                  <CustomAlert
+                    severity="info"
+                    alertTitle="You don't have any modules"
+                    alertText="Please add your modules on "
+                    route="/dashboard"
+                    pageName="Dashboard page"
+                  />
+                </Grid>
+              )}
+            {searchQueries !== null && searchResults !== null && (
               <Grid xs={12} item>
                 <StudyGroupSection
-                  sectionTitle={`Search results:${searchQueries.map(
-                    (query) => ' ' + query.option
-                  )}`}
+                  sectionTitle={`Search results: ${searchQueries.moduleCode}`}
                   sectionData={searchResults}
                 />
               </Grid>
             )}
-            {currentUser && myGroups.length > 0 && (
+            {!searchQueries && currentUser && myGroups.length > 0 && (
               <Grid xs={12} item>
                 <StudyGroupSection
                   sectionTitle="My groups"
@@ -150,16 +134,19 @@ const StudyGroupPageComponent = ({
                 />
               </Grid>
             )}
-            {currentUser &&
-              currentUser.modules.map((moduleCode) => (
-                <Grid xs={12} key={moduleCode} item>
-                  <StudyGroupSection
-                    sectionTitle={moduleCode}
-                    sectionData={studyGroupsByModule(moduleCode)}
-                    hideJoin={false}
-                  />
-                </Grid>
-              ))}
+            {!searchQueries &&
+              currentUser &&
+              currentUser.modules
+                .filter((moduleCode) => moduleCode !== 'MOD1001')
+                .map((moduleCode) => (
+                  <Grid xs={12} key={moduleCode} item>
+                    <StudyGroupSection
+                      sectionTitle={moduleCode}
+                      sectionData={studyGroupsByModule(moduleCode)}
+                      hideJoin={false}
+                    />
+                  </Grid>
+                ))}
           </Grid>
         </Grid>
         <Hidden smDown>
@@ -189,7 +176,7 @@ const mapDispatchToProps = (dispatch) => ({
   readMyGroups: (userId) => dispatch(readMyGroups(userId)),
   readGroupsByModule: (moduleCode) => dispatch(readGroupsByModule(moduleCode)),
   searchGroupStart: (queryData) => dispatch(searchGroupStart(queryData)),
-  filterSearchResults: (queryData) => dispatch(filterSearchResults(queryData)),
+  clearSearchResults: () => dispatch(clearSearchResults()),
 });
 
 export const StudyGroupPage = connect(

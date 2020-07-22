@@ -121,3 +121,7 @@ export const filterSearchResults = (searchQuery) => ({
   type: studyGroupActionType.FILTER_SEARCH_RESULTS,
   payload: searchQuery,
 });
+
+export const clearSearchResults = () => ({
+  type: studyGroupActionType.CLEAR_SEARCH_RESULTS,
+});

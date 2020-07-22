@@ -21,8 +21,10 @@ import { Typography } from '@material-ui/core';
 import { Box } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { Popper } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 //import { Searchbar } from '../../../components/Searchbar/Searchbar';
+import { Module } from '../../../models/Module';
 import { materialStyles } from '../../../styles/material.styles';
 import { YourGroupsSmall } from '../../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall';
 import { VirtualGroupCard } from '../../../components/VirtualGroupCard/VirtualGroupCard';
@@ -73,6 +75,7 @@ export const VirtualGroupModulePageComponent = ({
   const { moduleCode } = useParams();
   const recruitingGroupsClasses = recruitingGroupStyles();
   const yourGroupsClasses = yourGroupStyles();
+  const module = Module.getModuleByModuleCode(moduleCode);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
@@ -145,7 +148,10 @@ export const VirtualGroupModulePageComponent = ({
                   <Grid item md={4}>
                     <VirtualGroupDialog
                       modulePage
-                      module={{ id: 'MOD1001', name: 'Test Module' }}
+                      module={{
+                        moduleCode: module.moduleCode,
+                        title: module.title,
+                      }}
                     />
                   </Grid>
                 </Grid>
@@ -176,6 +182,14 @@ export const VirtualGroupModulePageComponent = ({
                   </Grid>
                 ))}
               </Grid>
+            )}
+            {groups && groups.length === 0 && (
+              <Box width={1}>
+                <Alert severity="info">
+                  No signs of life detected on this Module. Feel free to form
+                  the first ever crew to explore this Module!
+                </Alert>
+              </Box>
             )}
           </Box>
         </Grid>

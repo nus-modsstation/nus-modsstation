@@ -9,6 +9,7 @@ import { StudyGroupCard } from '../StudyGroupCard/StudyGroupCard';
 import GridList from '@material-ui/core/GridList';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles({
   root: {
@@ -41,7 +42,7 @@ export const StudyGroupSection = ({ sectionTitle, sectionData, hideJoin }) => {
       <Typography variant="h6">{capSentence(sectionTitle)}</Typography>
       <Box mt={2} />
       <Box className={classes.root}>
-        {sectionData && (
+        {sectionData && sectionData.length > 0 ? (
           <GridList
             className={classes.gridList}
             cellHeight="auto"
@@ -58,6 +59,12 @@ export const StudyGroupSection = ({ sectionTitle, sectionData, hideJoin }) => {
               </GridListTile>
             ))}
           </GridList>
+        ) : (
+          <Box width={1}>
+            <Alert severity="info">
+              Looks like there is no any study group yet...
+            </Alert>
+          </Box>
         )}
       </Box>
     </Box>
