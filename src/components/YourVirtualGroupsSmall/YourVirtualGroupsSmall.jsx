@@ -28,7 +28,6 @@ const componentStyles = makeStyles((theme) => ({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, .4)',
     borderRadius: 5,
-    // width: 332,
   },
   dialogTitleText: {
     display: 'inline',

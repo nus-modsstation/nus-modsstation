@@ -41,7 +41,7 @@ const componentStyles = makeStyles({
     },
     '&::-webkit-scrollbar-thumb:hover': {
       borderRadius: 8,
-      background: '#421cf8',
+      backgroundColor: '#616161',
     },
   },
 });

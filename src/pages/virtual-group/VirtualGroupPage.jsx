@@ -37,9 +37,6 @@ const recruitingGroupStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'flex-start',
     marginTop: 20,
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
   },
 });
 
@@ -50,7 +47,6 @@ const myGroupStyles = makeStyles({
     alignItems: 'flex-start',
     flexDirection: 'column',
     '&::-webkit-scrollbar': {
-      // display: 'none',
       width: '6px',
     },
     '&::-webkit-scrollbar-track': {
@@ -58,7 +54,7 @@ const myGroupStyles = makeStyles({
     },
     '&::-webkit-scrollbar-thumb:hover': {
       borderRadius: 8,
-      background: '#421cf8',
+      backgroundColor: '#616161',
     },
   },
 });
