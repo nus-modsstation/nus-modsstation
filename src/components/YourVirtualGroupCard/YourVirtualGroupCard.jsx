@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
+import { Icon } from '@iconify/react';
+import rocketIcon from '@iconify/icons-mdi/rocket';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
@@ -14,12 +16,18 @@ import { Box } from '@material-ui/core';
 import {
   leaveGroupStart,
   deleteGroupStart,
+  acceptUserRequestStart,
+  removeUserRequestStart,
 } from '../../redux/virtualGroup/virtualGroup.action';
 import { readDocument } from '../../services/firestore';
 
 import { VirtualGroupInfo } from '../../components/VirtualGroupInfo/VirtualGroupInfo';
 
 const componentStyles = makeStyles((theme) => ({
+  card: {
+    // blue: Virtual groups
+    backgroundColor: 'rgba(75, 119, 190, 0.4)',
+  },
   cardContent: {
     margin: '5px 0px',
     height: 50,
@@ -60,6 +68,8 @@ const YourGroupCardComponent = ({
   groupData,
   leaveGroupStart,
   deleteGroupStart,
+  acceptJoinRequestStart,
+  removeJoinRequestStart,
 }) => {
   const component = componentStyles();
 
@@ -98,6 +108,35 @@ const YourGroupCardComponent = ({
     setOpen(false);
   };
 
+  const removeUserRequest = (userId) => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: userId,
+    };
+    removeJoinRequestStart(virtualGroupData);
+    /*
+    const idx = groupData.userRequests.indexOf(userId);
+    if (idx !== -1) {
+      groupData.userRequests.splice(idx, 1);
+    }
+    */
+    groupData.userRequests = groupData.userRequests.filter(
+      (id) => id !== userId
+    );
+  };
+
+  const acceptUserRequest = (userId) => {
+    removeUserRequest(userId);
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: userId,
+    };
+    acceptJoinRequestStart(virtualGroupData);
+    groupData.users.push(userId);
+  };
+
   useEffect(() => {
     groupData.users.forEach(async (userId) => {
       const user = await readDocument({ collection: 'users', docId: userId });
@@ -111,8 +150,17 @@ const YourGroupCardComponent = ({
     });
   }, [groupData, usernameMap, userRequestsMap]);
 
+  const membersArray = [];
+  for (var i in usernameMap) {
+    membersArray.push({ id: i, username: usernameMap[i] });
+  }
+  const joinRequestsArray = [];
+  for (var j in userRequestsMap) {
+    joinRequestsArray.push({ id: j, username: userRequestsMap[j] });
+  }
+
   return (
-    <Box width={1} component={Paper} mb="5px">
+    <Box width={1} component={Paper} className={component.card} mb="5px">
       <Dialog
         scroll="paper"
         fullWidth
@@ -136,8 +184,10 @@ const YourGroupCardComponent = ({
           <VirtualGroupInfo
             currentUser={currentUser}
             groupData={groupData}
-            members={usernameMap}
-            joinRequests={userRequestsMap}
+            members={membersArray}
+            joinRequests={joinRequestsArray}
+            acceptJoinRequest={acceptUserRequest}
+            removeJoinRequest={removeUserRequest}
             leaveGroup={leaveGroup}
             deleteGroup={deleteGroup}
           />
@@ -166,7 +216,11 @@ const YourGroupCardComponent = ({
           {groupData.moduleCode}
         </Typography>
         <Box className={component.cardContent}>
-          <Box component="img" className={component.groupPicture} />
+          <Icon
+            icon={rocketIcon}
+            color="#616161"
+            className={component.groupPicture}
+          />
           <Box height={1} maxWidth={0.75}>
             <Typography variant="body1" noWrap align="left">
               {groupData.groupName}
@@ -188,6 +242,10 @@ const mapStateToProps = createStructuredSelector({});
 const mapDispatchToProps = (dispatch) => ({
   leaveGroupStart: (groupData) => dispatch(leaveGroupStart(groupData)),
   deleteGroupStart: (groupData) => dispatch(deleteGroupStart(groupData)),
+  removeJoinRequestStart: (groupData) =>
+    dispatch(removeUserRequestStart(groupData)),
+  acceptJoinRequestStart: (groupData) =>
+    dispatch(acceptUserRequestStart(groupData)),
 });
 
 export const YourGroupCard = connect(

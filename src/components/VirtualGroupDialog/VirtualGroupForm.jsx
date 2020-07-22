@@ -18,8 +18,8 @@ import {
 import { ErrorMessage } from '../shared/ErrorMessage';
 
 import { TextField } from '@material-ui/core';
-import { FormControl, FormControlLabel } from '@material-ui/core';
-import { Checkbox } from '@material-ui/core';
+// import { FormControl, FormControlLabel } from '@material-ui/core';
+// import { Checkbox } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -38,13 +38,6 @@ const componentStyles = makeStyles((theme) => ({
   },
 }));
 
-// sample data
-const sampleFriends = [
-  { username: 'Hello world' },
-  { username: 'Anonymous Mouse' },
-  { username: 'JM' },
-];
-
 const VirtualGroupFormComponent = ({
   currentUser,
   createGroupStart,
@@ -56,8 +49,12 @@ const VirtualGroupFormComponent = ({
   module,
 }) => {
   const componentClasses = componentStyles();
+  // eslint-disable-next-line
   const [isPrivate, setPrivate] = React.useState(false);
-  const modules = currentUser.modules.map((moduleCode) =>
+  const realUserModules = currentUser.modules.filter(
+    (moduleCode) => moduleCode !== 'MOD1001'
+  );
+  const modules = realUserModules.map((moduleCode) =>
     Module.getModuleByModuleCode(moduleCode)
   );
 
@@ -66,9 +63,11 @@ const VirtualGroupFormComponent = ({
     reValidateMode: 'onChange',
   });
 
+  /*
   const handleChange = () => {
     setPrivate(!isPrivate);
   };
+  */
 
   const onSubmit = async (data) => {
     // convert to json format to save in database
@@ -77,7 +76,6 @@ const VirtualGroupFormComponent = ({
       creatorId: currentUser.id,
       isPublic: !isPrivate,
     });
-    console.log(virtualGroup);
     await createGroupStart(virtualGroup);
   };
 
@@ -172,6 +170,7 @@ const VirtualGroupFormComponent = ({
               fullWidth
             />
           </Grid>
+          {/* ADD FRIENDS FEATURE
           <Grid xs={12} item>
             <Autocomplete
               multiple
@@ -190,6 +189,8 @@ const VirtualGroupFormComponent = ({
               )}
             />
           </Grid>
+          */}
+          {/* SET PRIVATE FEATURE
           <Grid xs={8} md={6} item>
             <FormControl className={componentClasses.form}>
               <FormControlLabel
@@ -198,6 +199,7 @@ const VirtualGroupFormComponent = ({
               />
             </FormControl>
           </Grid>
+          */}
           <Grid xs={12} item>
             <Box>
               {groupError && <ErrorMessage errorMessage={groupError.message} />}

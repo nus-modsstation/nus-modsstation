@@ -37,9 +37,6 @@ const recruitingGroupStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'flex-start',
     marginTop: 20,
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
   },
 });
 
@@ -50,7 +47,14 @@ const myGroupStyles = makeStyles({
     alignItems: 'flex-start',
     flexDirection: 'column',
     '&::-webkit-scrollbar': {
-      display: 'none',
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      borderRadius: 8,
+      backgroundColor: 'gray',
     },
   },
 });
@@ -68,10 +72,28 @@ const VirtualGroupPageComponent = ({
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
+  const realUserModules = currentUser.modules.filter(
+    (moduleCode) => moduleCode !== 'MOD1001'
+  );
+  const [searchQueries, setSearchQueries] = React.useState(
+    currentUser ? realUserModules : []
+  );
 
   const handleClick = (event) => {
     setOpen((prev) => !prev);
     setAnchorEl(event.currentTarget);
+  };
+
+  // filter user modules by searchbar selection(s)
+  const searchCallback = (searchData) => {
+    if (searchData.value) {
+      const results = realUserModules.filter(
+        (moduleCode) => moduleCode === searchData.value.moduleCode
+      );
+      setSearchQueries(results);
+    } else {
+      setSearchQueries(realUserModules);
+    }
   };
 
   useEffect(() => {
@@ -91,7 +113,12 @@ const VirtualGroupPageComponent = ({
       <Grid container spacing={4} justify="space-between">
         <Grid item md={9} xs={12}>
           <Hidden mdUp>
-            <Popper open={open} anchorEl={anchorEl} placement="bottom-end">
+            <Popper
+              open={open}
+              style={{ width: '94%' }}
+              anchorEl={anchorEl}
+              placement="bottom"
+            >
               <YourGroupsSmall
                 currentUser={currentUser}
                 yourGroups={myGroups}
@@ -106,7 +133,7 @@ const VirtualGroupPageComponent = ({
                 fullWidth
                 size="small"
               >
-                <Typography variant="button">Your groups</Typography>
+                <Typography variant="button">My groups</Typography>
               </Button>
             </Box>
           </Hidden>
@@ -117,7 +144,10 @@ const VirtualGroupPageComponent = ({
             justify="space-between"
           >
             <Grid item xs={10} md={11}>
-              <Searchbar currentUser={currentUser} searchCallback={() => {}} />
+              <Searchbar
+                currentUser={currentUser}
+                searchCallback={searchCallback}
+              />
             </Grid>
             <Grid item xs={2} md={1}>
               <VirtualGroupDialog />
@@ -148,7 +178,7 @@ const VirtualGroupPageComponent = ({
               </Box>
             ) : (
               <Box className={recruitingGroupsClasses.list} width={1}>
-                {currentUser.modules.map((moduleCode, index) => (
+                {searchQueries.map((moduleCode, index) => (
                   <VirtualGroupModule
                     currentUser={currentUser}
                     moduleCode={moduleCode}

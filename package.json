@@ -54,6 +54,8 @@
     ]
   },
   "devDependencies": {
-    "@hookform/devtools": "^2.0.1"
+    "@hookform/devtools": "^2.0.1",
+    "@iconify/icons-mdi": "^1.0.119",
+    "@iconify/react": "^1.1.3"
   }
 }

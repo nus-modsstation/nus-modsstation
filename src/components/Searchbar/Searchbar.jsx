@@ -23,9 +23,9 @@ export const Searchbar = ({ currentUser, searchCallback }) => {
   const theme = useTheme();
   const classes = useStyles();
   const matchXs = useMediaQuery(theme.breakpoints.up('xs'));
-  const options = currentUser.modules.map((moduleCode) =>
-    Module.getModuleByModuleCode(moduleCode)
-  );
+  const options = currentUser.modules
+    .filter((moduleCode) => moduleCode !== 'MOD1001')
+    .map((moduleCode) => Module.getModuleByModuleCode(moduleCode));
   const handleSelect = (_, value, reason) => {
     // modules or locations are selected
     // pass back the search data

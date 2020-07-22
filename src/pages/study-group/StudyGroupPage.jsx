@@ -136,15 +136,17 @@ const StudyGroupPageComponent = ({
             )}
             {!searchQueries &&
               currentUser &&
-              currentUser.modules.map((moduleCode) => (
-                <Grid xs={12} key={moduleCode} item>
-                  <StudyGroupSection
-                    sectionTitle={moduleCode}
-                    sectionData={studyGroupsByModule(moduleCode)}
-                    hideJoin={false}
-                  />
-                </Grid>
-              ))}
+              currentUser.modules
+                .filter((moduleCode) => moduleCode !== 'MOD1001')
+                .map((moduleCode) => (
+                  <Grid xs={12} key={moduleCode} item>
+                    <StudyGroupSection
+                      sectionTitle={moduleCode}
+                      sectionData={studyGroupsByModule(moduleCode)}
+                      hideJoin={false}
+                    />
+                  </Grid>
+                ))}
           </Grid>
         </Grid>
         <Hidden smDown>

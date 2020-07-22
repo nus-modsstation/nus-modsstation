@@ -46,9 +46,9 @@ const AddModuleFormComponent = ({
   const classes = useStyles();
   const [options, setOptions] = useState([]);
   const [userModules, setUserModules] = useState([
-    ...currentUser.modules.map((moduleCode) =>
-      Module.getModuleByModuleCode(moduleCode)
-    ),
+    ...currentUser.modules
+      .filter((moduleCode) => moduleCode !== 'MOD1001')
+      .map((moduleCode) => Module.getModuleByModuleCode(moduleCode)),
   ]);
 
   const onSubmit = async (event) => {

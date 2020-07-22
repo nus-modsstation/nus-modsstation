@@ -44,7 +44,11 @@ const App = ({ checkUserSession, currentUser }) => {
               render={() => <Redirect to="/study-group" />}
             />
             <Route path="/study-group" render={() => <StudyGroupPage />} />
-            <Route path="/virtual-group" render={() => <VirtualGroupPage />} />
+            <Route
+              exact
+              path="/virtual-group"
+              render={() => <VirtualGroupPage />}
+            />
             <Route path="/qa-thread" render={() => <QAThreadPage />} />
             <Route path="/dashboard" render={() => <DashboardPage />} />
             <Route
@@ -60,8 +64,10 @@ const App = ({ checkUserSession, currentUser }) => {
               }
             />
             <Route
-              path="/virtual-group-module"
-              render={() => <VirtualGroupModulePage />}
+              path="/virtual-group/:moduleCode"
+              render={() => (
+                <VirtualGroupModulePage currentUser={currentUser} />
+              )}
             />
             <Route
               path="/qa-thread-module"
