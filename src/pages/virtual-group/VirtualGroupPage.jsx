@@ -133,7 +133,7 @@ const VirtualGroupPageComponent = ({
                 fullWidth
                 size="small"
               >
-                <Typography variant="button">Your groups</Typography>
+                <Typography variant="button">My groups</Typography>
               </Button>
             </Box>
           </Hidden>

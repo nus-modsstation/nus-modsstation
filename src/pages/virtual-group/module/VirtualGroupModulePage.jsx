@@ -201,7 +201,7 @@ export const VirtualGroupModulePageComponent = ({
           <Grid item md={3}>
             <Box my="8px">
               <Typography variant="h6" align="center">
-                Your groups
+                My groups
               </Typography>
             </Box>
             <Box width={1} className={yourGroupsClasses.list}>
