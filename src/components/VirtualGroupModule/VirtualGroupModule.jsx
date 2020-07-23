@@ -2,7 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { Button, IconButton } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import { Box } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { Collapse } from '@material-ui/core';
@@ -40,12 +41,15 @@ const componentStyles = makeStyles({
     },
     '&::-webkit-scrollbar-thumb:hover': {
       borderRadius: 8,
-      background: '#421cf8',
+      backgroundColor: 'gray',
     },
   },
 });
 
 export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
+  const recruitingGroups = groups
+    ? groups.filter((group) => group.isPublic)
+    : [];
   const component = componentStyles();
 
   const [open, setOpen] = React.useState(true);
@@ -65,7 +69,7 @@ export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
           <IconButton onClick={handleClick}>
             {open ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
-          <Button component={NavLink} to="/virtual-group-module">
+          <Button component={NavLink} to={`virtual-group/${moduleCode}`}>
             <Typography variant="body1">{moduleCode}</Typography>
           </Button>
         </div>
@@ -73,8 +77,8 @@ export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
       <Box width={1}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box overflow="auto" className={component.itemContent}>
-            {groups && groups.length > 0 ? (
-              groups.map((group, index) => (
+            {groups && recruitingGroups.length > 0 ? (
+              recruitingGroups.map((group, index) => (
                 <VirtualGroupCard
                   currentUser={currentUser}
                   key={index}
@@ -84,7 +88,7 @@ export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
             ) : (
               <Box width={1}>
                 <Alert severity="info">
-                  Looks like there is no any Q&A thread yet...
+                  No activity detected on this Module :(
                 </Alert>
               </Box>
             )}

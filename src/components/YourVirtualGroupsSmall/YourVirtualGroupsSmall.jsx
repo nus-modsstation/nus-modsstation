@@ -14,6 +14,8 @@ import Box from '@material-ui/core/Box';
 import {
   leaveGroupStart,
   deleteGroupStart,
+  acceptUserRequestStart,
+  removeUserRequestStart,
 } from '../../redux/virtualGroup/virtualGroup.action';
 import { readDocument } from '../../services/firestore';
 
@@ -26,7 +28,6 @@ const componentStyles = makeStyles((theme) => ({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, .4)',
     borderRadius: 5,
-    width: 332,
   },
   dialogTitleText: {
     display: 'inline',
@@ -48,6 +49,8 @@ const GroupComponent = ({
   groupData,
   leaveGroupStart,
   deleteGroupStart,
+  acceptJoinRequestStart,
+  removeJoinRequestStart,
 }) => {
   const component = componentStyles();
 
@@ -86,6 +89,35 @@ const GroupComponent = ({
     setOpen(false);
   };
 
+  const removeUserRequest = (userId) => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: userId,
+    };
+    removeJoinRequestStart(virtualGroupData);
+    /*
+    const idx = groupData.userRequests.indexOf(userId);
+    if (idx !== -1) {
+      groupData.userRequests.splice(idx, 1);
+    }
+    */
+    groupData.userRequests = groupData.userRequests.filter(
+      (id) => id !== userId
+    );
+  };
+
+  const acceptUserRequest = (userId) => {
+    removeUserRequest(userId);
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: userId,
+    };
+    acceptJoinRequestStart(virtualGroupData);
+    groupData.users.push(userId);
+  };
+
   useEffect(() => {
     groupData.users.forEach(async (userId) => {
       const user = await readDocument({ collection: 'users', docId: userId });
@@ -98,6 +130,15 @@ const GroupComponent = ({
       setUserRequestsMap(userRequestsMap);
     });
   }, [groupData, usernameMap, userRequestsMap]);
+
+  const membersArray = [];
+  for (var i in usernameMap) {
+    membersArray.push({ id: i, username: usernameMap[i] });
+  }
+  const joinRequestsArray = [];
+  for (var j in userRequestsMap) {
+    joinRequestsArray.push({ id: j, username: userRequestsMap[j] });
+  }
   return (
     <div>
       <Dialog
@@ -124,8 +165,10 @@ const GroupComponent = ({
           <VirtualGroupInfo
             currentUser={currentUser}
             groupData={groupData}
-            members={usernameMap}
-            joinRequests={userRequestsMap}
+            members={membersArray}
+            joinRequests={joinRequestsArray}
+            acceptJoinRequest={acceptUserRequest}
+            removeJoinRequest={removeUserRequest}
             leaveGroup={leaveGroup}
             deleteGroup={deleteGroup}
           />
@@ -138,13 +181,17 @@ const GroupComponent = ({
           justify="space-between"
           alignItems="center"
         >
-          <Grid item xs={8}>
+          <Grid item xs={9}>
             <Typography variant="body1" noWrap>
               {groupData.groupName}
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="button">{groupData.moduleCode}</Typography>
+            <Box display="flex" maxWidth={1} justifyContent="flex-end">
+              <Typography variant="button" align="right">
+                {groupData.moduleCode}
+              </Typography>
+            </Box>
           </Grid>
         </Grid>
       </ListItem>
@@ -157,6 +204,10 @@ const mapStateToProps = createStructuredSelector({});
 const mapDispatchToProps = (dispatch) => ({
   leaveGroupStart: (groupData) => dispatch(leaveGroupStart(groupData)),
   deleteGroupStart: (groupData) => dispatch(deleteGroupStart(groupData)),
+  removeJoinRequestStart: (groupData) =>
+    dispatch(removeUserRequestStart(groupData)),
+  acceptJoinRequestStart: (groupData) =>
+    dispatch(acceptUserRequestStart(groupData)),
 });
 
 const Group = connect(mapStateToProps, mapDispatchToProps)(GroupComponent);
@@ -164,10 +215,15 @@ const Group = connect(mapStateToProps, mapDispatchToProps)(GroupComponent);
 export const YourGroupsSmall = ({ currentUser, yourGroups }) => {
   const component = componentStyles();
   return (
-    <List className={component.root}>
-      {yourGroups.map((virtualGroup, index) => (
-        <Group key={index} currentUser={currentUser} groupData={virtualGroup} />
-      ))}
+    <List width={1} className={component.root}>
+      {yourGroups &&
+        yourGroups.map((virtualGroup, index) => (
+          <Group
+            key={index}
+            currentUser={currentUser}
+            groupData={virtualGroup}
+          />
+        ))}
     </List>
   );
 };
