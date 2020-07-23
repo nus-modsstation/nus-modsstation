@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { logoutStart } from '../../redux/user/user.action';
 
@@ -14,6 +15,31 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
+import Slide from '@material-ui/core/Slide';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+
+function HideOnScroll(props) {
+  const { children, window } = props;
+  // Note that you normally won't need to set the window ref as useScrollTrigger
+  // will default to window.
+  // This is only being set here because the demo is in an iframe.
+  const trigger = useScrollTrigger({ target: window ? window() : undefined });
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
+
+HideOnScroll.propTypes = {
+  children: PropTypes.element.isRequired,
+  /**
+   * Injected by the documentation to work in an iframe.
+   * You won't need it on your project.
+   */
+  window: PropTypes.func,
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,71 +87,74 @@ const Appbar = ({ currentUser, logoutStart, history }) => {
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            onClick={navigateToHomePage}
-            variant="h6"
-            className={classes.title}
-          >
-            NUS ModsStation
-          </Typography>
-          <div>
+    <React.Fragment>
+      <HideOnScroll>
+        <AppBar>
+          <Toolbar>
             <IconButton
-              onClick={navigateToChatRoomPage}
-              aria-label="show 4 new mails"
+              edge="start"
+              className={classes.menuButton}
               color="inherit"
+              aria-label="menu"
             >
-              <MailIcon />
+              <MenuIcon />
             </IconButton>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
+            <Typography
+              onClick={navigateToHomePage}
+              variant="h6"
+              className={classes.title}
             >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={open}
-              onClose={handleClose}
-            >
-              {currentUser && (
-                <MenuItem
-                  onClick={handleClose}
-                >{`Hi, ${currentUser.username}`}</MenuItem>
-              )}
-              {currentUser ? (
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              ) : (
-                <MenuItem onClick={navigateToLoginPage}>Login</MenuItem>
-              )}
-            </Menu>
-          </div>
-        </Toolbar>
-      </AppBar>
-    </div>
+              NUS ModsStation
+            </Typography>
+            <div>
+              <IconButton
+                onClick={navigateToChatRoomPage}
+                aria-label="show 4 new mails"
+                color="inherit"
+              >
+                <MailIcon />
+              </IconButton>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={open}
+                onClose={handleClose}
+              >
+                {currentUser && (
+                  <MenuItem
+                    onClick={handleClose}
+                  >{`Hi, ${currentUser.username}`}</MenuItem>
+                )}
+                {currentUser ? (
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                ) : (
+                  <MenuItem onClick={navigateToLoginPage}>Login</MenuItem>
+                )}
+              </Menu>
+            </div>
+          </Toolbar>
+        </AppBar>
+      </HideOnScroll>
+      <Toolbar />
+    </React.Fragment>
   );
 };
 
