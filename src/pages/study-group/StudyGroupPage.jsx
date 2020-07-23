@@ -14,7 +14,6 @@ import {
 } from '../../redux/studyGroup/studyGroup.action';
 import { selectCurrentUser } from '../../redux/user/user.selector';
 
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Box from '@material-ui/core/Box';
@@ -151,11 +150,9 @@ const StudyGroupPageComponent = ({
         </Grid>
         <Hidden smDown>
           <Grid md={4} item>
-            <Box pl={4}>
-              <Paper className={materialClasses.paper}>
-                <Typography variant="h6">Upcoming study groups</Typography>
-                <UpcomingGroupList data={myGroups} />
-              </Paper>
+            <Box pl={4} textAlign="center">
+              <Typography variant="h6">My groups</Typography>
+              <UpcomingGroupList data={myGroups} />
             </Box>
           </Grid>
         </Hidden>

@@ -47,13 +47,6 @@ export const StudyGroupCardComponent = ({
   leaveGroupStart,
   deleteGroupStart,
 }) => {
-  const chipStyle = {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'start',
-    paddingLeft: '6px',
-    paddingRight: '6px',
-  };
   const classes = materialStyles();
 
   const [open, setOpen] = useState(false);
@@ -183,36 +176,42 @@ export const StudyGroupCardComponent = ({
 
   return (
     <Box className={classes.clickableCursor}>
-      <Paper onClick={handleClick} variant="outlined">
+      <Paper
+        style={{
+          backgroundColor: 'rgba(30, 130, 76, 0.3)',
+        }}
+        onClick={handleClick}
+        variant="outlined"
+      >
         <Box pt={2} pl={2} pr={2}>
           <Typography noWrap variant="body1">
             {studyGroup.title}
           </Typography>
           <Box mt={2} />
           <Chip
-            style={chipStyle}
+            className={classes.chipStyle}
             icon={<ImportContactsIcon />}
             onClick={() => {
               console.log('clicked');
             }}
-            color="primary"
+            //color="primary"
             variant="outlined"
             label={studyGroup.moduleCode}
           />
           <Box mt={2} />
           <Chip
-            style={chipStyle}
+            className={classes.chipStyle}
             icon={<LocationOnIcon />}
             onClick={() => {
               console.log('clicked');
             }}
-            color="secondary"
+            //color="secondary"
             variant="outlined"
             label={studyGroup.location}
           />
           <Box mt={2} />
           <Chip
-            style={chipStyle}
+            className={classes.chipStyle}
             icon={<TodayIcon />}
             onClick={() => {
               console.log('clicked');

@@ -83,4 +83,11 @@ export const materialStyles = makeStyles((theme) => ({
   userAvatar: {
     backgroundColor: teal['A700'],
   },
+  chipStyle: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'start',
+    paddingLeft: '6px',
+    paddingRight: '6px',
+  },
 }));

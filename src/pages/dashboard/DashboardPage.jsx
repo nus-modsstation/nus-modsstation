@@ -190,23 +190,29 @@ const DashboardPageComponent = ({
         </Grid>
         <Hidden smDown>
           <Grid item md={4}>
-            <Paper className={materialClasses.paper}>
+            <Box textAlign="center">
               <Typography variant="h6">Options</Typography>
-              <List component="nav" aria-label="main mailbox folders">
-                {options.map((option) => {
-                  return (
-                    <ListItem
-                      key={option.title}
-                      onClick={option.clickCallback}
-                      button
-                    >
-                      <ListItemIcon>{option.icon}</ListItemIcon>
-                      <ListItemText primary={option.title} />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </Paper>
+            </Box>
+            <List dense component="nav">
+              {options.map((option) => {
+                return (
+                  <ListItem
+                    key={option.title}
+                    onClick={option.clickCallback}
+                    button
+                  >
+                    <Box width={1}>
+                      <Paper className={materialClasses.paper}>
+                        <Box display="flex" flexDirection="row">
+                          <ListItemIcon>{option.icon}</ListItemIcon>
+                          <ListItemText primary={option.title} />
+                        </Box>
+                      </Paper>
+                    </Box>
+                  </ListItem>
+                );
+              })}
+            </List>
           </Grid>
         </Hidden>
       </Grid>
