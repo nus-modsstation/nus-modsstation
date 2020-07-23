@@ -191,10 +191,7 @@ export const StudyGroupCardComponent = ({
           <Chip
             className={classes.chipStyle}
             icon={<ImportContactsIcon />}
-            onClick={() => {
-              console.log('clicked');
-            }}
-            //color="primary"
+            style={{ cursor: 'pointer' }}
             variant="outlined"
             label={studyGroup.moduleCode}
           />
@@ -202,10 +199,7 @@ export const StudyGroupCardComponent = ({
           <Chip
             className={classes.chipStyle}
             icon={<LocationOnIcon />}
-            onClick={() => {
-              console.log('clicked');
-            }}
-            //color="secondary"
+            style={{ cursor: 'pointer' }}
             variant="outlined"
             label={studyGroup.location}
           />
@@ -213,9 +207,7 @@ export const StudyGroupCardComponent = ({
           <Chip
             className={classes.chipStyle}
             icon={<TodayIcon />}
-            onClick={() => {
-              console.log('clicked');
-            }}
+            style={{ cursor: 'pointer' }}
             variant="outlined"
             label={formatTime(studyGroup.startTime, studyGroup.endTime)}
           />
@@ -258,9 +250,6 @@ export const StudyGroupCardComponent = ({
             <Grid item xs={12}>
               <Chip
                 icon={<ImportContactsIcon />}
-                onClick={() => {
-                  console.log('clicked');
-                }}
                 color="primary"
                 variant="outlined"
                 label={studyGroup.moduleCode}
@@ -268,9 +257,6 @@ export const StudyGroupCardComponent = ({
               <Box display="inline" m={1} />
               <Chip
                 icon={<LocationOnIcon />}
-                onClick={() => {
-                  console.log('clicked');
-                }}
                 color="secondary"
                 variant="outlined"
                 label={studyGroup.location}
@@ -278,9 +264,6 @@ export const StudyGroupCardComponent = ({
               <Box display="inline" m={1} />
               <Chip
                 icon={<TodayIcon />}
-                onClick={() => {
-                  console.log('clicked');
-                }}
                 variant="outlined"
                 label={`${formatDateTime(
                   studyGroup.startTime
