@@ -67,7 +67,6 @@ const QAThreadFormComponent = ({
       if (threadError) {
         clearThreadError();
       }
-      console.log('createSuccess from form: ', createSuccess);
       if (createSuccess) {
         clearCreateSuccess();
       }
@@ -116,7 +115,7 @@ const QAThreadFormComponent = ({
               }
               onChange={([, data]) => data}
               name="module"
-              defaultValue={modulePage ? module : undefined}
+              defaultValue={modulePage ? module : {}}
               control={control}
               rules={{ required: 'Please select module' }}
             />

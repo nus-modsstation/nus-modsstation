@@ -49,7 +49,7 @@ const App = ({ checkUserSession, currentUser }) => {
               path="/virtual-group"
               render={() => <VirtualGroupPage />}
             />
-            <Route path="/qa-thread" render={() => <QAThreadPage />} />
+            <Route exact path="/qa-thread" render={() => <QAThreadPage />} />
             <Route path="/dashboard" render={() => <DashboardPage />} />
             <Route
               path="/login"
@@ -70,8 +70,8 @@ const App = ({ checkUserSession, currentUser }) => {
               )}
             />
             <Route
-              path="/qa-thread-module"
-              render={() => <QAThreadModulePage />}
+              path="/qa-thread/:moduleCode"
+              render={() => <QAThreadModulePage currentUser={currentUser} />}
             />
             <Route
               exact

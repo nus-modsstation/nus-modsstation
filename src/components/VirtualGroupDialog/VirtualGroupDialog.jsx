@@ -70,7 +70,7 @@ const VirtualGroupDialogComponent = ({
   return (
     <div>
       {screenSmall ? (
-        <IconButton onClick={handleClickOpen}>
+        <IconButton disabled={!currentUser} onClick={handleClickOpen}>
           <AddCircleRoundedIcon style={{ fontSize: 44 }} />
         </IconButton>
       ) : (
@@ -79,6 +79,7 @@ const VirtualGroupDialogComponent = ({
           size="small"
           variant="contained"
           onClick={handleClickOpen}
+          disabled={!currentUser}
         >
           Create
         </Button>

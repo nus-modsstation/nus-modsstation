@@ -1,20 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { materialStyles } from '../../styles/material.styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { Box } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 
+const componentStyles = makeStyles({
+  card: {
+    padding: 16,
+    // orange: QA threads
+    backgroundColor: 'rgba(250, 190, 88, 0.3)',
+  },
+});
+
 export const YourQAThread = ({ thread }) => {
-  const materialClasses = materialStyles();
+  const componentClasses = componentStyles();
 
   return (
     <Box
       component={Paper}
-      className={materialClasses.paper}
+      className={componentClasses.card}
       mb="5px"
       height={0.45}
       width={1}

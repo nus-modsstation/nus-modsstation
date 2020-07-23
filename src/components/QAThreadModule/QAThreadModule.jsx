@@ -1,5 +1,5 @@
 import React from 'react';
-// import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Box } from '@material-ui/core';
@@ -36,7 +36,7 @@ const componentStyles = makeStyles({
     },
     '&::-webkit-scrollbar-thumb:hover': {
       borderRadius: 8,
-      background: '#421cf8',
+      background: 'gray',
     },
   },
 });
@@ -60,7 +60,7 @@ export const QAThreadModule = ({ moduleCode, threads, currentUser }) => {
         <IconButton onClick={handleClick}>
           {open ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
-        <Button /*component={NavLink} to="/qa-thread-module"*/>
+        <Button component={NavLink} to={`qa-thread/${moduleCode}`}>
           <Typography variant="body1">{moduleCode}</Typography>
         </Button>
       </Box>
@@ -78,7 +78,7 @@ export const QAThreadModule = ({ moduleCode, threads, currentUser }) => {
             ) : (
               <Box width={1}>
                 <Alert severity="info">
-                  Looks like there is no any Q&A thread yet...
+                  No activity detected on this Module :(
                 </Alert>
               </Box>
             )}

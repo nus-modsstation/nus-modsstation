@@ -72,9 +72,9 @@ const VirtualGroupPageComponent = ({
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const realUserModules = currentUser.modules.filter(
-    (moduleCode) => moduleCode !== 'MOD1001'
-  );
+  const realUserModules = currentUser
+    ? currentUser.modules.filter((moduleCode) => moduleCode !== 'MOD1001')
+    : [];
   const [searchQueries, setSearchQueries] = React.useState(
     currentUser ? realUserModules : []
   );
@@ -100,11 +100,11 @@ const VirtualGroupPageComponent = ({
     // fetch recruiting groups by module and my groups
     // call this when variables change by providing the variables in the second argument
     // this behaves like componentDidMount
-    currentUser.modules.forEach((moduleCode) => {
-      readGroupsByModule(moduleCode);
-    });
     if (currentUser && currentUser.id != null) {
       readMyGroups(currentUser.id);
+      currentUser.modules.forEach((moduleCode) => {
+        readGroupsByModule(moduleCode);
+      });
     }
   }, [currentUser, readGroupsByModule, readMyGroups]);
 
@@ -119,16 +119,19 @@ const VirtualGroupPageComponent = ({
               anchorEl={anchorEl}
               placement="bottom"
             >
-              <YourGroupsSmall
-                currentUser={currentUser}
-                yourGroups={myGroups}
-              />
+              {currentUser && (
+                <YourGroupsSmall
+                  currentUser={currentUser}
+                  yourGroups={myGroups}
+                />
+              )}
             </Popper>
           </Hidden>
           <Hidden mdUp>
             <Box my="4px">
               <Button
                 onClick={handleClick}
+                disabled={!currentUser}
                 variant="outlined"
                 fullWidth
                 size="small"
