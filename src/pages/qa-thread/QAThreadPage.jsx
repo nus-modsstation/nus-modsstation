@@ -37,9 +37,6 @@ const liveThreadsStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'flex-start',
     marginTop: 20,
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
   },
 });
 
@@ -51,7 +48,14 @@ const yourThreadsStyles = makeStyles({
     alignItems: 'flex-start',
     flexDirection: 'column',
     '&::-webkit-scrollbar': {
-      display: 'none',
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      borderRadius: 8,
+      backgroundColor: 'gray',
     },
   },
 });
@@ -99,9 +103,7 @@ const QAThreadPageComponent = ({
 
   // filter user modules by searchbar selection(s)
   const searchCallback = (searchData) => {
-    console.log('search:', searchData);
     if (searchData.value !== null) {
-      console.log('searchData.value:', searchData.value);
       // const results = currentUser.modules.filter((moduleCode) =>
       //   searchData.value.map((module) => module.option).includes(moduleCode)
       // );
@@ -128,17 +130,23 @@ const QAThreadPageComponent = ({
   return (
     <Box className={materialClasses.root}>
       <Hidden mdUp>
-        <Popper open={open} anchorEl={anchorEl} placement="bottom">
-          <YourQAThreadSmall myThreads={myThreads} />
+        <Popper
+          open={open}
+          style={{ width: '94%' }}
+          anchorEl={anchorEl}
+          placement="bottom"
+        >
+          {currentUser && <YourQAThreadSmall myThreads={myThreads} />}
         </Popper>
       </Hidden>
       <Hidden mdUp>
         <Popper
           open={anotherOpen}
+          style={{ width: '94%' }}
           anchorEl={anotherAnchorEl}
           placement="bottom"
         >
-          <YourQAThreadSmall myThreads={starredThreads} />
+          {currentUser && <YourQAThreadSmall myThreads={starredThreads} />}
         </Popper>
       </Hidden>
       <Grid container spacing={3} justify="space-between">
@@ -147,6 +155,7 @@ const QAThreadPageComponent = ({
             <Box my="4px">
               <Button
                 onClick={handleClick}
+                disabled={!currentUser}
                 variant="outlined"
                 fullWidth
                 size="small"
@@ -159,6 +168,7 @@ const QAThreadPageComponent = ({
             <Box my="4px">
               <Button
                 onClick={handleAnotherClick}
+                disabled={!currentUser}
                 variant="outlined"
                 fullWidth
                 size="small"

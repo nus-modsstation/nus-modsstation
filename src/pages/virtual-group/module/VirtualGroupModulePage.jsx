@@ -24,6 +24,7 @@ import { Popper } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 
 //import { Searchbar } from '../../../components/Searchbar/Searchbar';
+import { CustomAlert } from '../../../components/shared/CustomAlert';
 import { Module } from '../../../models/Module';
 import { materialStyles } from '../../../styles/material.styles';
 import { YourGroupsSmall } from '../../../components/YourVirtualGroupsSmall/YourVirtualGroupsSmall';
@@ -113,17 +114,25 @@ export const VirtualGroupModulePageComponent = ({
             </Typography>
           </Box>
           <Hidden mdUp>
-            <Popper open={open} anchorEl={anchorEl} placement="bottom-end">
-              <YourGroupsSmall
-                currentUser={currentUser}
-                yourGroups={myGroups}
-              />
+            <Popper
+              open={open}
+              style={{ width: '94%' }}
+              anchorEl={anchorEl}
+              placement="bottom-end"
+            >
+              {currentUser && (
+                <YourGroupsSmall
+                  currentUser={currentUser}
+                  yourGroups={myGroups}
+                />
+              )}
             </Popper>
             <Box width={1} mb="4px">
               <Grid container alignItems="center">
                 <Grid item xs={10}>
                   <Button
                     onClick={handleClick}
+                    disabled={!currentUser}
                     variant="outlined"
                     fullWidth
                     size="small"
@@ -134,7 +143,10 @@ export const VirtualGroupModulePageComponent = ({
                 <Grid item xs={2}>
                   <VirtualGroupDialog
                     modulePage
-                    module={{ id: 'MOD1001', name: 'Test Module' }}
+                    module={{
+                      moduleCode: module.moduleCode,
+                      title: module.title,
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -163,7 +175,20 @@ export const VirtualGroupModulePageComponent = ({
             )}
           </Grid>
           <Box className={recruitingGroupsClasses.list} width={1}>
-            {groups &&
+            {currentUser === null && (
+              <Grid xs={12} item>
+                <Box mt={3} />
+                <CustomAlert
+                  severity="info"
+                  alertTitle="You are not logged in"
+                  alertText="Please log in to your account on "
+                  route="/login"
+                  pageName="Login page"
+                />
+              </Grid>
+            )}
+            {currentUser &&
+              groups &&
               !xs &&
               recruitingGroups.map((virtualGroup, index) => (
                 <VirtualGroupCard
@@ -173,7 +198,7 @@ export const VirtualGroupModulePageComponent = ({
                   groupData={virtualGroup}
                 />
               ))}
-            {groups && xs && (
+            {currentUser && groups && xs && (
               <Grid container>
                 {recruitingGroups.map((virtualGroup, index) => (
                   <Grid item xs={12} key={index}>

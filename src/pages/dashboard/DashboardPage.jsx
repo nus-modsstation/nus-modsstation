@@ -9,6 +9,14 @@ import { selectMyGroups } from '../../redux/studyGroup/studyGroup.selector';
 import { readMyGroups } from '../../redux/studyGroup/studyGroup.action';
 import { selectMyVirtualGroups } from '../../redux/virtualGroup/virtualGroup.selector';
 import { readMyVirtualGroups } from '../../redux/virtualGroup/virtualGroup.action';
+import {
+  selectMyQAThreads,
+  selectMyStarredQAThreads,
+} from '../../redux/qaThread/qaThread.selector';
+import {
+  readMyQAThreads,
+  readMyStarredQAThreads,
+} from '../../redux/qaThread/qaThread.action';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { materialStyles } from '../../styles/material.styles';
@@ -31,6 +39,7 @@ import { Searchbar } from '../../components/Searchbar/Searchbar';
 import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialog';
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
+import { QAThreadCard } from '../../components/QAThreadCard/QAThreadCard';
 
 const dashboardStyles = makeStyles({
   cardsSection: {
@@ -57,6 +66,10 @@ const DashboardPageComponent = ({
   readMyStudyGroups,
   myVirtualGroups,
   readMyVirtualGroups,
+  myThreads,
+  readMyThreads,
+  starredThreads,
+  readMyStarredThreads,
 }) => {
   const dashboardClasses = dashboardStyles();
   const materialClasses = materialStyles();
@@ -80,8 +93,16 @@ const DashboardPageComponent = ({
     if (currentUser && currentUser.id != null) {
       readMyStudyGroups(currentUser.id);
       readMyVirtualGroups(currentUser.id);
+      readMyThreads(currentUser.id);
+      readMyStarredThreads(currentUser.id);
     }
-  }, [currentUser, readMyStudyGroups, readMyVirtualGroups]);
+  }, [
+    currentUser,
+    readMyStudyGroups,
+    readMyVirtualGroups,
+    readMyThreads,
+    readMyStarredThreads,
+  ]);
 
   return (
     <Box className={materialClasses.root}>
@@ -184,7 +205,76 @@ const DashboardPageComponent = ({
               </Paper>
             </Grid>
             <Grid xs={12} item>
-              <Paper className={materialClasses.paper}>Q&A Threads</Paper>
+              <Paper className={materialClasses.paper}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Box mb={1}>
+                      <Typography variant="h6">
+                        {capSentence('My Q&A threads')}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={12}>
+                    <Box
+                      overflow="auto"
+                      className={dashboardClasses.cardsSection}
+                    >
+                      {myThreads && myThreads.length > 0 ? (
+                        myThreads.map((thread, index) => (
+                          <QAThreadCard
+                            currentUser={currentUser}
+                            key={index}
+                            thread={thread}
+                          />
+                        ))
+                      ) : (
+                        <Box width={1}>
+                          <Alert severity="info">
+                            Whoops! Looks like you have not initiated any Q&A
+                            thread yet.
+                          </Alert>
+                        </Box>
+                      )}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+            <Grid xs={12} item>
+              <Paper className={materialClasses.paper}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Box mb={1}>
+                      <Typography variant="h6">
+                        {capSentence('Starred Q&A threads')}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={12}>
+                    <Box
+                      overflow="auto"
+                      className={dashboardClasses.cardsSection}
+                    >
+                      {starredThreads && starredThreads.length > 0 ? (
+                        starredThreads.map((thread, index) => (
+                          <QAThreadCard
+                            currentUser={currentUser}
+                            key={index}
+                            thread={thread}
+                          />
+                        ))
+                      ) : (
+                        <Box width={1}>
+                          <Alert severity="info">
+                            Whoops! Looks like you have not starred any Q&A
+                            thread yet.
+                          </Alert>
+                        </Box>
+                      )}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Paper>
             </Grid>
           </Grid>
         </Grid>
@@ -223,12 +313,16 @@ const DashboardPageComponent = ({
 const mapStateToProps = createStructuredSelector({
   myStudyGroups: selectMyGroups,
   myVirtualGroups: selectMyVirtualGroups,
+  myThreads: selectMyQAThreads,
+  starredThreads: selectMyStarredQAThreads,
   currentUser: selectCurrentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   readMyStudyGroups: (userId) => dispatch(readMyGroups(userId)),
   readMyVirtualGroups: (userId) => dispatch(readMyVirtualGroups(userId)),
+  readMyThreads: (userId) => dispatch(readMyQAThreads(userId)),
+  readMyStarredThreads: (userId) => dispatch(readMyStarredQAThreads(userId)),
 });
 
 export const DashboardPage = connect(

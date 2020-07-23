@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { visitQAThread } from '../../redux/qaThread/qaThread.action';
+import { readDocument } from '../../services/firestore';
+import { readRecentMessages } from '../../services/messages';
 
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,6 +19,8 @@ const componentStyles = makeStyles({
     height: 200,
     width: 175,
     marginRight: 25,
+    // orange: QA threads
+    backgroundColor: 'rgba(250, 190, 88, 0.3)',
   },
   cardContent: {
     margin: 8,
@@ -26,6 +30,8 @@ const componentStyles = makeStyles({
   listItem: {
     marginBottom: 10,
     padding: 8,
+    // orange: QA threads
+    backgroundColor: 'rgba(250, 190, 88, 0.3)',
   },
   listItemContent: {
     display: 'flex',
@@ -36,6 +42,7 @@ const componentStyles = makeStyles({
 
 const ThreadPortraitCard = ({ thread, currentUser, visitThread }) => {
   const componentClasses = componentStyles();
+  const [mostRecentMessage, setRecentMessage] = React.useState(null);
 
   const visit = async () => {
     if (currentUser.id !== thread.ownerId) {
@@ -46,6 +53,35 @@ const ThreadPortraitCard = ({ thread, currentUser, visitThread }) => {
     }
   };
 
+  useEffect(() => {
+    let mounted = true;
+    readRecentMessages({
+      id: thread.id,
+      size: 1,
+      callback: async (snapshot) => {
+        let messageData = [];
+        if (snapshot.val() !== null) {
+          messageData = Object.values(snapshot.val());
+          if (messageData.length > 0) {
+            const message = messageData[0].message;
+            const writerId = messageData[0].userId;
+            const user = await readDocument({
+              collection: 'users',
+              docId: writerId,
+            });
+            if (mounted) {
+              setRecentMessage({ writer: user.username, message: message });
+            }
+          }
+        }
+      },
+    });
+    return () => {
+      mounted = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Card variant="outlined" className={componentClasses.card}>
       <Box
@@ -55,11 +91,15 @@ const ThreadPortraitCard = ({ thread, currentUser, visitThread }) => {
         m="5px"
       >
         <Box textOverflow="ellipsis">
-          <Typography variant="body1">{thread.taskName}</Typography>
+          <Typography variant="body1">
+            <strong>{thread.taskName}</strong>
+          </Typography>
         </Box>
-        <Box overflow="hidden">
+        <Box overflow="hidden" pr={1}>
           <Typography component="p" variant="caption">
-            Current question
+            {mostRecentMessage
+              ? mostRecentMessage.writer + ': ' + mostRecentMessage.message
+              : 'Wow, much empty'}
           </Typography>
         </Box>
       </Box>
@@ -79,6 +119,7 @@ const ThreadPortraitCard = ({ thread, currentUser, visitThread }) => {
 
 const ThreadLandscapeCard = ({ thread, currentUser, visitThread }) => {
   const componentClasses = componentStyles();
+  const [mostRecentMessage, setRecentMessage] = React.useState(null);
 
   const visit = async () => {
     if (currentUser.id !== thread.ownerId) {
@@ -86,17 +127,50 @@ const ThreadLandscapeCard = ({ thread, currentUser, visitThread }) => {
     }
   };
 
+  useEffect(() => {
+    let mounted = true;
+    readRecentMessages({
+      id: thread.id,
+      size: 1,
+      callback: async (snapshot) => {
+        let messageData = [];
+        if (snapshot.val() !== null) {
+          messageData = Object.values(snapshot.val());
+          if (messageData.length > 0) {
+            const message = messageData[0].message;
+            const writerId = messageData[0].userId;
+            const user = await readDocument({
+              collection: 'users',
+              docId: writerId,
+            });
+            if (mounted) {
+              setRecentMessage({ writer: user.username, message: message });
+            }
+          }
+        }
+      },
+    });
+    return () => {
+      mounted = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Box component={Paper} className={componentClasses.listItem}>
       <Grid container alignItems="center" spacing={1} justify="space-between">
         <Grid item xs={8} md={9}>
-          <Box width={1} className={componentClasses.listItemContent}>
+          <Box width={1} pl={1} className={componentClasses.listItemContent}>
             <Box width={1}>
-              <Typography variant="body1">{thread.taskName}</Typography>
+              <Typography variant="body1">
+                <strong>{thread.taskName}</strong>
+              </Typography>
             </Box>
             <Box width={1}>
-              <Typography variant="caption" component="p">
-                Active questions: ...
+              <Typography variant="caption" component="p" noWrap>
+                {mostRecentMessage
+                  ? mostRecentMessage.writer + ': ' + mostRecentMessage.message
+                  : 'Wow, much empty'}
               </Typography>
             </Box>
           </Box>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { List, ListItem } from '@material-ui/core';
@@ -12,7 +13,6 @@ const componentStyles = makeStyles({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, .4)',
     borderRadius: 5,
-    width: 332,
   },
 });
 
@@ -32,7 +32,11 @@ const Thread = ({ thread }) => {
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="button">{thread.moduleCode}</Typography>
+            <Box display="flex" maxWidth={1} justifyContent="flex-end">
+              <Typography variant="button" align="right">
+                {thread.moduleCode}
+              </Typography>
+            </Box>
           </Grid>
         </Grid>
       </ListItem>
@@ -44,7 +48,7 @@ export const YourQAThreadSmall = ({ myThreads }) => {
   const component = componentStyles();
   return (
     <div>
-      <List className={component.root}>
+      <List width={1} className={component.root}>
         {myThreads.map((thread, index) => (
           <Thread key={index} thread={thread} />
         ))}
