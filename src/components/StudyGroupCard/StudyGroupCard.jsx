@@ -15,6 +15,7 @@ import {
 } from '../../redux/studyGroup/studyGroup.action';
 import { formatTime, formatDateTime } from '../../utils/formatDate';
 
+import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Typography, Box, Button } from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
@@ -37,6 +38,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 
+const componentStyles = makeStyles({
+  card: {
+    width: 184,
+    marginRight: 25,
+    cursor: 'pointer',
+  },
+});
+
 export const StudyGroupCardComponent = ({
   currentUser,
   studyGroup,
@@ -48,6 +57,7 @@ export const StudyGroupCardComponent = ({
   deleteGroupStart,
 }) => {
   const classes = materialStyles();
+  const componentClasses = componentStyles();
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -175,17 +185,18 @@ export const StudyGroupCardComponent = ({
   }, []);
 
   return (
-    <Box className={classes.clickableCursor}>
+    <Box className={componentClasses.card /*classes.clickableCursor*/}>
       <Paper
         style={{
           backgroundColor: 'rgba(30, 130, 76, 0.3)',
+          width: 184,
         }}
         onClick={handleClick}
         variant="outlined"
       >
         <Box pt={2} pl={2} pr={2}>
           <Typography noWrap variant="body1">
-            {studyGroup.title}
+            <strong>{studyGroup.title}</strong>
           </Typography>
           <Box mt={2} />
           <Chip
@@ -195,7 +206,7 @@ export const StudyGroupCardComponent = ({
             variant="outlined"
             label={studyGroup.moduleCode}
           />
-          <Box mt={2} />
+          <Box mt={1} />
           <Chip
             className={classes.chipStyle}
             icon={<LocationOnIcon />}
@@ -203,7 +214,7 @@ export const StudyGroupCardComponent = ({
             variant="outlined"
             label={studyGroup.location}
           />
-          <Box mt={2} />
+          <Box mt={1} />
           <Chip
             className={classes.chipStyle}
             icon={<TodayIcon />}
@@ -224,6 +235,7 @@ export const StudyGroupCardComponent = ({
               {`${isJoined ? 'Joined' : isRequestSent ? 'Pending' : 'Join'}`}
             </Button>
           )}
+          <Box mt={1} />
         </Box>
       </Paper>
       <Dialog

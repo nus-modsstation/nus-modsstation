@@ -3,12 +3,13 @@ import React from 'react';
 import { capSentence } from '../../utils/formatString';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, GridListTile } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { StudyGroupCard } from '../StudyGroupCard/StudyGroupCard';
-import GridList from '@material-ui/core/GridList';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+// import GridList from '@material-ui/core/GridList';
+// import GridListTile from '@material-ui/core/GridListTile';
+// import { useTheme } from '@material-ui/core/styles';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles({
@@ -23,11 +24,29 @@ const useStyles = makeStyles({
     transform: 'translateZ(0)',
     width: '100%',
   },
+  sectionContent: {
+    margin: '10px 0px',
+    paddingBottom: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    '&::-webkit-scrollbar': {
+      height: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      borderRadius: 8,
+      background: 'gray',
+    },
+  },
 });
 
 export const StudyGroupSection = ({ sectionTitle, sectionData, hideJoin }) => {
   const classes = useStyles();
 
+  /*
   const theme = useTheme();
   const xs = useMediaQuery(theme.breakpoints.only('xs'));
   const sm = useMediaQuery(theme.breakpoints.only('sm'));
@@ -35,6 +54,7 @@ export const StudyGroupSection = ({ sectionTitle, sectionData, hideJoin }) => {
   const lg = useMediaQuery(theme.breakpoints.only('lg'));
 
   const colWidth = xs ? 1.7 : sm ? 3.7 : md ? 3.3 : lg ? 4.5 : 5.2;
+  */
 
   return (
     <Box>
@@ -43,26 +63,29 @@ export const StudyGroupSection = ({ sectionTitle, sectionData, hideJoin }) => {
       <Box mt={2} />
       <Box className={classes.root}>
         {sectionData && sectionData.length > 0 ? (
+          /*
           <GridList
             className={classes.gridList}
             cellHeight="auto"
             cols={colWidth}
             spacing={16}
-          >
+          ></Grid>
+          */
+          <Box overflow="auto" className={classes.sectionContent}>
             {sectionData.map((studyGroup, index) => (
-              <GridListTile key={index}>
-                <StudyGroupCard
-                  key={index}
-                  studyGroup={studyGroup}
-                  hideJoin={hideJoin}
-                />
-              </GridListTile>
+              // <GridListTile key={index}>
+              <StudyGroupCard
+                key={index}
+                studyGroup={studyGroup}
+                hideJoin={hideJoin}
+              />
+              // </GridListTile>
             ))}
-          </GridList>
+          </Box>
         ) : (
           <Box width={1}>
             <Alert severity="info">
-              Looks like there is no any study group yet...
+              No activity detected on this Module :(
             </Alert>
           </Box>
         )}

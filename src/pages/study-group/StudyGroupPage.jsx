@@ -71,19 +71,19 @@ const StudyGroupPageComponent = ({
   return (
     <Box className={materialClasses.root}>
       <Grid container>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={8} lg={9}>
           <Grid container>
             <Grid xs={12} item>
               <Grid container spacing={1} alignItems="center">
-                <Grid xs={9} sm={10} md={11} item>
+                <Grid xs={10} sm={11} md={10} lg={11} item>
                   <Searchbar
                     currentUser={currentUser}
                     searchCallback={searchCallback}
                   />
                 </Grid>
-                <Grid xs={3} sm={2} md={1} item>
+                <Grid xs={2} sm={1} md={2} lg={1} item>
                   <Grid justify="center" container>
-                    <Grid item>
+                    <Grid item md={12}>
                       <StudyGroupDialog />
                     </Grid>
                   </Grid>
@@ -149,8 +149,8 @@ const StudyGroupPageComponent = ({
           </Grid>
         </Grid>
         <Hidden smDown>
-          <Grid md={4} item>
-            <Box pl={4} textAlign="center">
+          <Grid md={4} lg={3} item>
+            <Box pl={4} mt={1} textAlign="center">
               <Typography variant="h6">My groups</Typography>
               <UpcomingGroupList data={myGroups} />
             </Box>
