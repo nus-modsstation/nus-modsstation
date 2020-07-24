@@ -18,6 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import { CustomSnackbar } from '../../components/shared/CustomSnackbar';
+import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 
 const useStyles = makeStyles((theme) => ({
   dialogTitleText: {
@@ -41,6 +42,7 @@ const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
+  const smallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -61,9 +63,21 @@ const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
 
   return (
     <div>
-      <Button size="small" variant="contained" onClick={handleClickOpen}>
-        Create
-      </Button>
+      {smallScreen ? (
+        <IconButton disabled={!currentUser} onClick={handleClickOpen}>
+          <AddCircleRoundedIcon style={{ fontSize: 44 }} />
+        </IconButton>
+      ) : (
+        <Button
+          fullWidth
+          size="small"
+          variant="contained"
+          onClick={handleClickOpen}
+          disabled={!currentUser}
+        >
+          Create
+        </Button>
+      )}
       <Dialog
         open={open}
         onClose={handleClose}

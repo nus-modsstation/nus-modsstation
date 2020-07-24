@@ -19,6 +19,7 @@ const componentStyles = makeStyles({
     height: 200,
     width: 175,
     marginRight: 25,
+    marginBottom: 5,
     // orange: QA threads
     backgroundColor: 'rgba(250, 190, 88, 0.3)',
   },

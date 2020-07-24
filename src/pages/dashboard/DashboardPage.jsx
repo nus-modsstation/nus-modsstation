@@ -190,7 +190,14 @@ const DashboardPageComponent = ({
               </Paper>
             </Grid>
             <Grid xs={12} item>
-              <Paper className={materialClasses.paper}>
+              <Paper
+                style={{
+                  paddingTop: 1,
+                  paddingLeft: 16,
+                  paddingRight: 16,
+                  paddingBottom: 8,
+                }}
+              >
                 <StudyGroupSection
                   sectionTitle="My study groups"
                   sectionData={myStudyGroups}

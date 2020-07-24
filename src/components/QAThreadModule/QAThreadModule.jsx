@@ -23,8 +23,7 @@ const componentStyles = makeStyles({
     alignItems: 'center',
   },
   itemContent: {
-    margin: '10px 0px',
-    paddingBottom: 15,
+    marginTop: '10px',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -61,7 +60,9 @@ export const QAThreadModule = ({ moduleCode, threads, currentUser }) => {
           {open ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
         <Button component={NavLink} to={`qa-thread/${moduleCode}`}>
-          <Typography variant="body1">{moduleCode}</Typography>
+          <Typography variant="body1">
+            <strong>{moduleCode}</strong>
+          </Typography>
         </Button>
       </Box>
       <Box width={1}>

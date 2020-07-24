@@ -110,8 +110,8 @@ const VirtualGroupPageComponent = ({
 
   return (
     <Box className={styles.root}>
-      <Grid container spacing={4} justify="space-between">
-        <Grid item md={9} xs={12}>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={8} lg={9}>
           <Hidden mdUp>
             <Popper
               open={open}
@@ -140,20 +140,19 @@ const VirtualGroupPageComponent = ({
               </Button>
             </Box>
           </Hidden>
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justify="space-between"
-          >
-            <Grid item xs={10} md={11}>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item xs={10} sm={11} md={10} lg={11}>
               <Searchbar
                 currentUser={currentUser}
                 searchCallback={searchCallback}
               />
             </Grid>
-            <Grid item xs={2} md={1}>
-              <VirtualGroupDialog />
+            <Grid item xs={2} sm={1} md={2} lg={1}>
+              <Grid justify="center" container>
+                <Grid item md={12}>
+                  <VirtualGroupDialog />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
           {currentUser === null && (
@@ -193,13 +192,13 @@ const VirtualGroupPageComponent = ({
             ))}
         </Grid>
         <Hidden smDown>
-          <Grid item md={3}>
-            <Box my="8px">
+          <Grid item md={4} lg={3}>
+            <Box mt={1}>
               <Typography variant="h6" align="center">
                 My groups
               </Typography>
             </Box>
-            <Box width={1} className={myGroupsClasses.list}>
+            <Box width={1} my={1} className={myGroupsClasses.list}>
               {currentUser &&
                 myGroups.map((virtualGroup, index) => (
                   <YourGroupCard

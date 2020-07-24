@@ -145,8 +145,8 @@ const QAThreadModulePageComponent = ({
           {currentUser && <YourQAThreadSmall myThreads={starredThreads} />}
         </Popper>
       </Hidden>
-      <Grid container spacing={3} justify="space-between">
-        <Grid item xs={12} md={8}>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={8} lg={9}>
           <Box mb={!xs ? 2 : 0} mt={xs ? 1 : 0}>
             <Typography variant="h4" align="center">
               {moduleCode}
@@ -155,7 +155,7 @@ const QAThreadModulePageComponent = ({
           <Hidden mdUp>
             <Box my="4px">
               <Grid container alignItems="center">
-                <Grid item xs={10}>
+                <Grid item xs={10} sm={11}>
                   <Button
                     onClick={handleClick}
                     disabled={!currentUser}
@@ -166,14 +166,18 @@ const QAThreadModulePageComponent = ({
                     <Typography variant="button">My threads</Typography>
                   </Button>
                 </Grid>
-                <Grid item xs={2}>
-                  <QAThreadDialog
-                    modulePage
-                    module={{
-                      moduleCode: module.moduleCode,
-                      title: module.title,
-                    }}
-                  />
+                <Grid item xs={2} sm={1}>
+                  <Grid justify="center" container>
+                    <Grid item>
+                      <QAThreadDialog
+                        modulePage
+                        module={{
+                          moduleCode: module.moduleCode,
+                          title: module.title,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             </Box>
@@ -193,21 +197,19 @@ const QAThreadModulePageComponent = ({
           </Hidden>
           <Grid container height={1} spacing={1}>
             <Grid item xs={12}>
-              {!xs && (
-                <Grid item xs={12}>
-                  <Grid container justify="center">
-                    <Grid item md={4}>
-                      <QAThreadDialog
-                        modulePage
-                        module={{
-                          moduleCode: module.moduleCode,
-                          title: module.title,
-                        }}
-                      />
-                    </Grid>
+              <Hidden smDown>
+                <Grid container justify="center">
+                  <Grid item md={4}>
+                    <QAThreadDialog
+                      modulePage
+                      module={{
+                        moduleCode: module.moduleCode,
+                        title: module.title,
+                      }}
+                    />
                   </Grid>
                 </Grid>
-              )}
+              </Hidden>
             </Grid>
             <Grid item xs={12} wrap="nowrap">
               <Box width={1} className={liveThreadsClasses.list}>
@@ -239,7 +241,7 @@ const QAThreadModulePageComponent = ({
           </Grid>
         </Grid>
         <Hidden smDown>
-          <Grid item md={3}>
+          <Grid item md={4} lg={3}>
             <Box my="10px">
               <Typography variant="h6" align="center">
                 My threads

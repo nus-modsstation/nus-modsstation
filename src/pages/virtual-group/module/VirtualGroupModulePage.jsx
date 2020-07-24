@@ -106,8 +106,8 @@ export const VirtualGroupModulePageComponent = ({
 
   return (
     <Box className={styles.root}>
-      <Grid container spacing={4} justify="space-between">
-        <Grid item md={9} xs={12}>
+      <Grid container spacing={4}>
+        <Grid item md={8} lg={9} xs={12}>
           <Box mb={!xs ? 2 : 0} mt={xs ? 1 : 0}>
             <Typography variant="h4" align="center">
               {moduleCode}
@@ -129,7 +129,7 @@ export const VirtualGroupModulePageComponent = ({
             </Popper>
             <Box width={1} mb="4px">
               <Grid container alignItems="center">
-                <Grid item xs={10}>
+                <Grid item xs={10} sm={11}>
                   <Button
                     onClick={handleClick}
                     disabled={!currentUser}
@@ -140,14 +140,18 @@ export const VirtualGroupModulePageComponent = ({
                     <Typography variant="button">My groups</Typography>
                   </Button>
                 </Grid>
-                <Grid item xs={2}>
-                  <VirtualGroupDialog
-                    modulePage
-                    module={{
-                      moduleCode: module.moduleCode,
-                      title: module.title,
-                    }}
-                  />
+                <Grid item xs={2} sm={1}>
+                  <Grid justify="center" container>
+                    <Grid item>
+                      <VirtualGroupDialog
+                        modulePage
+                        module={{
+                          moduleCode: module.moduleCode,
+                          title: module.title,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             </Box>
@@ -158,8 +162,8 @@ export const VirtualGroupModulePageComponent = ({
             alignItems="center"
             justify="space-between"
           >
-            {!xs && (
-              <Grid item xs={12}>
+            <Grid item xs={12}>
+              <Hidden smDown>
                 <Grid container justify="center">
                   <Grid item md={4}>
                     <VirtualGroupDialog
@@ -171,8 +175,8 @@ export const VirtualGroupModulePageComponent = ({
                     />
                   </Grid>
                 </Grid>
-              </Grid>
-            )}
+              </Hidden>
+            </Grid>
           </Grid>
           <Box className={recruitingGroupsClasses.list} width={1}>
             {currentUser === null && (
@@ -223,7 +227,7 @@ export const VirtualGroupModulePageComponent = ({
           </Box>
         </Grid>
         <Hidden smDown>
-          <Grid item md={3}>
+          <Grid item md={4} lg={3}>
             <Box my="8px">
               <Typography variant="h6" align="center">
                 My groups

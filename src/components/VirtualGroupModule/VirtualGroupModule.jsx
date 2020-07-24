@@ -70,7 +70,9 @@ export const VirtualGroupModule = ({ currentUser, moduleCode, groups }) => {
             {open ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
           <Button component={NavLink} to={`virtual-group/${moduleCode}`}>
-            <Typography variant="body1">{moduleCode}</Typography>
+            <Typography variant="body1">
+              <strong>{moduleCode}</strong>
+            </Typography>
           </Button>
         </div>
       </div>

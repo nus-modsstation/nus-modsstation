@@ -43,7 +43,6 @@ const liveThreadsStyles = makeStyles({
 const yourThreadsStyles = makeStyles({
   list: {
     height: 200,
-    margin: '20px 0px',
     overflow: 'auto',
     alignItems: 'flex-start',
     flexDirection: 'column',
@@ -149,8 +148,8 @@ const QAThreadPageComponent = ({
           {currentUser && <YourQAThreadSmall myThreads={starredThreads} />}
         </Popper>
       </Hidden>
-      <Grid container spacing={3} justify="space-between">
-        <Grid item xs={12} md={9}>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={8} lg={9}>
           <Hidden mdUp>
             <Box my="4px">
               <Button
@@ -177,20 +176,19 @@ const QAThreadPageComponent = ({
               </Button>
             </Box>
           </Hidden>
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justify="space-between"
-          >
-            <Grid item xs={10} md={11}>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item xs={10} sm={11} md={10} lg={11}>
               <Searchbar
                 currentUser={currentUser}
                 searchCallback={searchCallback}
               />
             </Grid>
-            <Grid item xs={2} md={1}>
-              <QAThreadDialog />
+            <Grid item xs={2} sm={1} md={2} lg={1}>
+              <Grid justify="center" container>
+                <Grid item md={12}>
+                  <QAThreadDialog />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
           {currentUser === null && (
@@ -230,23 +228,23 @@ const QAThreadPageComponent = ({
             ))}
         </Grid>
         <Hidden smDown>
-          <Grid item md={3}>
-            <Box my="10px">
+          <Grid item md={4} lg={3}>
+            <Box mt={1}>
               <Typography variant="h6" align="center">
                 My threads
               </Typography>
             </Box>
-            <Box className={yourThreadsClasses.list}>
+            <Box my={1} className={yourThreadsClasses.list}>
               {myThreads.map((thread, index) => (
                 <YourQAThread key={index} thread={thread} />
               ))}
             </Box>
-            <Box my={2}>
+            <Box mt={3}>
               <Typography variant="h6" align="center">
                 Starred threads
               </Typography>
             </Box>
-            <Box className={yourThreadsClasses.list}>
+            <Box my={1} className={yourThreadsClasses.list}>
               {starredThreads.map((thread, index) => (
                 <YourQAThread key={index} thread={thread} />
               ))}

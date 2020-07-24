@@ -20,7 +20,7 @@ export const UpcomingGroupList = ({ data }) => {
     <List dense>
       {data.map((group, index) => (
         <Box key={index}>
-          <ListItem>
+          <ListItem disableGutters>
             <Paper
               style={{
                 backgroundColor: 'rgba(30, 130, 76, 0.3)',
