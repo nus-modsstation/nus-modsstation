@@ -25,6 +25,7 @@ import { UpcomingGroupList } from '../../components/UpcomingGroupList/UpcomingGr
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 import { StudyGroupDialog } from '../../components/StudyGroupDialog/StudyGroupDialog';
 import { CustomAlert } from '../../components/shared/CustomAlert';
+import { IntroCarousel } from '../../components/IntroCarousel/IntroCarousel';
 
 const StudyGroupPageComponent = ({
   myGroups,
@@ -90,6 +91,7 @@ const StudyGroupPageComponent = ({
                 </Grid>
               </Grid>
             </Grid>
+
             {currentUser == null && (
               <Grid xs={12} item>
                 <Box mt={3} />
@@ -156,6 +158,11 @@ const StudyGroupPageComponent = ({
             </Box>
           </Grid>
         </Hidden>
+        {currentUser && (
+          <Grid xs={12} item>
+            <IntroCarousel currentUser={currentUser} />
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

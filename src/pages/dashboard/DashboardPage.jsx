@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { capSentence } from '../../utils/formatString';
 
-import { Dashboard } from '../../models/Dashboard';
 import { selectCurrentUser } from '../../redux/user/user.selector';
 import { selectMyGroups } from '../../redux/studyGroup/studyGroup.selector';
 import { readMyGroups } from '../../redux/studyGroup/studyGroup.action';
@@ -34,12 +33,17 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Alert from '@material-ui/lab/Alert';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import BookIcon from '@material-ui/icons/Book';
+import ViewCarouselIcon from '@material-ui/icons/ViewCarousel';
 
 import { Searchbar } from '../../components/Searchbar/Searchbar';
 import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialog';
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 import { QAThreadCard } from '../../components/QAThreadCard/QAThreadCard';
+import { IntroCarousel } from '../../components/IntroCarousel/IntroCarousel';
 
 const dashboardStyles = makeStyles({
   cardsSection: {
@@ -74,7 +78,34 @@ const DashboardPageComponent = ({
   const dashboardClasses = dashboardStyles();
   const materialClasses = materialStyles();
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const options = [
+    {
+      title: 'Friends',
+      icon: <PeopleAltIcon />,
+      clickCallback: () => {},
+    },
+    {
+      title: 'Notebooks',
+      icon: <BookIcon />,
+      clickCallback: () => {},
+    },
+    {
+      title: 'Statistics',
+      icon: <AssessmentIcon />,
+      clickCallback: () => {},
+    },
+    {
+      title: 'Guides',
+      icon: <ViewCarouselIcon />,
+      clickCallback: () => {
+        setOpenCarousel(true);
+      },
+    },
+  ];
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const [openCarousel, setOpenCarousel] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -83,8 +114,6 @@ const DashboardPageComponent = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const options = Dashboard.options;
 
   useEffect(() => {
     // fetch user's study groups, virtual groups and Q&A Threads
@@ -139,6 +168,7 @@ const DashboardPageComponent = ({
                 })}
               </Menu>
             </Grid>
+
             <Grid xs={12} item>
               <Paper className={materialClasses.paper}>
                 <Box display="flex" justifyContent="space-between">
@@ -221,7 +251,7 @@ const DashboardPageComponent = ({
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid xs={12}>
+                  <Grid item xs={12}>
                     <Box
                       overflow="auto"
                       className={dashboardClasses.cardsSection}
@@ -257,7 +287,7 @@ const DashboardPageComponent = ({
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid xs={12}>
+                  <Grid item xs={12}>
                     <Box
                       overflow="auto"
                       className={dashboardClasses.cardsSection}
@@ -312,6 +342,13 @@ const DashboardPageComponent = ({
             </List>
           </Grid>
         </Hidden>
+        <Grid xs={12} item>
+          <IntroCarousel
+            currentUser={currentUser}
+            initialOpen={openCarousel}
+            closeCallback={() => setOpenCarousel(false)}
+          />
+        </Grid>
       </Grid>
     </Box>
   );

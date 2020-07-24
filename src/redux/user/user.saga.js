@@ -29,9 +29,14 @@ export function* storeUserToReducer(userData) {
   yield put(loginSuccess(userData));
 }
 
+// call after user is registered
+// to store user data in Firestore
 export function* storeUserToFirestore(user) {
   try {
     const userData = User.toJson(user);
+    // set firstLogin to true
+    // for showing carousel
+    userData.firstLogin = true;
     yield addDocument({
       collection: collectionName,
       data: userData,
