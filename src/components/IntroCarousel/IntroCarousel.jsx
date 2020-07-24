@@ -66,7 +66,7 @@ const IntroCarouselComponent = ({
       icon: <ContactMailIcon className={classes.avatarIcon} />,
       title: 'Virtual group',
       subtitle:
-        'Discuss the module contents with your coursemates anywhere, anytime.',
+        'Create or join a virtual group to discuss module content with your coursemates anywhere, anytime.',
       mediaBackgroundColor: blue['400'],
       avatarColor: blue['500'],
       textBackgroundColor: blue['600'],
@@ -75,7 +75,8 @@ const IntroCarouselComponent = ({
       icon: <QuestionAnswerIcon className={classes.avatarIcon} />,
       title: 'Q&A thread',
       subtitle:
-        'Clarify your doubts and ask any questions related to the modules.',
+        'Initiate a Q&A thread to seek aid from your fellow coursemates to tackle difficult tasks, ' +
+        'or participate in a thread discussion to help your coursemates with the tasks at hand.',
       mediaBackgroundColor: orange['400'],
       avatarColor: orange['500'],
       textBackgroundColor: orange['600'],
@@ -83,7 +84,7 @@ const IntroCarouselComponent = ({
     {
       icon: <DashboardIcon className={classes.avatarIcon} />,
       title: 'Dashboard',
-      subtitle: 'Add your modules and see all your groups here.',
+      subtitle: 'Add your modules and see all your groups and threads here.',
       mediaBackgroundColor: red['400'],
       avatarColor: red['500'],
       textBackgroundColor: red['600'],
@@ -91,7 +92,8 @@ const IntroCarouselComponent = ({
     {
       icon: <MailIcon className={classes.avatarIcon} />,
       title: 'Chat room',
-      subtitle: 'Find all the joined groups and useful notes here.',
+      subtitle:
+        'Discuss and exchange ideas with your coursemates and groupmates here.',
       mediaBackgroundColor: deepPurple['400'],
       avatarColor: deepPurple['500'],
       textBackgroundColor: deepPurple['600'],
