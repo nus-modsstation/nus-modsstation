@@ -171,38 +171,80 @@ const DashboardPageComponent = ({
 
             <Grid xs={12} item>
               <Paper className={materialClasses.paper}>
-                <Box display="flex" justifyContent="space-between">
-                  <Typography variant="h6">My modules</Typography>
-                  <AddModuleDialog />
-                </Box>
-                <Box>
-                  <List>
-                    {currentUser &&
-                      currentUser.modules
-                        .filter((moduleCode) => moduleCode !== 'MOD1001')
-                        .map((module) => (
-                          <ListItem key={module}>
-                            <ListItemText primary={module} />
-                          </ListItem>
-                        ))}
-                  </List>
-                </Box>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Box mb={1} display="flex" justifyContent="space-between">
+                      <Typography variant="h6">My modules</Typography>
+                      {currentUser && <AddModuleDialog />}
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    {currentUser && currentUser.modules.length > 0 ? (
+                      <Box>
+                        <List>
+                          {currentUser &&
+                            currentUser.modules
+                              .filter((moduleCode) => moduleCode !== 'MOD1001')
+                              .map((module) => (
+                                <ListItem key={module}>
+                                  <ListItemText primary={module} />
+                                </ListItem>
+                              ))}
+                        </List>
+                      </Box>
+                    ) : currentUser ? (
+                      <Box width={1}>
+                        <Alert severity="info">
+                          Whoops! Looks like you have not added any module yet.
+                        </Alert>
+                      </Box>
+                    ) : (
+                      <Box width={1}>
+                        <Alert severity="info">
+                          Whoops! Looks like you have not logged in to NUS
+                          ModsStation yet.
+                        </Alert>
+                      </Box>
+                    )}
+                  </Grid>
+                </Grid>
               </Paper>
             </Grid>
             <Grid xs={12} item>
               <Paper
-                style={{
-                  paddingTop: 1,
-                  paddingLeft: 16,
-                  paddingRight: 16,
-                  paddingBottom: 8,
-                }}
+                // style={{
+                //   paddingTop: 1,
+                //   paddingLeft: 16,
+                //   paddingRight: 16,
+                //   paddingBottom: 16,
+                // }}
+                className={materialClasses.paper}
               >
-                <StudyGroupSection
-                  sectionTitle="My study groups"
-                  sectionData={myStudyGroups}
-                  hideJoin
-                />
+                {myStudyGroups && myStudyGroups.length > 0 ? (
+                  <StudyGroupSection
+                    sectionTitle="My study groups"
+                    sectionData={myStudyGroups}
+                    hideJoin
+                  />
+                ) : (
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <Box mb={1}>
+                        <Typography variant="h6">
+                          {capSentence('My study groups')}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Box width={1}>
+                        <Alert severity="info">
+                          Whoops! Looks like you have not joined any study group
+                          yet.
+                        </Alert>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                )}
               </Paper>
             </Grid>
             <Grid xs={12} item>
