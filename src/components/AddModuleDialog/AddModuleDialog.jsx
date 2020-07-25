@@ -59,7 +59,12 @@ const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button
+        disabled={currentUser === null}
+        variant="outlined"
+        color="primary"
+        onClick={handleClickOpen}
+      >
         Add
       </Button>
       <Dialog
