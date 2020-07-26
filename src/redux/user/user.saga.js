@@ -43,7 +43,9 @@ export function* storeUserToFirestore(user) {
       setId: false,
       docId: userData.id,
     });
-    yield storeUserToReducer(userData);
+    // redirect to login page
+    // ensure user verify their email first
+    //yield storeUserToReducer(userData);
   } catch (error) {
     yield put(registerError(error));
   }
