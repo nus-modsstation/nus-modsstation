@@ -20,7 +20,6 @@ import Container from '@material-ui/core/Container';
 import { ErrorMessage } from '../shared/ErrorMessage';
 import { ForgotPasswordDialog } from '../ForgotPasswordDialog/ForgotPasswordDialog';
 import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 
 const useStyles = makeStyles((theme) => ({
@@ -95,6 +94,12 @@ export const LoginFormComponent = ({
       setOpen(false);
     };
   }, []);
+
+  useEffect(() => {
+    if (authError) {
+      setOpen(false);
+    }
+  }, [authError]);
 
   return (
     <Container component="main" maxWidth="xs">
