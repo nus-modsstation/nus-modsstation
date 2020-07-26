@@ -1,5 +1,4 @@
-import * as firebase from 'firebase/app';
-import { firestore } from '../lib/firebase/firebase.config';
+import { fb, firestore } from '../lib/firebase/firebase.config';
 
 export const readDocument = async ({ collection, docId }) => {
   let doc = await firestore.collection(collection).doc(docId).get();
@@ -145,7 +144,7 @@ export const updateDocumentArrayUnion = async ({
 }) => {
   const ref = firestore.collection(collection).doc(docId);
   await ref.update({
-    [field]: firebase.firestore.FieldValue.arrayUnion(data),
+    [field]: fb.firestore.FieldValue.arrayUnion(data),
   });
 };
 
@@ -157,7 +156,7 @@ export const updateDocumentArrayRemove = async ({
 }) => {
   const ref = firestore.collection(collection).doc(docId);
   await ref.update({
-    [field]: firebase.firestore.FieldValue.arrayRemove(data),
+    [field]: fb.firestore.FieldValue.arrayRemove(data),
   });
 };
 
