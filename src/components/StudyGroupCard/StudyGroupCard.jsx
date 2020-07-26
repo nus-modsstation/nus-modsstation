@@ -308,7 +308,7 @@ export const StudyGroupCardComponent = ({
                     })}
                   </List>
                 </Grid>
-                {isOwner && studyGroup.userRequests.length !== 0 && (
+                {isOwner && studyGroup.userRequests.length > 0 && (
                   <Grid item xs={12}>
                     <Typography variant="h6">Requests</Typography>
                     <List dense>

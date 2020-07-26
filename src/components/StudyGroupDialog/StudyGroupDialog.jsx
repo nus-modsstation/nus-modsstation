@@ -101,14 +101,6 @@ const StudyGroupDialogComponent = ({ currentUser, createSuccess }) => {
           {/* Add this after setting up email verification && currentUser.isVerified */}
           {currentUser ? (
             <div style={{ height: '100%', overflow: 'hidden' }}>
-              <DialogContentText>
-                In light of the phase two of re-opening, the group capacity will
-                be limited to&nbsp;
-                <u>
-                  <strong>5</strong>
-                </u>
-                &nbsp;people.
-              </DialogContentText>
               <StudyGroupForm currentUser={currentUser} />
             </div>
           ) : (

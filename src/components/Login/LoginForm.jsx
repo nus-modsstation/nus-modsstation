@@ -19,6 +19,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ErrorMessage } from '../shared/ErrorMessage';
 import { ForgotPasswordDialog } from '../ForgotPasswordDialog/ForgotPasswordDialog';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import PacmanLoader from 'react-spinners/PacmanLoader';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
     align: 'left',
     color: 'error',
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 export const LoginFormComponent = ({
@@ -49,6 +56,10 @@ export const LoginFormComponent = ({
   const classes = useStyles();
   const location = useLocation();
   const isLogin = location.pathname === '/login';
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const { register, handleSubmit, errors, reset } = useForm({
     mode: 'onChange',
@@ -66,6 +77,7 @@ export const LoginFormComponent = ({
   };
 
   const onSubmit = async (data) => {
+    setOpen(true);
     if (isLogin) {
       await loginStart(data);
     } else {
@@ -78,8 +90,17 @@ export const LoginFormComponent = ({
     reset();
   }, [location, clearAuthError, reset]);
 
+  useEffect(() => {
+    return () => {
+      setOpen(false);
+    };
+  }, []);
+
   return (
     <Container component="main" maxWidth="xs">
+      <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
+        <PacmanLoader color="#36D7B7" />
+      </Backdrop>
       <div className={classes.paper}>
         <Typography component="h1" variant="h4">
           {isLogin ? 'Login' : 'Register'}
