@@ -115,6 +115,7 @@ const QAThreadFormComponent = ({
               }
               onChange={([, data]) => data}
               name="module"
+              defaultValue={modulePage ? module : undefined}
               control={control}
               rules={{ required: 'Please select module' }}
             />

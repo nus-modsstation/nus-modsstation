@@ -43,7 +43,6 @@ import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialo
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 import { QAThreadCard } from '../../components/QAThreadCard/QAThreadCard';
-import { IntroCarousel } from '../../components/IntroCarousel/IntroCarousel';
 
 const dashboardStyles = makeStyles({
   cardsSection: {
@@ -97,15 +96,15 @@ const DashboardPageComponent = ({
     {
       title: 'Guides',
       icon: <ViewCarouselIcon />,
-      clickCallback: () => {
-        setOpenCarousel(true);
-      },
+      clickCallback: () =>
+        window.open(
+          'https://docs.google.com/document/d/1_yXMxVcF_Xv5KlXcySzEM7wqrTtfKkT_SPNUpIvS3Jg/edit?usp=sharing',
+          '_blank'
+        ),
     },
   ];
 
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const [openCarousel, setOpenCarousel] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -211,15 +210,7 @@ const DashboardPageComponent = ({
               </Paper>
             </Grid>
             <Grid xs={12} item>
-              <Paper
-                // style={{
-                //   paddingTop: 1,
-                //   paddingLeft: 16,
-                //   paddingRight: 16,
-                //   paddingBottom: 16,
-                // }}
-                className={materialClasses.paper}
-              >
+              <Paper className={materialClasses.paper}>
                 {myStudyGroups && myStudyGroups.length > 0 ? (
                   <StudyGroupSection
                     sectionTitle="My study groups"
@@ -384,13 +375,6 @@ const DashboardPageComponent = ({
             </List>
           </Grid>
         </Hidden>
-        <Grid xs={12} item>
-          <IntroCarousel
-            currentUser={currentUser}
-            initialOpen={openCarousel}
-            closeCallback={() => setOpenCarousel(false)}
-          />
-        </Grid>
       </Grid>
     </Box>
   );
