@@ -46,40 +46,20 @@ const useStyles = makeStyles({
 export const StudyGroupSection = ({ sectionTitle, sectionData, hideJoin }) => {
   const classes = useStyles();
 
-  /*
-  const theme = useTheme();
-  const xs = useMediaQuery(theme.breakpoints.only('xs'));
-  const sm = useMediaQuery(theme.breakpoints.only('sm'));
-  const md = useMediaQuery(theme.breakpoints.only('md'));
-  const lg = useMediaQuery(theme.breakpoints.only('lg'));
-
-  const colWidth = xs ? 1.7 : sm ? 3.7 : md ? 3.3 : lg ? 4.5 : 5.2;
-  */
-
   return (
-    <Box>
+    <Box width={1}>
       <Box mt={2} />
       <Typography variant="h6">{capSentence(sectionTitle)}</Typography>
       <Box mt={2} />
-      <Box className={classes.root}>
+      <Box width={1} className={classes.root}>
         {sectionData && sectionData.length > 0 ? (
-          /*
-          <GridList
-            className={classes.gridList}
-            cellHeight="auto"
-            cols={colWidth}
-            spacing={16}
-          ></Grid>
-          */
           <Box overflow="auto" className={classes.sectionContent}>
             {sectionData.map((studyGroup, index) => (
-              // <GridListTile key={index}>
               <StudyGroupCard
                 key={index}
                 studyGroup={studyGroup}
                 hideJoin={hideJoin}
               />
-              // </GridListTile>
             ))}
           </Box>
         ) : (
