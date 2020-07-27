@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useHistory, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { createStructuredSelector } from 'reselect';
 
@@ -21,6 +21,8 @@ import { ErrorMessage } from '../shared/ErrorMessage';
 import { ForgotPasswordDialog } from '../ForgotPasswordDialog/ForgotPasswordDialog';
 import Backdrop from '@material-ui/core/Backdrop';
 import PacmanLoader from 'react-spinners/PacmanLoader';
+
+import { CreateSuccessDialog } from './CreateSuccessDialog';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,8 +56,11 @@ export const LoginFormComponent = ({
 }) => {
   const classes = useStyles();
   const location = useLocation();
+  const history = useHistory();
   const isLogin = location.pathname === '/login';
   const [open, setOpen] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -80,7 +85,14 @@ export const LoginFormComponent = ({
     if (isLogin) {
       await loginStart(data);
     } else {
-      await registerStart(data);
+      try {
+        await registerStart(data);
+        history.push('/login');
+        setOpen(false);
+        setOpenDialog(true);
+      } catch (error) {
+        console.log('register err:', error);
+      }
     }
   };
 
@@ -106,6 +118,7 @@ export const LoginFormComponent = ({
       <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
         <PacmanLoader color="#36D7B7" />
       </Backdrop>
+      <CreateSuccessDialog openDialog={openDialog} />
       <div className={classes.paper}>
         <Typography component="h1" variant="h4">
           {isLogin ? 'Login' : 'Register'}

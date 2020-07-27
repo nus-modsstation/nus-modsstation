@@ -21,7 +21,6 @@ export const login = async ({ email, password }) => {
     (process.env.NODE_ENV || '').trim() === 'production' &&
     !user.emailVerified
   ) {
-    await user.sendEmailVerification();
     throw Error('Please verify your email first');
   }
   return userCredential;
