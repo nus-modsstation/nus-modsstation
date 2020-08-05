@@ -1,61 +1,40 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import React, { useState, useEffect } from 'react';
 
-import {
-  selectCurrentUser,
-  selectUpdateSuccess,
-} from '../../redux/user/user.selector';
-
-import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { AddModuleForm } from './AddModuleForm';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { CustomSnackbar } from '../shared/CustomSnackbar';
 import { materialStyles } from '../../styles/material.styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 
-const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
+export const FriendsDialog = ({ currentUser, openDialog, closeCallback }) => {
   const materialClasses = materialStyles();
-  const [open, setOpen] = React.useState(false);
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [open, setOpen] = useState(openDialog);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleClose = () => {
     setOpen(false);
+    closeCallback();
   };
 
   useEffect(() => {
-    if (updateSuccess) {
-      // close the dialog after user's modules are updated successfully
-      // show success CustomSnackbar
-      setOpenSnackbar(true);
-      setOpen(false);
-    }
-  }, [updateSuccess]);
+    setOpen(openDialog);
+  }, [openDialog]);
 
   return (
     <div>
-      <Button
-        disabled={currentUser === null}
-        variant="outlined"
-        color="primary"
-        onClick={handleClickOpen}
-      >
-        Add
-      </Button>
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
         disableBackdropClick
+        fullScreen={fullScreen}
         fullWidth
       >
         <Box className={materialClasses.dialogTitleSection}>
@@ -63,7 +42,7 @@ const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
             className={materialClasses.dialogTitleText}
             id="form-dialog-title"
           >
-            Add modules
+            Friends
           </DialogTitle>
           <IconButton onClick={handleClose} aria-label="close">
             <CloseIcon />
@@ -73,7 +52,7 @@ const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
           {/* Add "&& currentUser.isVerified" below after setting up email verification  */}
           {currentUser ? (
             <div style={{ height: '100%', overflow: 'hidden' }}>
-              <AddModuleForm currentUser={currentUser} />
+              Friends list
             </div>
           ) : (
             <DialogContentText>
@@ -84,21 +63,6 @@ const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
           )}
         </DialogContent>
       </Dialog>
-      {openSnackbar && (
-        <CustomSnackbar
-          variant="success"
-          message="My modules are updated successfully"
-        />
-      )}
     </div>
   );
 };
-
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-  updateSuccess: selectUpdateSuccess,
-});
-
-export const AddModuleDialog = connect(mapStateToProps)(
-  AddModuleDialogComponent
-);

@@ -33,16 +33,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Alert from '@material-ui/lab/Alert';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
-import BookIcon from '@material-ui/icons/Book';
 import ViewCarouselIcon from '@material-ui/icons/ViewCarousel';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 
-import { Searchbar } from '../../components/Searchbar/Searchbar';
 import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialog';
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
 import { VirtualGroupCard } from '../../components/VirtualGroupCard/VirtualGroupCard';
 import { QAThreadCard } from '../../components/QAThreadCard/QAThreadCard';
+import { FriendsDialog } from '../../components/FriendsDialog/FriendsDialog';
 
 const dashboardStyles = makeStyles({
   cardsSection: {
@@ -76,35 +74,30 @@ const DashboardPageComponent = ({
 }) => {
   const dashboardClasses = dashboardStyles();
   const materialClasses = materialStyles();
+  const [anchorEl, setAnchorEl] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const options = [
     {
-      title: 'Friends',
-      icon: <PeopleAltIcon />,
-      clickCallback: () => {},
-    },
-    {
-      title: 'Notebooks',
-      icon: <BookIcon />,
-      clickCallback: () => {},
-    },
-    {
-      title: 'Statistics',
-      icon: <AssessmentIcon />,
-      clickCallback: () => {},
-    },
-    {
       title: 'Guides',
       icon: <ViewCarouselIcon />,
-      clickCallback: () =>
+      clickCallback: () => {
+        setAnchorEl(false);
         window.open(
           'https://docs.google.com/document/d/1_yXMxVcF_Xv5KlXcySzEM7wqrTtfKkT_SPNUpIvS3Jg/edit?usp=sharing',
           '_blank'
-        ),
+        );
+      },
+    },
+    {
+      title: 'Friends',
+      icon: <PeopleAltIcon />,
+      clickCallback: () => {
+        setAnchorEl(false);
+        setOpenDialog(true);
+      },
     },
   ];
-
-  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -135,20 +128,25 @@ const DashboardPageComponent = ({
   return (
     <Box className={materialClasses.root}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={9}>
           <Grid container spacing={2} alignItems="center">
-            <Grid xs={10} sm={11} md={12} item>
-              <Searchbar currentUser={currentUser} searchCallback={() => {}} />
-            </Grid>
-            <Grid xs={2} sm={1} item>
+            <Grid xs={12} item>
               <Hidden mdUp>
-                <IconButton
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleClick}
+                <Box
+                  width={1}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
                 >
-                  <MoreVertIcon />
-                </IconButton>
+                  <Typography variant="h5">Dashboard</Typography>
+                  <IconButton
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                </Box>
               </Hidden>
               <Menu
                 id="simple-menu"
@@ -349,7 +347,7 @@ const DashboardPageComponent = ({
           </Grid>
         </Grid>
         <Hidden smDown>
-          <Grid item md={4}>
+          <Grid item md={3}>
             <Box textAlign="center">
               <Typography variant="h6">Options</Typography>
             </Box>
@@ -376,6 +374,11 @@ const DashboardPageComponent = ({
           </Grid>
         </Hidden>
       </Grid>
+      <FriendsDialog
+        openDialog={openDialog}
+        currentUser={currentUser}
+        closeCallback={() => setOpenDialog(false)}
+      />
     </Box>
   );
 };
