@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useHistory, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -58,8 +58,9 @@ export const LoginFormComponent = ({
   const location = useLocation();
   const history = useHistory();
   const isLogin = location.pathname === '/login';
-  const [open, setOpen] = React.useState(false);
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [email, setEmail] = useState('');
 
   const handleClose = () => {
     setOpen(false);
@@ -89,6 +90,7 @@ export const LoginFormComponent = ({
         await registerStart(data);
         history.push('/login');
         setOpen(false);
+        setEmail(data.email);
         setOpenDialog(true);
       } catch (error) {
         console.log('register err:', error);
@@ -118,7 +120,7 @@ export const LoginFormComponent = ({
       <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
         <PacmanLoader color="#36D7B7" />
       </Backdrop>
-      <CreateSuccessDialog openDialog={openDialog} />
+      <CreateSuccessDialog openDialog={openDialog} email={email} />
       <div className={classes.paper}>
         <Typography component="h1" variant="h4">
           {isLogin ? 'Login' : 'Register'}
