@@ -10,6 +10,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import { materialStyles } from '../../styles/material.styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
+import { FriendsList } from './FriendsList';
+import { FriendsSearch } from './FriendsSearch';
 
 export const FriendsDialog = ({ currentUser, openDialog, closeCallback }) => {
   const materialClasses = materialStyles();
@@ -52,7 +54,8 @@ export const FriendsDialog = ({ currentUser, openDialog, closeCallback }) => {
           {/* Add "&& currentUser.isVerified" below after setting up email verification  */}
           {currentUser ? (
             <div style={{ height: '100%', overflow: 'hidden' }}>
-              Friends list
+              <FriendsSearch />
+              <FriendsList isSearch={false} />
             </div>
           ) : (
             <DialogContentText>
