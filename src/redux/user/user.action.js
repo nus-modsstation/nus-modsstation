@@ -72,3 +72,38 @@ export const clearUpdateSuccess = () => ({
 export const clearUpdateError = () => ({
   type: userActionType.CLEAR_UPDATE_ERROR,
 });
+
+export const acceptRequestStart = (data) => ({
+  type: userActionType.ACCEPT_REQUEST_START,
+  payload: data,
+});
+
+export const acceptRequestSuccess = (data) => ({
+  type: userActionType.ACCEPT_REQUEST_SUCCESS,
+  payload: data,
+});
+
+export const removeRequestStart = (data) => ({
+  type: userActionType.REMOVE_REQUEST_START,
+  payload: data,
+});
+
+export const removeRequestSuccess = (data) => ({
+  type: userActionType.REMOVE_REQUEST_SUCCESS,
+  payload: data,
+});
+
+export const removeFriendStart = (data) => ({
+  type: userActionType.REMOVE_FRIEND_START,
+  payload: data,
+});
+
+export const removeFriendSuccess = (data) => ({
+  type: userActionType.REMOVE_FRIEND_SUCCESS,
+  payload: data,
+});
+
+export const fetchUserStart = (data) => ({
+  type: userActionType.FETCH_USER_START,
+  payload: data,
+});

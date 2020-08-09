@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { capSentence } from '../../utils/formatString';
 
+import { fetchUserStart } from '../../redux/user/user.action';
+
 import { selectCurrentUser } from '../../redux/user/user.selector';
 import { selectMyGroups } from '../../redux/studyGroup/studyGroup.selector';
 import { readMyGroups } from '../../redux/studyGroup/studyGroup.action';
@@ -35,6 +37,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Alert from '@material-ui/lab/Alert';
 import ViewCarouselIcon from '@material-ui/icons/ViewCarousel';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 
 import { AddModuleDialog } from '../../components/AddModuleDialog/AddModuleDialog';
 import { StudyGroupSection } from '../../components/StudyGroupSection/StudyGroupSection';
@@ -71,6 +74,7 @@ const DashboardPageComponent = ({
   readMyThreads,
   starredThreads,
   readMyStarredThreads,
+  fetchUserStart,
 }) => {
   const dashboardClasses = dashboardStyles();
   const materialClasses = materialStyles();
@@ -95,6 +99,17 @@ const DashboardPageComponent = ({
       clickCallback: () => {
         setAnchorEl(false);
         setOpenDialog(true);
+      },
+    },
+    {
+      title: 'Contact us',
+      icon: <LiveHelpIcon />,
+      clickCallback: () => {
+        window.open(
+          'mailto:nusmodsstation@gmail.com?' +
+            '&subject=[Feedback] Hello, NUS ModsStation!' +
+            '&body=Hi NUS ModsStation team,'
+        );
       },
     },
   ];
@@ -124,6 +139,14 @@ const DashboardPageComponent = ({
     readMyThreads,
     readMyStarredThreads,
   ]);
+
+  useEffect(() => {
+    // fetch current user information from Firestore
+    if (currentUser) {
+      fetchUserStart(currentUser.id);
+    }
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Box className={materialClasses.root}>
@@ -396,6 +419,7 @@ const mapDispatchToProps = (dispatch) => ({
   readMyVirtualGroups: (userId) => dispatch(readMyVirtualGroups(userId)),
   readMyThreads: (userId) => dispatch(readMyQAThreads(userId)),
   readMyStarredThreads: (userId) => dispatch(readMyStarredQAThreads(userId)),
+  fetchUserStart: (userId) => dispatch(fetchUserStart(userId)),
 });
 
 export const DashboardPage = connect(

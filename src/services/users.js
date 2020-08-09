@@ -1,4 +1,9 @@
-import { readDocument, readDocumentsWhereEqual } from './firestore';
+import {
+  readDocument,
+  readDocumentsWhereEqual,
+  updateDocumentArrayUnion,
+  updateDocumentArrayRemove,
+} from './firestore';
 
 const collectionName = 'users';
 
@@ -17,4 +22,24 @@ export const findUserByEmail = async (query) => {
     fieldValue: query,
   });
   return userData;
+};
+
+export const sendFriendRequest = async ({ sentUserId, receivedUserId }) => {
+  await updateDocumentArrayUnion({
+    collection: collectionName,
+    docId: receivedUserId,
+    field: 'friendRequests',
+    data: sentUserId,
+  });
+  return;
+};
+
+export const removeFriendRequest = async ({ currentUserId, requestUserId }) => {
+  await updateDocumentArrayRemove({
+    collection: collectionName,
+    docId: currentUserId,
+    field: 'friendRequests',
+    data: requestUserId,
+  });
+  return;
 };

@@ -11,17 +11,20 @@ import Input from '@material-ui/core/Input';
 import Box from '@material-ui/core/Box';
 import { FriendsList } from './FriendsList';
 
-export const FriendsSearch = ({ isSearch }) => {
+export const FriendsSearch = ({ currentUser, isSearch }) => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState(null);
 
   const handleQuery = (event) => {
     setQuery(event.target.value);
   };
 
   const searchUser = async () => {
+    setLoading(true);
     const userData = await findUserByEmail(query);
     setResults(userData);
+    setLoading(false);
   };
 
   return (
@@ -42,7 +45,12 @@ export const FriendsSearch = ({ isSearch }) => {
           }
         />
       </FormControl>
-      <FriendsList isSearch={true} friendsData={results} />
+      <FriendsList
+        currentUser={currentUser}
+        isSearch={true}
+        friendsData={results}
+        loading={loading}
+      />
     </Box>
   );
 };
