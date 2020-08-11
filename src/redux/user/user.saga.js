@@ -10,6 +10,9 @@ import {
   registerError,
   updateUserSuccess,
   updateUserError,
+  acceptRequestSuccess,
+  removeRequestSuccess,
+  removeFriendSuccess,
 } from './user.action';
 import {
   login,
@@ -21,6 +24,8 @@ import {
   addDocument,
   updateDocument,
   readDocument,
+  updateDocumentArrayRemove,
+  updateDocumentArrayUnion,
 } from '../../services/firestore';
 
 const collectionName = 'users';
@@ -51,15 +56,24 @@ export function* storeUserToFirestore(user) {
   }
 }
 
+export function* fetchUserData({ payload }) {
+  try {
+    // fetch user from Firestore and store it in reducer
+    const userData = yield readDocument({
+      collection: collectionName,
+      docId: payload,
+    });
+    yield storeUserToReducer(userData);
+  } catch (error) {
+    yield put(updateUserError(error));
+  }
+}
+
 export function* loginGenerator({ payload }) {
   try {
     const { user } = yield login(payload);
     // fetch user from Firestore and store it in reducer
-    const userData = yield readDocument({
-      collection: collectionName,
-      docId: user.uid,
-    });
-    yield storeUserToReducer(userData);
+    yield fetchUserData({ payload: user.uid });
   } catch (error) {
     yield put(loginError(error));
   }
@@ -106,6 +120,69 @@ export function* updateUserGenerator({ payload }) {
   }
 }
 
+export function* acceptRequestGenerator({ payload }) {
+  try {
+    // remove friend request
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'friendRequests',
+      data: payload.data,
+    });
+    // friends are two-way relationship
+    yield updateDocumentArrayUnion({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'friends',
+      data: payload.data,
+    });
+    yield updateDocumentArrayUnion({
+      collection: collectionName,
+      docId: payload.data,
+      field: 'friends',
+      data: payload.id,
+    });
+    yield put(acceptRequestSuccess(payload.data));
+  } catch (error) {
+    yield put(updateUserError(error));
+  }
+}
+
+export function* removeRequestGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'friendRequests',
+      data: payload.data,
+    });
+    yield put(removeRequestSuccess(payload.data));
+  } catch (error) {
+    yield put(updateUserError(error));
+  }
+}
+
+export function* removeFriendGenerator({ payload }) {
+  try {
+    // friends are two-way relationship
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'friends',
+      data: payload.data,
+    });
+    yield updateDocumentArrayRemove({
+      collection: collectionName,
+      docId: payload.data,
+      field: 'friends',
+      data: payload.id,
+    });
+    yield put(removeFriendSuccess(payload.data));
+  } catch (error) {
+    yield put(updateUserError(error));
+  }
+}
+
 export function* onLoginStart() {
   yield takeLatest(userActionType.LOGIN_START, loginGenerator);
 }
@@ -126,11 +203,31 @@ export function* onUpdateUser() {
   yield takeLatest(userActionType.UPDATE_USER_START, updateUserGenerator);
 }
 
+export function* onAcceptRequest() {
+  yield takeLatest(userActionType.ACCEPT_REQUEST_START, acceptRequestGenerator);
+}
+
+export function* onRemoveRequest() {
+  yield takeLatest(userActionType.REMOVE_REQUEST_START, removeRequestGenerator);
+}
+
+export function* onRemoveFriend() {
+  yield takeLatest(userActionType.REMOVE_FRIEND_START, removeFriendGenerator);
+}
+
+export function* onFetchUser() {
+  yield takeLatest(userActionType.FETCH_USER_START, fetchUserData);
+}
+
 export function* userSaga() {
   yield all([
     call(onLoginStart),
     call(onLogoutStart),
     call(onRegisterStart),
     call(onUpdateUser),
+    call(onAcceptRequest),
+    call(onRemoveRequest),
+    call(onRemoveFriend),
+    call(onFetchUser),
   ]);
 }

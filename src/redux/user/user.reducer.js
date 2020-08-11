@@ -67,6 +67,37 @@ export const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         updateError: false,
       };
+    case userActionType.ACCEPT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          friendRequests: state.currentUser.friendRequests.filter(
+            (request) => request !== action.payload
+          ),
+          friends: [...state.currentUser.friends, action.payload],
+        },
+      };
+    case userActionType.REMOVE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          friendRequests: state.currentUser.friendRequests.filter(
+            (request) => request !== action.payload
+          ),
+        },
+      };
+    case userActionType.REMOVE_FRIEND_SUCCESS:
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          friends: state.currentUser.friends.filter(
+            (request) => request !== action.payload
+          ),
+        },
+      };
     default:
       return state;
   }

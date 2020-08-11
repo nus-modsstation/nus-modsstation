@@ -5,7 +5,6 @@ export const readDocument = async ({ collection, docId }) => {
   if (doc.exists) {
     return doc.data();
   } else {
-    console.log('docId:', docId);
     throw new Error('No such document!');
   }
 };

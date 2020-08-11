@@ -16,27 +16,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { AddModuleForm } from './AddModuleForm';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { makeStyles } from '@material-ui/core/styles';
 import { CustomSnackbar } from '../shared/CustomSnackbar';
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitleText: {
-    display: 'inline',
-    padding: 0,
-  },
-  dialogTitleSection: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    paddingLeft: theme.spacing(3),
-    paddingRight: theme.spacing(3),
-    alignItems: 'center',
-  },
-}));
+import { materialStyles } from '../../styles/material.styles';
 
 const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
-  const classes = useStyles();
+  const materialClasses = materialStyles();
   const [open, setOpen] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
@@ -74,9 +58,9 @@ const AddModuleDialogComponent = ({ currentUser, updateSuccess }) => {
         disableBackdropClick
         fullWidth
       >
-        <Box className={classes.dialogTitleSection}>
+        <Box className={materialClasses.dialogTitleSection}>
           <DialogTitle
-            className={classes.dialogTitleText}
+            className={materialClasses.dialogTitleText}
             id="form-dialog-title"
           >
             Add modules
