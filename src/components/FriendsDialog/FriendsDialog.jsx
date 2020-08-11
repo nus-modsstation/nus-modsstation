@@ -43,19 +43,30 @@ export const FriendsDialog = ({ currentUser, openDialog, closeCallback }) => {
     setRequestUsers(userData);
   };
 
-  const fetchFriendNames = async () => {
-    let userData = [];
-    await currentUser.friends.forEach(async (userId) => {
-      const user = await readDocument({
-        collection: 'users',
-        docId: userId,
-      });
-      userData.push(user);
-    });
-    setFriends(userData);
-  };
-
   useEffect(() => {
+    const fetchFriendNames = async () => {
+      let userData = [];
+      // ensure for each is async
+      // wait to fetch username for all the friends
+      // before setFriends
+      const asyncForEach = async (arr, callback) => {
+        for (let i = 0; i < arr.length; i++) {
+          await callback(arr[i]);
+        }
+      };
+      const start = async () => {
+        await asyncForEach(currentUser.friends, async (userId) => {
+          const user = await readDocument({
+            collection: 'users',
+            docId: userId,
+          });
+          userData.push(user);
+        });
+        setFriends(userData);
+      };
+      start();
+    };
+
     if (currentUser) {
       fetchFriendNames();
       fetchRequestNames();

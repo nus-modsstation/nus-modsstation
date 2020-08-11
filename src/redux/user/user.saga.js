@@ -108,7 +108,6 @@ export function* isUserAuthenticated() {
 }
 
 export function* updateUserGenerator({ payload }) {
-  console.log('update user:', payload);
   try {
     yield updateDocument({
       collection: collectionName,

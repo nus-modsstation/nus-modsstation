@@ -109,8 +109,6 @@ const FriendsListComponent = ({
 
   useEffect(() => {
     // update send request
-    console.log('isSearch:', isSearch);
-    console.log('friendsData:', friendsData);
     if (
       isSearch &&
       friendsData &&
@@ -134,7 +132,7 @@ const FriendsListComponent = ({
       ) : friendsData && friendsData.length > 0 ? (
         friendsData.map((friend) => {
           if (friend.id === currentUser.id) {
-            return <Box>You can't add yourself as friend</Box>;
+            return <Box>You can't add yourself</Box>;
           } else {
             return (
               <ListItem key={friend.email}>
@@ -179,25 +177,15 @@ const FriendsListComponent = ({
                       </Button>
                     </ButtonGroup>
                   ) : (
-                    <ButtonGroup>
-                      <Button
-                        size="small"
-                        startIcon={<EmailIcon style={{ color: '#421cf8' }} />}
-                      >
-                        {!isXs && (
-                          <span style={{ color: '#421cf8' }}>Chat</span>
-                        )}
-                      </Button>
-                      <Button
-                        size="small"
-                        startIcon={<DeleteIcon style={{ color: '#f44336' }} />}
-                        onClick={() => removeFriend(friend.id)}
-                      >
-                        {!isXs && (
-                          <span style={{ color: '#f44336' }}>Remove</span>
-                        )}
-                      </Button>
-                    </ButtonGroup>
+                    <Button
+                      size="small"
+                      startIcon={<DeleteIcon style={{ color: '#f44336' }} />}
+                      onClick={() => removeFriend(friend.id)}
+                    >
+                      {!isXs && (
+                        <span style={{ color: '#f44336' }}>Remove</span>
+                      )}
+                    </Button>
                   )}
                 </ListItemSecondaryAction>
               </ListItem>
