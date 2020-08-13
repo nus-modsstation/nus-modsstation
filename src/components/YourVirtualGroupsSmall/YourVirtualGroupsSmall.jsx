@@ -16,6 +16,7 @@ import {
   deleteGroupStart,
   acceptUserRequestStart,
   removeUserRequestStart,
+  switchRecruitingModeStart,
 } from '../../redux/virtualGroup/virtualGroup.action';
 import { readDocument } from '../../services/firestore';
 
@@ -51,6 +52,7 @@ const GroupComponent = ({
   deleteGroupStart,
   acceptJoinRequestStart,
   removeJoinRequestStart,
+  switchRecruitingModeStart,
 }) => {
   const component = componentStyles();
 
@@ -118,6 +120,14 @@ const GroupComponent = ({
     groupData.users.push(userId);
   };
 
+  const switchRecruitingMode = () => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+    };
+    switchRecruitingModeStart(virtualGroupData);
+  };
+
   useEffect(() => {
     groupData.users.forEach(async (userId) => {
       const user = await readDocument({ collection: 'users', docId: userId });
@@ -169,6 +179,7 @@ const GroupComponent = ({
             joinRequests={joinRequestsArray}
             acceptJoinRequest={acceptUserRequest}
             removeJoinRequest={removeUserRequest}
+            switchRecruitingMode={switchRecruitingMode}
             leaveGroup={leaveGroup}
             deleteGroup={deleteGroup}
           />
@@ -208,6 +219,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(removeUserRequestStart(groupData)),
   acceptJoinRequestStart: (groupData) =>
     dispatch(acceptUserRequestStart(groupData)),
+  switchRecruitingModeStart: (groupData) =>
+    dispatch(switchRecruitingModeStart(groupData)),
 });
 
 const Group = connect(mapStateToProps, mapDispatchToProps)(GroupComponent);

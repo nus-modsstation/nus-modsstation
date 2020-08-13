@@ -154,6 +154,37 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
         ...state,
         leaveGroupError: action.payload,
       };
+    case virtualGroupActionType.SWITCH_RECRUITING_MODE_SUCCESS:
+      return {
+        ...state,
+        // update group under myGroups
+        myGroups: state.myGroups.map((group) => {
+          if (group.id === action.payload.id) {
+            return {
+              ...group,
+              isPublic: !group.isPublic,
+            };
+          }
+          return group;
+        }),
+        // update group under the moduleCode
+        [action.payload.moduleCode]: state[action.payload.moduleCode].map(
+          (group) => {
+            if (group.id === action.payload.id) {
+              return {
+                ...group,
+                isPublic: !group.isPublic,
+              };
+            }
+            return group;
+          }
+        ),
+      };
+    case virtualGroupActionType.SWITCH_RECRUITING_MODE_ERROR:
+      return {
+        ...state,
+        switchRecruitingModeError: action.payload,
+      };
     default:
       return state;
   }

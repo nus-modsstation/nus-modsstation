@@ -21,6 +21,7 @@ import {
   sendJoinRequestStart,
   acceptUserRequestStart,
   removeUserRequestStart,
+  switchRecruitingModeStart,
 } from '../../redux/virtualGroup/virtualGroup.action';
 import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
 import { readDocument } from '../../services/firestore';
@@ -91,6 +92,7 @@ const VirtualGroupCardComponent = ({
   sendJoinRequestStart,
   acceptJoinRequestStart,
   removeJoinRequestStart,
+  switchRecruitingModeStart,
   leaveGroupStart,
   deleteGroupStart,
 }) => {
@@ -175,6 +177,14 @@ const VirtualGroupCardComponent = ({
     groupData.users.push(userId);
   };
 
+  const switchRecruitingMode = () => {
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+    };
+    switchRecruitingModeStart(virtualGroupData);
+  };
+
   useEffect(() => {
     groupData.users.forEach(async (userId) => {
       const user = await readDocument({ collection: 'users', docId: userId });
@@ -226,6 +236,7 @@ const VirtualGroupCardComponent = ({
             sendJoinRequest={sendJoinRequest}
             acceptJoinRequest={acceptUserRequest}
             removeJoinRequest={removeUserRequest}
+            switchRecruitingMode={switchRecruitingMode}
             leaveGroup={leaveGroup}
             deleteGroup={deleteGroup}
           />
@@ -305,6 +316,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(removeUserRequestStart(groupData)),
   acceptJoinRequestStart: (groupData) =>
     dispatch(acceptUserRequestStart(groupData)),
+  switchRecruitingModeStart: (groupData) =>
+    dispatch(switchRecruitingModeStart(groupData)),
 });
 
 export const VirtualGroupCard = connect(

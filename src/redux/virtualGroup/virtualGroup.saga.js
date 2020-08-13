@@ -15,14 +15,18 @@ import {
   removeMyGroupById,
   removeModuleGroupById,
   deleteGroupError,
+  switchRecruitingModeSuccess,
+  switchRecruitingModeError,
 } from './virtualGroup.action';
 import {
   addDocument,
+  readDocument,
   readDocumentsWhereContains,
   readDocumentsWhereEqual,
   updateDocumentArrayUnion,
   updateDocumentArrayRemove,
   deleteDocument,
+  updateDocument,
 } from '../../services/firestore';
 
 const collectionName = 'virtualGroups';
@@ -209,6 +213,31 @@ export function* onDeleteGroup() {
   );
 }
 
+export function* switchRecruitingModeGenerator({ payload }) {
+  try {
+    let virtualGroup = yield readDocument({
+      collection: collectionName,
+      docId: payload.id,
+    });
+    virtualGroup.isPublic = !virtualGroup.isPublic;
+    yield updateDocument({
+      collection: collectionName,
+      docId: payload.id,
+      data: virtualGroup,
+    });
+    yield put(switchRecruitingModeSuccess(payload));
+  } catch (error) {
+    yield put(switchRecruitingModeError(error));
+  }
+}
+
+export function* onSwitchRecruitingMode() {
+  yield takeLatest(
+    virtualGroupActionType.SWITCH_RECRUITING_MODE_START,
+    switchRecruitingModeGenerator
+  );
+}
+
 export function* virtualGroupSaga() {
   yield all([
     call(onCreateVirtualGroup),
@@ -219,5 +248,6 @@ export function* virtualGroupSaga() {
     call(onAcceptUserRequest),
     call(onLeaveGroup),
     call(onDeleteGroup),
+    call(onSwitchRecruitingMode),
   ]);
 }

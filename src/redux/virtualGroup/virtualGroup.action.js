@@ -131,3 +131,18 @@ export const deleteGroupError = (errorMessage) => ({
   type: virtualGroupActionType.DELETE_GROUP_ERROR,
   payload: errorMessage,
 });
+
+export const switchRecruitingModeStart = (virtualGroup) => ({
+  type: virtualGroupActionType.SWITCH_RECRUITING_MODE_START,
+  payload: virtualGroup,
+});
+
+export const switchRecruitingModeSuccess = (virtualGroup) => ({
+  type: virtualGroupActionType.SWITCH_RECRUITING_MODE_SUCCESS,
+  payload: virtualGroup,
+});
+
+export const switchRecruitingModeError = (errorMessage) => ({
+  type: virtualGroupActionType.SWITCH_RECRUITING_MODE_ERROR,
+  payload: errorMessage,
+});

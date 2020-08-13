@@ -18,6 +18,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 import IconButton from '@material-ui/core/IconButton';
+import Switch from '@material-ui/core/Switch';
 
 import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
 
@@ -89,6 +90,7 @@ const VirtualGroupInfoComponent = ({
   sendRequestSuccess,
   acceptJoinRequest,
   removeJoinRequest,
+  switchRecruitingMode,
   leaveGroup,
   deleteGroup,
 }) => {
@@ -102,6 +104,9 @@ const VirtualGroupInfoComponent = ({
 
   const [requestSent, setRequestSent] = React.useState(
     groupData.userRequests.includes(currentUser.id)
+  );
+  const [recruitingMode, setRecruitingMode] = React.useState(
+    groupData.isPublic
   );
 
   const sendUpdateJoinRequest = async () => {
@@ -123,6 +128,11 @@ const VirtualGroupInfoComponent = ({
     acceptJoinRequest(userId);
     const newState = joinRequestsState.filter((user) => user.id !== userId);
     setJoinRequestsState(newState);
+  };
+
+  const switchUpdateRecruitingMode = async () => {
+    switchRecruitingMode();
+    setRecruitingMode(!recruitingMode);
   };
 
   useEffect(() => {
@@ -228,6 +238,15 @@ const VirtualGroupInfoComponent = ({
                 <Typography color="error" variant="subtitle2">
                   Delete group
                 </Typography>
+              </ListItem>
+              <ListItem mb="10px" alignItems="center">
+                <Typography variant="subtitle2">Recruiting mode</Typography>
+                <ListItemSecondaryAction>
+                  <Switch
+                    checked={recruitingMode}
+                    onChange={switchUpdateRecruitingMode}
+                  />
+                </ListItemSecondaryAction>
               </ListItem>
             </List>
           ) : isMember ? (
