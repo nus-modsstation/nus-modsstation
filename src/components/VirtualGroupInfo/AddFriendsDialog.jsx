@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -39,7 +39,7 @@ export const AddFriendsDialog = ({
   );
   const [selectedFriends, setSelectedFriends] = React.useState([]);
   const theme = useTheme();
-  const fullWidth = useMediaQuery(theme.breakpoints.down('xs'));
+  // const fullWidth = useMediaQuery(theme.breakpoints.down('xs'));
 
   const addFriendsAndClose = (friends) => {
     addFriends(friends);
@@ -83,7 +83,7 @@ export const AddFriendsDialog = ({
       <Dialog
         open={open}
         onClose={handleClose}
-        fullWidth={fullWidth}
+        fullWidth
         aria-labelledby="form-dialog-title"
         disableBackdropClick
       >
@@ -99,58 +99,67 @@ export const AddFriendsDialog = ({
           </IconButton>
         </Box>
         <DialogContent>
-          <Box mt={2}>
-            <form onSubmit={onSubmit} noValidate>
-              <Grid container spacing={3}>
-                <Grid xs={12} item>
-                  <Autocomplete
-                    className={componentClasses.form}
-                    multiple
-                    filterSelectedOptions
-                    options={options}
-                    onInputChange={inputChange}
-                    onChange={handleSelect}
-                    getOptionLabel={(option) => option.username}
-                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip
-                          color="primary"
+          <div style={{ overflow: 'hidden', height: '100%', width: '100%' }}>
+            <Box
+              my={2}
+              style={{
+                height: '100%',
+                width: '100%',
+                boxSizing: 'content-box',
+              }}
+            >
+              <form onSubmit={onSubmit} noValidate>
+                <Grid container spacing={3}>
+                  <Grid xs={12} item>
+                    <Autocomplete
+                      className={componentClasses.form}
+                      multiple
+                      filterSelectedOptions
+                      options={options}
+                      onInputChange={inputChange}
+                      onChange={handleSelect}
+                      getOptionLabel={(option) => option.username}
+                      renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                          <Chip
+                            color="primary"
+                            variant="outlined"
+                            label={option.username}
+                            {...getTagProps({ index })}
+                          />
+                        ))
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Add friends"
                           variant="outlined"
-                          label={option.username}
-                          {...getTagProps({ index })}
+                          fullWidth
                         />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Add friends"
-                        variant="outlined"
-                        fullWidth
-                      />
-                    )}
-                    renderOption={(option) => (
-                      <React.Fragment>
-                        <span>{option.username}</span>
-                      </React.Fragment>
-                    )}
-                  />
+                      )}
+                      renderOption={(option) => (
+                        <React.Fragment>
+                          <span>{option.username}</span>
+                        </React.Fragment>
+                      )}
+                    />
+                  </Grid>
+                  <Grid xs={12} item>
+                    <Box display="flex" justifyContent="flex-end">
+                      <Button
+                        type="submit"
+                        color="primary"
+                        variant="contained"
+                        disabled={selectedFriends.length === 0}
+                      >
+                        Add
+                      </Button>
+                    </Box>
+                  </Grid>
                 </Grid>
-                <Grid xs={12} item>
-                  <Box display="flex" justifyContent="flex-end">
-                    <Button
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                      disabled={selectedFriends.length === 0}
-                    >
-                      Add
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
-            </form>
-          </Box>
+              </form>
+            </Box>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
