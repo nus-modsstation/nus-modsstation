@@ -49,3 +49,8 @@ export const selectSwitchRecruitingModeError = createSelector(
   [selectVirtualGroup],
   (virtualGroup) => virtualGroup.switchRecruitingModeError
 );
+
+export const selectAddFriendsToGroupSuccess = createSelector(
+  [selectVirtualGroup],
+  (virtualGroup) => virtualGroup.addFriendsSuccess
+);

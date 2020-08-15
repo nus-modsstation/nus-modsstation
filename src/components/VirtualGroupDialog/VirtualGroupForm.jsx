@@ -189,16 +189,6 @@ const VirtualGroupFormComponent = ({
             />
           </Grid>
           */}
-          {/* SET PRIVATE FEATURE
-          <Grid xs={8} md={6} item>
-            <FormControl className={componentClasses.form}>
-              <FormControlLabel
-                control={<Checkbox id="isPublic" onChange={handleChange} />}
-                label="Set group as private"
-              />
-            </FormControl>
-          </Grid>
-          */}
           <Grid xs={12} item>
             <Box>
               {groupError && <ErrorMessage errorMessage={groupError.message} />}

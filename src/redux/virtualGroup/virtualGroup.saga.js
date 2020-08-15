@@ -17,6 +17,7 @@ import {
   deleteGroupError,
   switchRecruitingModeSuccess,
   switchRecruitingModeError,
+  addFriendsToVirtualGroupSuccess,
 } from './virtualGroup.action';
 import {
   addDocument,
@@ -63,7 +64,10 @@ export function* readMyVirtualGroupsGenarator({ payload }) {
     };
     yield put(updateVirtualGroupReducer(data));
   } catch (error) {
-    console.log(error);
+    const errorData = {
+      readMyGroupsByModuleError: error,
+    };
+    yield put(updateVirtualGroupReducer(errorData));
   }
 }
 
@@ -86,7 +90,10 @@ export function* readVirtualGroupsByModuleGenarator({ payload }) {
     };
     yield put(updateVirtualGroupReducer(data));
   } catch (error) {
-    console.log(error);
+    const errorData = {
+      readGroupsByModuleError: error,
+    };
+    yield put(updateVirtualGroupReducer(errorData));
   }
 }
 
@@ -238,6 +245,34 @@ export function* onSwitchRecruitingMode() {
   );
 }
 
+export function* addFriendsToGroupGenerator({ payload }) {
+  try {
+    yield updateDocumentArrayUnion({
+      collection: collectionName,
+      docId: payload.id,
+      field: 'users',
+      data: payload.data,
+    });
+    // update the virtual group with the new accepted user
+    // and updated join requests
+    payload.prop = 'users';
+    yield put(updateVirtualGroupPropPush(payload));
+    yield put(addFriendsToVirtualGroupSuccess());
+  } catch (error) {
+    const errorData = {
+      addFriendsToGroupError: error,
+    };
+    yield put(updateVirtualGroupReducer(errorData));
+  }
+}
+
+export function* onAddFriendsToGroup() {
+  yield takeEvery(
+    virtualGroupActionType.ADD_FRIENDS_TO_GROUP_START,
+    addFriendsToGroupGenerator
+  );
+}
+
 export function* virtualGroupSaga() {
   yield all([
     call(onCreateVirtualGroup),
@@ -249,5 +284,6 @@ export function* virtualGroupSaga() {
     call(onLeaveGroup),
     call(onDeleteGroup),
     call(onSwitchRecruitingMode),
+    call(onAddFriendsToGroup),
   ]);
 }

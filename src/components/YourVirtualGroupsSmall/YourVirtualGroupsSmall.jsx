@@ -17,7 +17,10 @@ import {
   acceptUserRequestStart,
   removeUserRequestStart,
   switchRecruitingModeStart,
+  addFriendsToVirtualGroupStart,
+  clearAddFriendsSuccess,
 } from '../../redux/virtualGroup/virtualGroup.action';
+import { selectAddFriendsToGroupSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
 import { readDocument } from '../../services/firestore';
 
 import { VirtualGroupInfo } from '../../components/VirtualGroupInfo/VirtualGroupInfo';
@@ -53,11 +56,16 @@ const GroupComponent = ({
   acceptJoinRequestStart,
   removeJoinRequestStart,
   switchRecruitingModeStart,
+  addFriendsStart,
+  addFriendsSuccess,
+  clearOnAddFriendsSuccess,
 }) => {
   const component = componentStyles();
+  const isOwner = currentUser.id === groupData.ownerId;
 
   const [open, setOpen] = React.useState(false);
   const [usernameMap, setUsernameMap] = React.useState({});
+  const [friendsData, setFriendsData] = React.useState([]);
   const [userRequestsMap, setUserRequestsMap] = React.useState({});
 
   const handleClickOpen = () => {
@@ -128,6 +136,39 @@ const GroupComponent = ({
     switchRecruitingModeStart(virtualGroupData);
   };
 
+  const fetchFriendsData = async () => {
+    let userData = [];
+    await currentUser.friends.forEach(async (userId) => {
+      const user = await readDocument({
+        collection: 'users',
+        docId: userId,
+      });
+      userData.push(user);
+    });
+    setFriendsData(userData);
+  };
+
+  const addFriends = (friends) => {
+    const friendsIds = friends.map((user) => user.id);
+    const virtualGroupData = {
+      id: groupData.id,
+      moduleCode: groupData.moduleCode,
+      data: friendsIds,
+    };
+    addFriendsStart(virtualGroupData);
+    groupData.users.push(...friendsIds);
+  };
+
+  useEffect(() => {
+    if (isOwner) {
+      fetchFriendsData();
+    }
+    if (addFriendsSuccess) {
+      clearOnAddFriendsSuccess();
+    }
+    // eslint-disable-next-line
+  }, [addFriendsSuccess, clearOnAddFriendsSuccess]);
+
   useEffect(() => {
     groupData.users.forEach(async (userId) => {
       const user = await readDocument({ collection: 'users', docId: userId });
@@ -176,6 +217,8 @@ const GroupComponent = ({
             currentUser={currentUser}
             groupData={groupData}
             members={membersArray}
+            friendsData={friendsData}
+            addFriends={addFriends}
             joinRequests={joinRequestsArray}
             acceptJoinRequest={acceptUserRequest}
             removeJoinRequest={removeUserRequest}
@@ -210,7 +253,9 @@ const GroupComponent = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({});
+const mapStateToProps = createStructuredSelector({
+  addFriendsSuccess: selectAddFriendsToGroupSuccess,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   leaveGroupStart: (groupData) => dispatch(leaveGroupStart(groupData)),
@@ -221,6 +266,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(acceptUserRequestStart(groupData)),
   switchRecruitingModeStart: (groupData) =>
     dispatch(switchRecruitingModeStart(groupData)),
+  addFriendsStart: (groupData) =>
+    dispatch(addFriendsToVirtualGroupStart(groupData)),
+  clearOnAddFriendsSuccess: () => dispatch(clearAddFriendsSuccess()),
 });
 
 const Group = connect(mapStateToProps, mapDispatchToProps)(GroupComponent);

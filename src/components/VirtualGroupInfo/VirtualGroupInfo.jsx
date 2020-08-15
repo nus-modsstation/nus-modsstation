@@ -19,8 +19,13 @@ import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 import IconButton from '@material-ui/core/IconButton';
 import Switch from '@material-ui/core/Switch';
+import { CustomSnackbar } from '../../components/shared/CustomSnackbar';
 
-import { selectSendRequestSuccess } from '../../redux/virtualGroup/virtualGroup.selector';
+import {
+  selectSendRequestSuccess,
+  selectAddFriendsToGroupSuccess,
+} from '../../redux/virtualGroup/virtualGroup.selector';
+import { AddFriendsDialog } from './AddFriendsDialog';
 
 const infoStyles = makeStyles({
   groupPicture: {
@@ -91,6 +96,9 @@ const VirtualGroupInfoComponent = ({
   acceptJoinRequest,
   removeJoinRequest,
   switchRecruitingMode,
+  friendsData,
+  addFriends,
+  addFriendsSuccess,
   leaveGroup,
   deleteGroup,
 }) => {
@@ -108,6 +116,8 @@ const VirtualGroupInfoComponent = ({
   const [recruitingMode, setRecruitingMode] = React.useState(
     groupData.isPublic
   );
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
   const sendUpdateJoinRequest = async () => {
     sendJoinRequest();
@@ -139,7 +149,11 @@ const VirtualGroupInfoComponent = ({
     if (sendRequestSuccess) {
       setRequestSent(true);
     }
-  }, [sendRequestSuccess]);
+    if (addFriendsSuccess) {
+      setOpenSnackbar(true);
+    }
+    // eslint-disable-next-line
+  }, [sendRequestSuccess, addFriendsSuccess]);
 
   return (
     <Box m="10px">
@@ -223,11 +237,25 @@ const VirtualGroupInfoComponent = ({
                 </Box>
                 <Typography variant="subtitle2">Chat room</Typography>
               </ListItem>
-              <ListItem button mb="10px" alignItems="center">
+              <ListItem
+                button
+                onClick={() => setOpenDialog(true)}
+                mb="10px"
+                alignItems="center"
+              >
                 <Box mr="10px">
                   <PersonAdd fontSize="small" />
                 </Box>
-                <Typography variant="subtitle2">Add friend</Typography>
+                <Typography variant="subtitle2">Add friends</Typography>
+              </ListItem>
+              <ListItem mb="10px" alignItems="center">
+                <Typography variant="subtitle2">Recruiting mode</Typography>
+                <ListItemSecondaryAction>
+                  <Switch
+                    checked={recruitingMode}
+                    onChange={switchUpdateRecruitingMode}
+                  />
+                </ListItemSecondaryAction>
               </ListItem>
               <ListItem
                 button
@@ -238,15 +266,6 @@ const VirtualGroupInfoComponent = ({
                 <Typography color="error" variant="subtitle2">
                   Delete group
                 </Typography>
-              </ListItem>
-              <ListItem mb="10px" alignItems="center">
-                <Typography variant="subtitle2">Recruiting mode</Typography>
-                <ListItemSecondaryAction>
-                  <Switch
-                    checked={recruitingMode}
-                    onChange={switchUpdateRecruitingMode}
-                  />
-                </ListItemSecondaryAction>
               </ListItem>
             </List>
           ) : isMember ? (
@@ -262,12 +281,6 @@ const VirtualGroupInfoComponent = ({
                   <Chat fontSize="small" />
                 </Box>
                 <Typography variant="subtitle2">Chat room</Typography>
-              </ListItem>
-              <ListItem button mb="10px" alignItems="center">
-                <Box mr="10px">
-                  <PersonAdd fontSize="small" />
-                </Box>
-                <Typography variant="subtitle2">Add friend</Typography>
               </ListItem>
               <ListItem
                 button
@@ -292,12 +305,26 @@ const VirtualGroupInfoComponent = ({
           )}
         </Grid>
       </Grid>
+      <AddFriendsDialog
+        friendsData={friendsData}
+        addFriends={addFriends}
+        groupData={groupData}
+        openDialog={openDialog}
+        closeCallback={() => setOpenDialog(false)}
+      />
+      {openSnackbar && (
+        <CustomSnackbar
+          variant="success"
+          message="Your friends have been added to the group!"
+        />
+      )}
     </Box>
   );
 };
 
 const mapStateToProps = createStructuredSelector({
   sendRequestSuccess: selectSendRequestSuccess,
+  addFriendsSuccess: selectAddFriendsToGroupSuccess,
 });
 
 export const VirtualGroupInfo = connect(mapStateToProps)(
