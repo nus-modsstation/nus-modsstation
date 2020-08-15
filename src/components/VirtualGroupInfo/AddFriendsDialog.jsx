@@ -38,8 +38,6 @@ export const AddFriendsDialog = ({
     friendsData.filter((user) => !groupData.users.includes(user.id))
   );
   const [selectedFriends, setSelectedFriends] = React.useState([]);
-  const theme = useTheme();
-  // const fullWidth = useMediaQuery(theme.breakpoints.down('xs'));
 
   const addFriendsAndClose = (friends) => {
     addFriends(friends);
