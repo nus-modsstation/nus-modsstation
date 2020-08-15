@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   updateError: false,
   sendRequestError: null,
   sendRequestSuccess: false,
+  addFriendsSuccess: false,
 };
 
 export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
@@ -91,10 +92,43 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
     case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_PROP_PUSH:
       return {
         ...state,
-        // update the virtual group with the new prop
+        // update the virtual group with the new prop under moduleCode
         [action.payload.moduleCode]: state[action.payload.moduleCode].map(
           (group) => {
             if (group.id === action.payload.id) {
+              if (Array.isArray(action.payload.data)) {
+                return {
+                  ...group,
+                  [action.payload.prop]: [
+                    ...group[action.payload.prop],
+                    ...action.payload.data,
+                  ],
+                };
+              } else {
+                return {
+                  ...group,
+                  [action.payload.prop]: [
+                    ...group[action.payload.prop],
+                    action.payload.data,
+                  ],
+                };
+              }
+            }
+            return group;
+          }
+        ),
+        // update under myGroups if necessary
+        myGroups: state.myGroups.map((group) => {
+          if (group.id === action.payload.id) {
+            if (Array.isArray(action.payload.data)) {
+              return {
+                ...group,
+                [action.payload.prop]: [
+                  ...group[action.payload.prop],
+                  ...action.payload.data,
+                ],
+              };
+            } else {
               return {
                 ...group,
                 [action.payload.prop]: [
@@ -103,9 +137,9 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
                 ],
               };
             }
-            return group;
           }
-        ),
+          return group;
+        }),
       };
     case virtualGroupActionType.UPDATE_VIRTUAL_GROUP_PROP_REMOVE:
       return {
@@ -153,6 +187,47 @@ export const virtualGroupReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         leaveGroupError: action.payload,
+      };
+    case virtualGroupActionType.SWITCH_RECRUITING_MODE_SUCCESS:
+      return {
+        ...state,
+        // update group under myGroups
+        myGroups: state.myGroups.map((group) => {
+          if (group.id === action.payload.id) {
+            return {
+              ...group,
+              isPublic: !group.isPublic,
+            };
+          }
+          return group;
+        }),
+        // update group under the moduleCode
+        [action.payload.moduleCode]: state[action.payload.moduleCode].map(
+          (group) => {
+            if (group.id === action.payload.id) {
+              return {
+                ...group,
+                isPublic: !group.isPublic,
+              };
+            }
+            return group;
+          }
+        ),
+      };
+    case virtualGroupActionType.SWITCH_RECRUITING_MODE_ERROR:
+      return {
+        ...state,
+        switchRecruitingModeError: action.payload,
+      };
+    case virtualGroupActionType.ADD_FRIENDS_TO_GROUP_SUCCESS:
+      return {
+        ...state,
+        addFriendsSuccess: true,
+      };
+    case virtualGroupActionType.CLEAR_ADD_FRIENDS_SUCCESS:
+      return {
+        ...state,
+        addFriendsSuccess: false,
       };
     default:
       return state;

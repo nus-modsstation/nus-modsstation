@@ -143,9 +143,15 @@ export const updateDocumentArrayUnion = async ({
   data,
 }) => {
   const ref = firestore.collection(collection).doc(docId);
-  await ref.update({
-    [field]: fb.firestore.FieldValue.arrayUnion(data),
-  });
+  if (Array.isArray(data)) {
+    await ref.update({
+      [field]: fb.firestore.FieldValue.arrayUnion(...data),
+    });
+  } else {
+    await ref.update({
+      [field]: fb.firestore.FieldValue.arrayUnion(data),
+    });
+  }
 };
 
 export const updateDocumentArrayRemove = async ({

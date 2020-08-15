@@ -131,3 +131,31 @@ export const deleteGroupError = (errorMessage) => ({
   type: virtualGroupActionType.DELETE_GROUP_ERROR,
   payload: errorMessage,
 });
+
+export const switchRecruitingModeStart = (virtualGroup) => ({
+  type: virtualGroupActionType.SWITCH_RECRUITING_MODE_START,
+  payload: virtualGroup,
+});
+
+export const switchRecruitingModeSuccess = (virtualGroup) => ({
+  type: virtualGroupActionType.SWITCH_RECRUITING_MODE_SUCCESS,
+  payload: virtualGroup,
+});
+
+export const switchRecruitingModeError = (errorMessage) => ({
+  type: virtualGroupActionType.SWITCH_RECRUITING_MODE_ERROR,
+  payload: errorMessage,
+});
+
+export const addFriendsToVirtualGroupStart = (virtualGroup) => ({
+  type: virtualGroupActionType.ADD_FRIENDS_TO_GROUP_START,
+  payload: virtualGroup,
+});
+
+export const addFriendsToVirtualGroupSuccess = () => ({
+  type: virtualGroupActionType.ADD_FRIENDS_TO_GROUP_SUCCESS,
+});
+
+export const clearAddFriendsSuccess = () => ({
+  type: virtualGroupActionType.CLEAR_ADD_FRIENDS_SUCCESS,
+});
